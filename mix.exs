@@ -22,8 +22,28 @@ defmodule ExWMTS.MixProject do
       # Hex
       package: package(),
       description: """
-      An ergonomic library for investigating the Hex.pm API
-      """
+      Access map tiles from WMTS-compatible endpoints
+      """,
+
+      # Docs
+      name: "ExWMTS",
+      docs: [
+        main: "ExWMTS",
+        api_reference: false,
+        logo: "assets/ex_wmts-logo.png",
+        source_ref: "v#{@version}",
+        source_url: @source_url,
+        extra_section: "GUIDES",
+        formatters: ["html"],
+        extras: extras(),
+        skip_undefined_reference_warnings_on: ["CHANGELOG.md"]
+      ]
+    ]
+  end
+
+  def extras do
+    [
+      "README.md"
     ]
   end
 
