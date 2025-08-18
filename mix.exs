@@ -80,7 +80,8 @@ defmodule ExWMTS.MixProject do
       {:ex_machina, "~> 2.8.0", only: :test},
       {:faker, "~> 0.18.0", only: :test},
       {:junit_formatter, "~> 3.1", only: [:test]},
-      {:req, "~> 0.5"}
+      {:req, "~> 0.5"},
+      {:sweet_xml, "~> 0.7"}
     ]
   end
 end
