@@ -1,6 +1,6 @@
-defmodule ExWmts do
+defmodule ExWMTS do
   @moduledoc """
-  Documentation for `ExWmts`.
+  Documentation for `ExWMTS`.
   """
 
   @doc """
@@ -8,7 +8,7 @@ defmodule ExWmts do
 
   ## Examples
 
-      iex> ExWmts.hello()
+      iex> ExWMTS.hello()
       :world
 
   """

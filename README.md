@@ -1,4 +1,4 @@
-# ExWmts
+# ExWMTS
 
 **TODO: Add description**
 

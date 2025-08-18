@@ -1,4 +1,4 @@
-defmodule ExWmts.MixProject do
+defmodule ExWMTS.MixProject do
   use Mix.Project
 
   @source_url "https://github.com/camatcode/ex_wmts"

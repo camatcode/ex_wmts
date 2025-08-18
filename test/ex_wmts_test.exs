@@ -1,9 +1,9 @@
-defmodule ExWmtsTest do
+defmodule ExWMTSTest do
   use ExUnit.Case
 
-  doctest ExWmts
+  doctest ExWMTS
 
   test "greets the world" do
-    assert ExWmts.hello() == :world
+    assert ExWMTS.hello() == :world
   end
 end
