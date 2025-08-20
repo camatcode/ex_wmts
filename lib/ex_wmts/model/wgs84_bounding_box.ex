@@ -3,16 +3,19 @@ defmodule ExWMTS.WGS84BoundingBox do
 
   import SweetXml
 
+  alias __MODULE__, as: WGS84BoundingBox
+
   defstruct [:lower_corner, :upper_corner]
 
   def build(nil), do: nil
+  def build([]), do: nil
 
   def build(bbox_node) do
     lower = bbox_node |> xpath(~x"./*[local-name()='LowerCorner']/text()"s) |> parse_coords()
     upper = bbox_node |> xpath(~x"./*[local-name()='UpperCorner']/text()"s) |> parse_coords()
 
     case {lower, upper} do
-      {{min_x, min_y}, {max_x, max_y}} -> %__MODULE__{lower_corner: {min_x, min_y}, upper_corner: {max_x, max_y}}
+      {{min_x, min_y}, {max_x, max_y}} -> %WGS84BoundingBox{lower_corner: {min_x, min_y}, upper_corner: {max_x, max_y}}
       _ -> nil
     end
   end

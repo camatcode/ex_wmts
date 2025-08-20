@@ -3,29 +3,22 @@ defmodule ExWMTS.BoundingBox do
 
   import SweetXml
 
+  alias __MODULE__, as: BoundingBox
+
   defstruct [:crs, :lower_corner, :upper_corner]
 
-  def build(nil), do: []
-  def build([]), do: []
-  def build(bbox_nodes) when is_list(bbox_nodes), do: Enum.map(bbox_nodes, &build_single/1) |> Enum.reject(&is_nil/1)
+  def build(nil), do: nil
+  def build([]), do: nil
+  def build(bbox_nodes) when is_list(bbox_nodes), do: Enum.map(bbox_nodes, &build/1) |> Enum.reject(&is_nil/1)
 
-  def build(bbox_node),
-    do:
-      case(build_single(bbox_node),
-        do: (
-          nil -> []
-          bbox -> [bbox]
-        )
-      )
-
-  defp build_single(bbox_node) do
+  def build(bbox_node) do
     crs = bbox_node |> xpath(~x"./@crs"s)
     lower = bbox_node |> xpath(~x"./*[local-name()='LowerCorner']/text()"s) |> parse_coords()
     upper = bbox_node |> xpath(~x"./*[local-name()='UpperCorner']/text()"s) |> parse_coords()
 
     case {lower, upper} do
       {{min_x, min_y}, {max_x, max_y}} ->
-        %__MODULE__{crs: crs, lower_corner: {min_x, min_y}, upper_corner: {max_x, max_y}}
+        %BoundingBox{crs: crs, lower_corner: {min_x, min_y}, upper_corner: {max_x, max_y}}
 
       _ ->
         nil

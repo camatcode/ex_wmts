@@ -3,29 +3,20 @@ defmodule ExWMTS.Metadata do
 
   import SweetXml
 
+  alias __MODULE__, as: Metadata
+
   defstruct [:href, :about]
 
-  def build(nil), do: []
-  def build([]), do: []
+  def build(nil), do: nil
+  def build([]), do: nil
 
   def build(metadata_nodes) when is_list(metadata_nodes),
-    do: Enum.map(metadata_nodes, &build_single/1) |> Enum.reject(&is_nil/1)
+    do: Enum.map(metadata_nodes, &build/1) |> Enum.reject(&is_nil/1)
 
-  def build(metadata_node),
-    do:
-      case(build_single(metadata_node),
-        do: (
-          nil -> []
-          meta -> [meta]
-        )
-      )
-
-  defp build_single(node) do
-    href = node |> xpath(~x"./@*[local-name()='href']"s)
-
-    case href do
-      "" -> nil
-      _ -> %__MODULE__{href: href, about: node |> xpath(~x"./@about"s)}
-    end
+  def build(metadata_node) do
+    %Metadata{
+      href: metadata_node |> xpath(~x"./@*[local-name()='href']"s),
+      about: metadata_node |> xpath(~x"./@about"s)
+    }
   end
 end
