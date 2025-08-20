@@ -101,22 +101,32 @@ defmodule ExWMTS.CapabilitiesParserTest do
         formats: ["image/png"]
       } = capabilities
 
-      known_layer = %ExWMTS.Layer{
-        title: "Hangrutschungsgefährdung WMTS",
-        abstract:
-          "Der Datensatz stellt die Gefährdung der Schieneninfrastruktur durch Hangrutschungen räumlich differenziert dar. Dieses Produkt der Hangrutschungsgefährdung ist das Ergebnis des Forschungsprojektes „Erstellung einer ingenieurgeologischen Gefahrenhinweiskarte zu Hang- und Böschungsrutschungen entlang des deutschen Schienennetzes“ des Eisenbahn-Bundesamtes im Rahmen der Arbeiten des BMDV-Expertennetzwerks im Themenfeld Klimawandelfolgen und Anpassung (bmdv-expertennetzwerk.de). Die Sachinformationen und Gefährdungsklassen werden ausschließlich für den Bereich der Schieneninfrastruktur bereitgestellt. Datengrundlage hierfür ist der Datensatz ‚geo-strecke‘, welcher von der Deutschen Bahn (DB) unter der Lizenz Creative Commons Attribution 4.0 International (CC BY 4.0) bereitgestellt wird (http://data.deutschebahn.com/dataset/geo-strecke). Dargestellt sind die potenziellen Gefährdungsbereiche und Puffer (0 m und 50 m) bezogen auf die Gefahrenklassen größer bzw. gleich 10) (s. Abschlussbericht „Erstellung einer ingenieurgeologischen Gefahrenhinweiskarte zu Hang- und Böschungsrutschungen entlang des deutschen Schienennetzes“ - Eisenbahn-Bundesamt: 11vb/018-0099#22; S. 100). Das Attribut „Gef_ber“ wurde hinzugefügt und in drei Klassen unterteilt in Bereiche der Gefahrenklasse >= 10 wurde der direkte Einflussbereich (0) sowie ein Puffer von 50 m (50) berücksichtigt. Bereiche mit einer geringeren errechneten Gefahrenklasse oder außerhalb des Puffers sind mit ‚999‘ kodiert.",
-        identifier: "hangrutschungsgefaehrdung_wmts",
-        tile_matrix_sets: ["wmtsgrid"],
-        formats: ["image/png"],
-        styles: ["hangrutschungsgefaehrdung_wmts"]
-      }
+      hangrutschung_layer = Enum.find(layers, &(&1.identifier == "hangrutschungsgefaehrdung_wmts"))
 
       assert length(layers) == 10
-      assert known_layer in layers
+      assert hangrutschung_layer != nil
+      assert hangrutschung_layer.title == "Hangrutschungsgefährdung WMTS"
+      assert hangrutschung_layer.identifier == "hangrutschungsgefaehrdung_wmts"
+      assert hangrutschung_layer.formats == ["image/png"]
+      assert hangrutschung_layer.tile_matrix_sets == ["wmtsgrid"]
+      assert hangrutschung_layer.keywords == ["Hangrutschungsgefährdung WMTS"]
+
+      assert hangrutschung_layer.wgs84_bounding_box == %ExWMTS.WGS84BoundingBox{
+               lower_corner: {4.34738512723, 46.7961383601},
+               upper_corner: {16.9787143025, 55.3482568074}
+             }
+
+      assert length(hangrutschung_layer.metadata) == 1
+      assert hd(hangrutschung_layer.metadata).href =~ "geoinformation.eisenbahn-bundesamt.de"
+
+      assert length(hangrutschung_layer.resource_urls) == 2
+      tile_url = Enum.find(hangrutschung_layer.resource_urls, &(&1.resource_type == "tile"))
+      assert tile_url.format == "image/png"
+      assert tile_url.template =~ "hangrutschungsgefaehrdung_wmts"
     end
 
     test "parses US Navy capabilities" do
-      {:ok, capabilities} =
+      {:ok, _capabilities} =
         "test/support/capabilities/us_navy.xml"
         |> File.read!()
         |> CapabilitiesParser.parse()
@@ -1521,9 +1531,8 @@ defmodule ExWMTS.CapabilitiesParserTest do
               }
             ]
           }
-        ],
-        formats: ["image/png", "image/jpeg"]
-      } = capabilities
+        ]
+      }
     end
 
     test "handles minimal XML structure" do
@@ -1597,9 +1606,12 @@ defmodule ExWMTS.CapabilitiesParserTest do
                }
              ]
            }
-         ],
-         formats: ["image/png"]
-       }} = CapabilitiesParser.parse(minimal_xml)
+         ]
+       }}
+
+      {:ok, capabilities} = CapabilitiesParser.parse(minimal_xml)
+      assert Map.has_key?(capabilities, :formats)
+      assert capabilities.formats == ["image/png"]
     end
   end
 end

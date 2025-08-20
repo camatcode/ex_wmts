@@ -29,6 +29,12 @@ defmodule ExWMTS.CapabilitiesParser do
           identifier: ~x"./*[local-name()='Identifier']/text()"s,
           title: ~x"./*[local-name()='Title']/text()"s,
           abstract: ~x"./*[local-name()='Abstract']/text()"s,
+          keywords: ~x"./*[local-name()='Keywords']/*[local-name()='Keyword']/text()"sl,
+          wgs84_bounding_box: ~x"./*[local-name()='WGS84BoundingBox']"o,
+          bounding_box: ~x"./*[local-name()='BoundingBox']"l,
+          metadata: ~x"./*[local-name()='Metadata']"l,
+          dimensions: ~x"./*[local-name()='Dimension']"l,
+          resource_urls: ~x"./*[local-name()='ResourceURL']"l,
           formats: ~x"./*[local-name()='Format']/text()"ls,
           tile_matrix_sets: ~x"./*[local-name()='TileMatrixSetLink']/*[local-name()='TileMatrixSet']/text()"ls,
           styles: ~x"./*[local-name()='Style']/*[local-name()='Identifier']/text()"ls
