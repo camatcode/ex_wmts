@@ -6,6 +6,13 @@ defmodule ExWMTS.CapabilitiesParserTest do
   @moduletag :parser
 
   describe "Capabilities parser with diverse XML samples" do
+    test "parses OGC standard spec" do
+      {:ok, _capabilities} =
+        "test/support/capabilities/ogc_standard_1.xml"
+        |> File.read!()
+        |> CapabilitiesParser.parse()
+    end
+
     test "parses NASA GIBS capabilities" do
       {:ok, capabilities} =
         "test/support/capabilities/nasa_gibs.xml"

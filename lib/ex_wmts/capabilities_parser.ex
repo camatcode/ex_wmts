@@ -5,50 +5,12 @@ defmodule ExWMTS.CapabilitiesParser do
 
   import SweetXml
 
+  alias ExWMTS.Layer
   alias ExWMTS.Model.Common
   alias ExWMTS.ServiceIdentification
+  alias ExWMTS.ServiceProvider
+  alias ExWMTS.TileMatrixSet
 
-  @type layer :: %{
-          identifier: String.t(),
-          title: String.t(),
-          abstract: String.t() | nil,
-          formats: [String.t()],
-          tile_matrix_sets: [String.t()],
-          styles: [String.t()]
-        }
-
-  @type tile_matrix_set :: %{
-          identifier: String.t(),
-          supported_crs: String.t(),
-          matrices: [tile_matrix()]
-        }
-
-  @type tile_matrix :: %{
-          identifier: String.t(),
-          scale_denominator: float(),
-          top_left_corner: {float(), float()},
-          tile_width: integer(),
-          tile_height: integer(),
-          matrix_width: integer(),
-          matrix_height: integer()
-        }
-
-  @type capabilities :: %{
-          service_identification: %{
-            title: String.t(),
-            abstract: String.t() | nil,
-            service_type: String.t(),
-            service_type_version: String.t()
-          },
-          layers: [layer()],
-          tile_matrix_sets: [tile_matrix_set()],
-          formats: [String.t()]
-        }
-
-  @doc """
-  Parses GetCapabilities XML response into structured data.
-  """
-  @spec parse(String.t()) :: {:ok, capabilities()} | {:error, term()}
   def parse(xml) when is_binary(xml) do
     parsed_xml = SweetXml.parse(xml)
 
@@ -57,6 +19,10 @@ defmodule ExWMTS.CapabilitiesParser do
         parsed_xml
         |> xpath(~x"//*[local-name()='ServiceIdentification']")
         |> ServiceIdentification.build(),
+      service_provider:
+        parsed_xml
+        |> xpath(~x"//*[local-name()='ServiceProvider']")
+        |> ServiceProvider.build(),
       layers:
         parsed_xml
         |> xpath(~x"//*[local-name()='Layer']"l,
@@ -89,13 +55,13 @@ defmodule ExWMTS.CapabilitiesParser do
 
   defp make_layers(layers) do
     layers
-    |> Enum.map(&ExWMTS.Layer.build/1)
+    |> Enum.map(&Layer.build/1)
     |> Enum.reject(&(&1 == nil))
   end
 
   defp make_tile_matrix_sets(tms) do
     tms
-    |> Enum.map(&ExWMTS.TileMatrixSet.build/1)
+    |> Enum.map(&TileMatrixSet.build/1)
     |> Enum.reject(&(&1 == nil))
   end
 end
