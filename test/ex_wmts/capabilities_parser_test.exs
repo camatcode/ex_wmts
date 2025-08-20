@@ -39,12 +39,11 @@ defmodule ExWMTS.CapabilitiesParserTest do
         service_identification: %{title: "USGSShadedReliefOnly", service_type: "OGC WMTS"},
         layers: [%{identifier: "USGSShadedReliefOnly", tile_matrix_sets: matrix_sets}],
         tile_matrix_sets: [_, _] = two_matrix_sets,
-        formats: formats
+        formats: ["image/jpgpng"]
       } = capabilities
 
       assert "default028mm" in matrix_sets
       assert "GoogleMapsCompatible" in matrix_sets
-      assert "image/jpeg" in formats and "image/png" in formats
 
       # Check GoogleMapsCompatible has proper Web Mercator structure
       gm_tms = Enum.find(two_matrix_sets, &(&1.identifier == "GoogleMapsCompatible"))

@@ -44,67 +44,63 @@ defmodule ExWMTS.CapabilitiesParser do
 
   @doc """
   Parses GetCapabilities XML response into structured data.
-
-  ## Examples
-
-      iex> xml = "<?xml version='1.0'?>..."
-      iex> ExWMTS.CapabilitiesParser.parse(xml)
-      {:ok, %{layers: [...], tile_matrix_sets: [...], formats: [...]}}
   """
   @spec parse(String.t()) :: {:ok, capabilities()} | {:error, term()}
   def parse(xml) when is_binary(xml) do
     parsed_xml = SweetXml.parse(xml)
 
     capabilities = %{
-      service_identification: parse_service_identification(parsed_xml),
-      layers: parse_layers(parsed_xml),
-      tile_matrix_sets: parse_tile_matrix_sets(parsed_xml),
-      formats: parse_global_formats(parsed_xml)
+      service_identification:
+        parsed_xml
+        |> xpath(~x"//*[local-name()='ServiceIdentification']")
+        |> make_service_identification(),
+      layers:
+        parsed_xml
+        |> xpath(~x"//*[local-name()='Layer']"l,
+          identifier: ~x"./*[local-name()='Identifier']/text()"s,
+          title: ~x"./*[local-name()='Title']/text()"s,
+          abstract: ~x"./*[local-name()='Abstract']/text()"s,
+          formats: ~x"./*[local-name()='Format']/text()"ls,
+          tile_matrix_sets: ~x"./*[local-name()='TileMatrixSetLink']/*[local-name()='TileMatrixSet']/text()"ls,
+          styles: ~x"./*[local-name()='Style']/*[local-name()='Identifier']/text()"ls
+        )
+        |> make_layers(),
+      tile_matrix_sets:
+        parsed_xml
+        |> xpath(~x"//*[local-name()='TileMatrixSet']"l,
+          identifier: ~x"./*[local-name()='Identifier']/text()"s,
+          supported_crs: ~x"./*[local-name()='SupportedCRS']/text()"s,
+          matrices: ~x"./*[local-name()='TileMatrix']"l
+        )
+        |> make_tile_matrix_sets(),
+      formats:
+        parsed_xml
+        |> xpath(~x"//*[local-name()='Format']/text()"ls)
+        |> make_global_formats()
     }
 
     {:ok, capabilities}
-  rescue
-    error -> {:error, {:parse_error, error}}
   end
 
-  defp parse_service_identification(xml) do
-    xml
-    |> xpath(~x"//*[local-name()='ServiceIdentification']")
-    |> case do
-      nil ->
-        %{
-          title: "Unknown Service",
-          abstract: nil,
-          service_type: "WMTS",
-          service_type_version: "1.0.0"
-        }
+  defp make_service_identification(nil),
+    do: %{title: "Unknown Service", abstract: nil, service_type: "WMTS", service_type_version: "1.0.0"}
 
-      service_node ->
-        %{
-          title: service_node |> xpath(~x"./*[local-name()='Title']/text()"s) |> normalize_text("Unknown Service"),
-          abstract: service_node |> xpath(~x"./*[local-name()='Abstract']/text()"s) |> normalize_text(nil),
-          service_type: service_node |> xpath(~x"./*[local-name()='ServiceType']/text()"s) |> normalize_text("WMTS"),
-          service_type_version:
-            service_node |> xpath(~x"./*[local-name()='ServiceTypeVersion']/text()"s) |> normalize_text("1.0.0")
-        }
-    end
+  defp make_service_identification(service_node),
+    do: %{
+      title: service_node |> xpath(~x"./*[local-name()='Title']/text()"s) |> normalize_text("Unknown Service"),
+      abstract: service_node |> xpath(~x"./*[local-name()='Abstract']/text()"s) |> normalize_text(nil),
+      service_type: service_node |> xpath(~x"./*[local-name()='ServiceType']/text()"s) |> normalize_text("WMTS"),
+      service_type_version:
+        service_node |> xpath(~x"./*[local-name()='ServiceTypeVersion']/text()"s) |> normalize_text("1.0.0")
+    }
+
+  defp make_layers(layers) do
+    layers
+    |> Enum.map(&make_layer/1)
+    |> Enum.reject(fn layer -> layer == nil end)
   end
 
-  defp parse_layers(xml) do
-    xml
-    |> xpath(~x"//*[local-name()='Layer']"l,
-      identifier: ~x"./*[local-name()='Identifier']/text()"s,
-      title: ~x"./*[local-name()='Title']/text()"s,
-      abstract: ~x"./*[local-name()='Abstract']/text()"s,
-      formats: ~x"./*[local-name()='Format']/text()"ls,
-      tile_matrix_sets: ~x"./*[local-name()='TileMatrixSetLink']/*[local-name()='TileMatrixSet']/text()"ls,
-      styles: ~x"./*[local-name()='Style']/*[local-name()='Identifier']/text()"ls
-    )
-    |> Enum.map(&normalize_layer/1)
-    |> Enum.filter(fn layer -> layer.identifier != nil and layer.identifier != "" end)
-  end
-
-  defp normalize_layer(layer_data) do
+  defp make_layer(layer_data) do
     identifier = normalize_text(layer_data.identifier, nil)
     title = normalize_text(layer_data.title, identifier)
     abstract = normalize_text(layer_data.abstract, nil)
@@ -112,63 +108,58 @@ defmodule ExWMTS.CapabilitiesParser do
     formats =
       layer_data.formats
       |> Enum.map(&normalize_text/1)
-      |> Enum.filter(fn fmt -> fmt != nil and fmt != "" and String.contains?(fmt, "image/") end)
-      |> expand_formats()
+      |> Enum.reject(fn fmt -> fmt == nil end)
       |> Enum.uniq()
 
     tile_matrix_sets =
       layer_data.tile_matrix_sets
       |> Enum.map(&normalize_text/1)
-      |> Enum.filter(fn tms -> tms != nil and tms != "" end)
+      |> Enum.reject(fn tms -> tms == nil end)
 
     styles =
       layer_data.styles
       |> Enum.map(&normalize_text/1)
-      |> Enum.filter(fn style -> style != nil and style != "" end)
+      |> Enum.reject(fn style -> style == nil end)
       |> case do
         [] -> ["default"]
         styles -> styles
       end
       |> Enum.uniq()
 
-    %{
-      identifier: identifier,
-      title: title,
-      abstract: abstract,
-      formats: formats,
-      tile_matrix_sets: tile_matrix_sets,
-      styles: styles
-    }
+    if identifier != nil and !Enum.empty?(formats) do
+      %{
+        identifier: identifier,
+        title: title,
+        abstract: abstract,
+        formats: formats,
+        tile_matrix_sets: tile_matrix_sets,
+        styles: styles
+      }
+    end
   end
 
-  defp parse_tile_matrix_sets(xml) do
-    xml
-    |> xpath(~x"//*[local-name()='TileMatrixSet']"l,
-      identifier: ~x"./*[local-name()='Identifier']/text()"s,
-      supported_crs: ~x"./*[local-name()='SupportedCRS']/text()"s,
-      matrices: ~x"./*[local-name()='TileMatrix']"l
-    )
+  defp make_tile_matrix_sets(tms) do
+    tms
     |> Enum.map(&normalize_tile_matrix_set/1)
-    |> Enum.filter(fn tms -> tms.identifier != nil and tms.identifier != "" end)
+    |> Enum.reject(fn tms -> tms == nil end)
   end
 
-  # Normalize tile matrix set data
   defp normalize_tile_matrix_set(tms_data) do
     identifier = normalize_text(tms_data.identifier, nil)
-    supported_crs = normalize_text(tms_data.supported_crs, "EPSG:3857")
+    supported_crs = normalize_text(tms_data.supported_crs, "EPSG:4326")
 
     matrices =
       tms_data.matrices
-      |> Enum.map(fn matrix_node ->
-        parse_tile_matrix(matrix_node)
-      end)
-      |> Enum.filter(fn matrix -> matrix.identifier != nil end)
+      |> Enum.map(&parse_tile_matrix/1)
+      |> Enum.reject(fn matrix -> matrix.identifier == nil end)
 
-    %{
-      identifier: identifier,
-      supported_crs: supported_crs,
-      matrices: matrices
-    }
+    if identifier do
+      %{
+        identifier: identifier,
+        supported_crs: supported_crs,
+        matrices: matrices
+      }
+    end
   end
 
   # Parse individual tile matrix (zoom level) - namespace agnostic
@@ -214,13 +205,10 @@ defmodule ExWMTS.CapabilitiesParser do
     }
   end
 
-  # Parse global formats (fallback) - namespace agnostic
-  defp parse_global_formats(xml) do
-    xml
-    |> xpath(~x"//*[local-name()='Format']/text()"ls)
+  defp make_global_formats(fmts) do
+    fmts
     |> Enum.map(&normalize_text/1)
-    |> Enum.filter(fn fmt -> fmt != nil and fmt != "" and String.contains?(fmt, "image/") end)
-    |> expand_formats()
+    |> Enum.filter(fn fmt -> fmt != nil end)
     |> Enum.uniq()
   end
 
@@ -230,18 +218,6 @@ defmodule ExWMTS.CapabilitiesParser do
   defp normalize_text(text) when is_binary(text), do: String.trim(text)
   defp normalize_text(text, default) when text in [nil, ""], do: default
   defp normalize_text(text, _default) when is_binary(text), do: String.trim(text)
-
-  # Handle weird formats like "image/jpgpng"
-  defp expand_formats(formats) do
-    formats
-    |> Enum.flat_map(fn format ->
-      case format do
-        "image/jpgpng" -> ["image/jpeg", "image/png"]
-        "image/pngjpg" -> ["image/png", "image/jpeg"]
-        other -> [other]
-      end
-    end)
-  end
 
   # Parse string to float with fallback
   defp parse_float(nil), do: 0.0
