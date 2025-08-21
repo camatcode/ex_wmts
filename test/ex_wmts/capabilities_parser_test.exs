@@ -36,36 +36,36 @@ defmodule ExWMTS.CapabilitiesParserTest do
       } = capabilities
 
       assert %ExWMTS.DCP{
-        http: %ExWMTS.HTTP{
-          get: [
-            %ExWMTS.HTTPMethod{
-              href: "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/1.0.0/WMTSCapabilities.xml",
-              constraints: [%ExWMTS.Constraint{name: "GetEncoding", allowed_values: ["RESTful"]}]
-            },
-            %ExWMTS.HTTPMethod{
-              href: "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi?",
-              constraints: [%ExWMTS.Constraint{name: "GetEncoding", allowed_values: ["KVP"]}]
-            }
-          ],
-          post: nil
-        }
-      } = get_cap_dcp
+               http: %ExWMTS.HTTP{
+                 get: [
+                   %ExWMTS.HTTPMethod{
+                     href: "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/1.0.0/WMTSCapabilities.xml",
+                     constraints: [%ExWMTS.Constraint{name: "GetEncoding", allowed_values: ["RESTful"]}]
+                   },
+                   %ExWMTS.HTTPMethod{
+                     href: "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi?",
+                     constraints: [%ExWMTS.Constraint{name: "GetEncoding", allowed_values: ["KVP"]}]
+                   }
+                 ],
+                 post: nil
+               }
+             } = get_cap_dcp
 
       assert %ExWMTS.DCP{
-        http: %ExWMTS.HTTP{
-          get: [
-            %ExWMTS.HTTPMethod{
-              href: "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/",
-              constraints: [%ExWMTS.Constraint{name: "GetEncoding", allowed_values: ["RESTful"]}]
-            },
-            %ExWMTS.HTTPMethod{
-              href: "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi?",
-              constraints: [%ExWMTS.Constraint{name: "GetEncoding", allowed_values: ["KVP"]}]
-            }
-          ],
-          post: nil
-        }
-      } = get_tile_dcp
+               http: %ExWMTS.HTTP{
+                 get: [
+                   %ExWMTS.HTTPMethod{
+                     href: "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/",
+                     constraints: [%ExWMTS.Constraint{name: "GetEncoding", allowed_values: ["RESTful"]}]
+                   },
+                   %ExWMTS.HTTPMethod{
+                     href: "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi?",
+                     constraints: [%ExWMTS.Constraint{name: "GetEncoding", allowed_values: ["KVP"]}]
+                   }
+                 ],
+                 post: nil
+               }
+             } = get_tile_dcp
 
       assert length(capabilities.layers) == 1194
       assert "image/png" in formats
@@ -77,39 +77,40 @@ defmodule ExWMTS.CapabilitiesParserTest do
       assert title =~ "Air Temperature"
 
       assert %ExWMTS.Layer{
-        tile_matrix_set_links: [
-          %ExWMTS.TileMatrixSetLink{
-            tile_matrix_set: "2km",
-            tile_matrix_set_limits: nil
-          }
-        ]
-      } = merra_layer
+               tile_matrix_set_links: [
+                 %ExWMTS.TileMatrixSetLink{
+                   tile_matrix_set: "2km",
+                   tile_matrix_set_limits: nil
+                 }
+               ]
+             } = merra_layer
 
       goes_east_layer = Enum.find(capabilities.layers, &(&1.identifier == "GOES-East_ABI_Air_Mass"))
       assert goes_east_layer != nil
-      
-      assert %ExWMTS.Layer{
-        tile_matrix_set_links: [
-          %ExWMTS.TileMatrixSetLink{
-            tile_matrix_set: "2km",
-            tile_matrix_set_limits: %ExWMTS.TileMatrixSetLimits{
-              tile_matrix_set: "2km",
-              tile_matrix_limits: limits
-            }
-          }
-        ]
-      } = goes_east_layer
 
-      assert length(limits) > 0
+      assert %ExWMTS.Layer{
+               tile_matrix_set_links: [
+                 %ExWMTS.TileMatrixSetLink{
+                   tile_matrix_set: "2km",
+                   tile_matrix_set_limits: %ExWMTS.TileMatrixSetLimits{
+                     tile_matrix_set: "2km",
+                     tile_matrix_limits: limits
+                   }
+                 }
+               ]
+             } = goes_east_layer
+
+      refute Enum.empty?(limits)
       first_limit = List.first(limits)
+
       assert %ExWMTS.TileMatrixLimits{
-        tile_matrix: tile_matrix_id,
-        min_tile_row: min_row,
-        max_tile_row: max_row,
-        min_tile_col: min_col,
-        max_tile_col: max_col
-      } = first_limit
-      
+               tile_matrix: tile_matrix_id,
+               min_tile_row: min_row,
+               max_tile_row: max_row,
+               min_tile_col: min_col,
+               max_tile_col: max_col
+             } = first_limit
+
       assert is_binary(tile_matrix_id)
       assert is_integer(min_row) and min_row >= 0
       assert is_integer(max_row) and max_row >= min_row
@@ -128,10 +129,12 @@ defmodule ExWMTS.CapabilitiesParserTest do
           title: "USGSShadedReliefOnly",
           service_type: "OGC WMTS"
         },
-        layers: [%ExWMTS.Layer{
-          identifier: "USGSShadedReliefOnly",
-          tile_matrix_sets: matrix_sets
-        }],
+        layers: [
+          %ExWMTS.Layer{
+            identifier: "USGSShadedReliefOnly",
+            tile_matrix_sets: matrix_sets
+          }
+        ],
         tile_matrix_sets: [_, _] = two_matrix_sets,
         formats: ["image/jpgpng"]
       } = capabilities
@@ -140,11 +143,13 @@ defmodule ExWMTS.CapabilitiesParserTest do
       assert "GoogleMapsCompatible" in matrix_sets
 
       gm_tms = Enum.find(two_matrix_sets, &(&1.identifier == "GoogleMapsCompatible"))
+
       assert %ExWMTS.TileMatrixSet{
-        identifier: "GoogleMapsCompatible",
-        supported_crs: crs,
-        matrices: matrices
-      } = gm_tms
+               identifier: "GoogleMapsCompatible",
+               supported_crs: crs,
+               matrices: matrices
+             } = gm_tms
+
       assert crs =~ "3857"
       assert length(matrices) == 19
 
@@ -175,30 +180,33 @@ defmodule ExWMTS.CapabilitiesParserTest do
       assert length(formats) == 3
       assert Enum.all?(formats, &String.contains?(&1, "image/"))
 
-      sample_layer = Enum.find(layers, fn layer ->
-        case layer.tile_matrix_set_links do
-          [%ExWMTS.TileMatrixSetLink{tile_matrix_set_limits: limits}] when not is_nil(limits) ->
-            case limits.tile_matrix_limits do
-              matrix_limits when is_list(matrix_limits) and length(matrix_limits) > 10 -> true
-              _ -> false
-            end
-          _ -> false
-        end
-      end)
+      sample_layer =
+        Enum.find(layers, fn layer ->
+          case layer.tile_matrix_set_links do
+            [%ExWMTS.TileMatrixSetLink{tile_matrix_set_limits: limits}] when not is_nil(limits) ->
+              case limits.tile_matrix_limits do
+                matrix_limits when is_list(matrix_limits) and length(matrix_limits) > 10 -> true
+                _ -> false
+              end
+
+            _ ->
+              false
+          end
+        end)
 
       assert sample_layer != nil
-      
+
       assert %ExWMTS.Layer{
-        tile_matrix_set_links: [
-          %ExWMTS.TileMatrixSetLink{
-            tile_matrix_set: tile_matrix_set_id,
-            tile_matrix_set_limits: %ExWMTS.TileMatrixSetLimits{
-              tile_matrix_set: same_id,
-              tile_matrix_limits: detailed_limits
-            }
-          }
-        ]
-      } = sample_layer
+               tile_matrix_set_links: [
+                 %ExWMTS.TileMatrixSetLink{
+                   tile_matrix_set: tile_matrix_set_id,
+                   tile_matrix_set_limits: %ExWMTS.TileMatrixSetLimits{
+                     tile_matrix_set: same_id,
+                     tile_matrix_limits: detailed_limits
+                   }
+                 }
+               ]
+             } = sample_layer
 
       assert tile_matrix_set_id == same_id
       assert length(detailed_limits) > 10
@@ -208,16 +216,17 @@ defmodule ExWMTS.CapabilitiesParserTest do
 
       matrix_11_limit = Enum.find(detailed_limits, &(&1.tile_matrix == "11"))
       assert matrix_11_limit != nil
+
       assert %ExWMTS.TileMatrixLimits{
-        tile_matrix: "11",
-        min_tile_row: min_row,
-        max_tile_row: max_row,
-        min_tile_col: min_col,
-        max_tile_col: max_col
-      } = matrix_11_limit
-      
+               tile_matrix: "11",
+               min_tile_row: min_row,
+               max_tile_row: max_row,
+               min_tile_col: min_col,
+               max_tile_col: max_col
+             } = matrix_11_limit
+
       assert min_row >= 680 and min_row <= 690
-      assert max_row >= 770 and max_row <= 780  
+      assert max_row >= 770 and max_row <= 780
       assert min_col >= 980 and min_col <= 1000
       assert max_col >= 1080 and max_col <= 1100
     end
@@ -262,13 +271,13 @@ defmodule ExWMTS.CapabilitiesParserTest do
       assert tile_url.template =~ "hangrutschungsgefaehrdung_wmts"
 
       assert %ExWMTS.Layer{
-        tile_matrix_set_links: [
-          %ExWMTS.TileMatrixSetLink{
-            tile_matrix_set: "wmtsgrid",
-            tile_matrix_set_limits: nil
-          }
-        ]
-      } = hangrutschung_layer
+               tile_matrix_set_links: [
+                 %ExWMTS.TileMatrixSetLink{
+                   tile_matrix_set: "wmtsgrid",
+                   tile_matrix_set_limits: nil
+                 }
+               ]
+             } = hangrutschung_layer
     end
 
     test "parses US Navy capabilities" do
@@ -308,56 +317,61 @@ defmodule ExWMTS.CapabilitiesParserTest do
       } = capabilities
 
       assert length(tile_matrix_sets) == 7
-      
+
       global_crs84_tms = Enum.find(tile_matrix_sets, &(&1.identifier == "GlobalCRS84Scale"))
+
       assert %ExWMTS.TileMatrixSet{
-        identifier: "GlobalCRS84Scale",
-        supported_crs: "urn:ogc:def:crs:OGC:1.3:CRS84",
-        matrices: global_crs84_matrices
-      } = global_crs84_tms
-      
+               identifier: "GlobalCRS84Scale",
+               supported_crs: "urn:ogc:def:crs:OGC:1.3:CRS84",
+               matrices: global_crs84_matrices
+             } = global_crs84_tms
+
       assert length(global_crs84_matrices) == 21
-      
+
       level_0 = Enum.find(global_crs84_matrices, &(&1.identifier == "0"))
       assert level_0.scale_denominator == 500_000_000.0
       assert level_0.matrix_width == 2
       assert level_0.matrix_height == 1
-      
+
       level_20 = Enum.find(global_crs84_matrices, &(&1.identifier == "20"))
       assert level_20.scale_denominator == 100.0
       assert level_20.matrix_width == 5_004_373
       assert level_20.matrix_height == 2_502_187
-      
+
       gm_tms = Enum.find(tile_matrix_sets, &(&1.identifier == "GoogleMapsCompatible"))
+
       assert %ExWMTS.TileMatrixSet{
-        identifier: "GoogleMapsCompatible",
-        supported_crs: crs,
-        matrices: gm_matrices
-      } = gm_tms
+               identifier: "GoogleMapsCompatible",
+               supported_crs: crs,
+               matrices: gm_matrices
+             } = gm_tms
+
       assert crs =~ "3857"
       assert length(gm_matrices) == 21
-      
+
       gm_level_0 = Enum.find(gm_matrices, &(&1.identifier == "0"))
       assert gm_level_0.matrix_width == 1
       assert gm_level_0.matrix_height == 1
       assert gm_level_0.top_left_corner == {-20_037_508.34279, 20_037_508.34279}
-      
+
       nrl_tms = Enum.find(tile_matrix_sets, &(&1.identifier == "NRLTileScheme"))
       nrl256_tms = Enum.find(tile_matrix_sets, &(&1.identifier == "NRLTileScheme256"))
-      
+
       assert length(nrl_tms.matrices) == 22
       assert length(nrl256_tms.matrices) == 22
-      
+
       nrl_level_1 = Enum.find(nrl_tms.matrices, &(&1.identifier == "1"))
       nrl256_level_1 = Enum.find(nrl256_tms.matrices, &(&1.identifier == "1"))
-      
-      assert nrl_level_1.tile_width == 512     # NRLTileScheme uses 512px tiles
-      assert nrl256_level_1.tile_width == 256  # NRLTileScheme256 uses 256px tiles
+
+      # NRLTileScheme uses 512px tiles
+      assert nrl_level_1.tile_width == 512
+      # NRLTileScheme256 uses 256px tiles
+      assert nrl256_level_1.tile_width == 256
 
       assert length(operations) == 3
       get_capabilities_op = Enum.find(operations, &(&1.name == "GetCapabilities"))
       get_tile_op = Enum.find(operations, &(&1.name == "GetTile"))
-      
+
       assert get_capabilities_op != nil
       assert get_tile_op != nil
       assert get_capabilities_op.dcp.http.get != []
