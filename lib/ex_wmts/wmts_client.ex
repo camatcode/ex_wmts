@@ -66,7 +66,7 @@ defmodule ExWMTS.WMTSClient do
   Fetches a specific tile from a WMTS endpoint.
 
   ## Parameters
-  - `base_url` - The base WMTS endpoint URL
+  - `base_url` - The base WMTS endpoint URL (or capabilities struct for ResourceURL support)
   - `params` - Map containing tile parameters:
     - `:layer` - Layer identifier
     - `:style` - Style identifier (often "default")
@@ -90,11 +90,20 @@ defmodule ExWMTS.WMTSClient do
       iex> ExWMTS.WMTSClient.get_tile("https://example.com/wmts", params)
       {:ok, <<255, 216, 255, 224, 0, 16, 74, 70, 73, 70, 0, 1, 1, 1, 0, 72, 0, 72, 0, 0, 255>>}
 
+  ## ResourceURL Support
+  
+  For better WMTS compliance, you can pass the capabilities struct instead of base_url
+  to automatically use ResourceURL templates when available:
+  
+      iex> {:ok, capabilities} = ExWMTS.WMTSClient.get_capabilities(base_url)
+      iex> ExWMTS.WMTSClient.get_tile(capabilities, params)
+      {:ok, binary_tile_data}
+
   """
-  @spec get_tile(String.t(), tile_params()) :: {:ok, binary()} | wmts_error()
-  def get_tile(base_url, params) when is_bitstring(base_url) and is_map(params) do
-    with {:ok, validated_params} <- validate_tile_params(params) do
-      url = build_tile_url(base_url, validated_params)
+  @spec get_tile(String.t() | CapabilitiesParser.capabilities(), tile_params()) :: {:ok, binary()} | wmts_error()
+  def get_tile(base_url_or_capabilities, params) when is_map(params) do
+    with {:ok, validated_params} <- validate_tile_params(params),
+         {:ok, url} <- build_tile_url(base_url_or_capabilities, validated_params) do
 
       case Req.get(url) do
         {:ok, %Req.Response{status: 200, body: body}} ->
@@ -127,7 +136,28 @@ defmodule ExWMTS.WMTSClient do
     "#{base_url}#{separator}#{query_string}"
   end
 
-  defp build_tile_url(base_url, params) do
+  defp build_tile_url(base_url, params) when is_bitstring(base_url) do
+    # Legacy KVP encoding when just base URL is provided
+    {:ok, build_kvp_tile_url(base_url, params)}
+  end
+
+  defp build_tile_url(capabilities, params) when is_map(capabilities) do
+    # Try to find ResourceURL template for this layer and format
+    case find_resource_url_template(capabilities, params) do
+      {:ok, template} ->
+        {:ok, build_restful_tile_url(template, params)}
+        
+      :not_found ->
+        # Fallback to KVP encoding - we need a base URL for this
+        # Try to extract from operations metadata
+        case extract_base_url_from_capabilities(capabilities) do
+          {:ok, base_url} -> {:ok, build_kvp_tile_url(base_url, params)}
+          :not_found -> {:error, :no_tile_url_available}
+        end
+    end
+  end
+
+  defp build_kvp_tile_url(base_url, params) do
     query_string =
       [
         {"SERVICE", "WMTS"},
@@ -146,6 +176,74 @@ defmodule ExWMTS.WMTSClient do
     separator = if String.ends_with?(base_url, "?"), do: "&", else: "?"
 
     "#{base_url}#{separator}#{query_string}"
+  end
+
+  defp build_restful_tile_url(template, params) do
+    url = template
+    |> String.replace("{TileMatrixSet}", params.tile_matrix_set)
+    |> String.replace("{TileMatrix}", params.tile_matrix)
+    |> String.replace("{TileRow}", to_string(params.tile_row))
+    |> String.replace("{TileCol}", to_string(params.tile_col))
+    |> String.replace("{Style}", params.style)
+    |> String.replace("{style}", params.style)  # Some services use lowercase
+    |> String.replace("{layer}", params.layer)  # Some services use lowercase
+    
+    # Debug output to see what URL we're building
+    IO.puts("    Using ResourceURL template: #{url}")
+    url
+  end
+
+  defp find_resource_url_template(capabilities, params) do
+    # Find the layer matching the requested layer identifier
+    layer = Enum.find(capabilities.layers, fn layer -> 
+      layer.identifier == params.layer 
+    end)
+
+    if layer && layer.resource_urls do
+      # Find ResourceURL with matching format and type "tile"
+      matching_resources = Enum.filter(layer.resource_urls, fn resource ->
+        resource.resource_type == "tile" && resource.format == params.format
+      end)
+
+      # Prefer templates without {Time} variable for now
+      # TODO: Add proper time dimension support
+      preferred_template = Enum.find(matching_resources, fn resource ->
+        resource.template && !String.contains?(resource.template, "{Time}")
+      end)
+
+      template = preferred_template || hd(matching_resources)
+
+      if template && template.template do
+        {:ok, template.template}
+      else
+        :not_found
+      end
+    else
+      :not_found
+    end
+  end
+
+  defp extract_base_url_from_capabilities(capabilities) do
+    # Try to find GetTile operation with KVP binding
+    if capabilities.operations_metadata && capabilities.operations_metadata.operations do
+      get_tile_op = Enum.find(capabilities.operations_metadata.operations, fn op ->
+        op.name == "GetTile"
+      end)
+
+      if get_tile_op && get_tile_op.dcp && get_tile_op.dcp.http do
+        # Look for GET method with KVP constraint
+        get_method = get_tile_op.dcp.http.get
+        if get_method && get_method.href do
+          {:ok, get_method.href}
+        else
+          :not_found
+        end
+      else
+        :not_found
+      end
+    else
+      :not_found
+    end
   end
 
   defp validate_tile_params(params) do
