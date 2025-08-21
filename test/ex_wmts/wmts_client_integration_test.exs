@@ -172,8 +172,16 @@ defmodule ExWMTS.WMTSClientIntegrationTest do
   defp validate_tile_response(tile_data, format, _scenario_name) do
     assert is_binary(tile_data)
     assert byte_size(tile_data) > 0
-    assert format == detect_image_format(tile_data)
+
+    detected_format = detect_image_format(tile_data)
+
+    assert format_matches?(format, detected_format),
+           "Expected format #{format}, but detected #{detected_format}"
   end
+
+  # Handle ArcGIS-specific formats like "image/jpgpng"
+  defp format_matches?("image/jpgpng", detected) when detected in ["image/jpeg", "image/png"], do: true
+  defp format_matches?(expected, detected), do: expected == detected
 
   # Detect image format from binary content
   defp detect_image_format(data) when byte_size(data) < 8, do: :too_small

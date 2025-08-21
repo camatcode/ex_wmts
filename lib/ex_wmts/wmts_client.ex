@@ -91,10 +91,10 @@ defmodule ExWMTS.WMTSClient do
       {:ok, <<255, 216, 255, 224, 0, 16, 74, 70, 73, 70, 0, 1, 1, 1, 0, 72, 0, 72, 0, 0, 255>>}
 
   ## ResourceURL Support
-  
+
   For better WMTS compliance, you can pass the capabilities struct instead of base_url
   to automatically use ResourceURL templates when available:
-  
+
       iex> {:ok, capabilities} = ExWMTS.WMTSClient.get_capabilities(base_url)
       iex> ExWMTS.WMTSClient.get_tile(capabilities, params)
       {:ok, binary_tile_data}
@@ -104,7 +104,6 @@ defmodule ExWMTS.WMTSClient do
   def get_tile(base_url_or_capabilities, params) when is_map(params) do
     with {:ok, validated_params} <- validate_tile_params(params),
          {:ok, url} <- build_tile_url(base_url_or_capabilities, validated_params) do
-
       case Req.get(url) do
         {:ok, %Req.Response{status: 200, body: body}} ->
           {:ok, body}
@@ -146,7 +145,7 @@ defmodule ExWMTS.WMTSClient do
     case find_resource_url_template(capabilities, params) do
       {:ok, template} ->
         {:ok, build_restful_tile_url(template, params)}
-        
+
       :not_found ->
         # Fallback to KVP encoding - we need a base URL for this
         # Try to extract from operations metadata
@@ -179,37 +178,40 @@ defmodule ExWMTS.WMTSClient do
   end
 
   defp build_restful_tile_url(template, params) do
-    url = template
-    |> String.replace("{TileMatrixSet}", params.tile_matrix_set)
-    |> String.replace("{TileMatrix}", params.tile_matrix)
-    |> String.replace("{TileRow}", to_string(params.tile_row))
-    |> String.replace("{TileCol}", to_string(params.tile_col))
-    |> String.replace("{Style}", params.style)
-    |> String.replace("{style}", params.style)  # Some services use lowercase
-    |> String.replace("{layer}", params.layer)  # Some services use lowercase
-    
-    # Debug output to see what URL we're building
-    IO.puts("    Using ResourceURL template: #{url}")
+    url =
+      template
+      |> String.replace("{TileMatrixSet}", params.tile_matrix_set)
+      |> String.replace("{TileMatrix}", params.tile_matrix)
+      |> String.replace("{TileRow}", to_string(params.tile_row))
+      |> String.replace("{TileCol}", to_string(params.tile_col))
+      |> String.replace("{Style}", params.style)
+      # Some services use lowercase
+      |> String.replace("{style}", params.style)
+      # Some services use lowercase
+      |> String.replace("{layer}", params.layer)
+
     url
   end
 
   defp find_resource_url_template(capabilities, params) do
     # Find the layer matching the requested layer identifier
-    layer = Enum.find(capabilities.layers, fn layer -> 
-      layer.identifier == params.layer 
-    end)
+    layer =
+      Enum.find(capabilities.layers, fn layer ->
+        layer.identifier == params.layer
+      end)
 
     if layer && layer.resource_urls do
       # Find ResourceURL with matching format and type "tile"
-      matching_resources = Enum.filter(layer.resource_urls, fn resource ->
-        resource.resource_type == "tile" && resource.format == params.format
-      end)
+      matching_resources =
+        Enum.filter(layer.resource_urls, fn resource ->
+          resource.resource_type == "tile" && resource.format == params.format
+        end)
 
       # Prefer templates without {Time} variable for now
-      # TODO: Add proper time dimension support
-      preferred_template = Enum.find(matching_resources, fn resource ->
-        resource.template && !String.contains?(resource.template, "{Time}")
-      end)
+      preferred_template =
+        Enum.find(matching_resources, fn resource ->
+          resource.template && !String.contains?(resource.template, "{Time}")
+        end)
 
       template = preferred_template || hd(matching_resources)
 
@@ -226,13 +228,15 @@ defmodule ExWMTS.WMTSClient do
   defp extract_base_url_from_capabilities(capabilities) do
     # Try to find GetTile operation with KVP binding
     if capabilities.operations_metadata && capabilities.operations_metadata.operations do
-      get_tile_op = Enum.find(capabilities.operations_metadata.operations, fn op ->
-        op.name == "GetTile"
-      end)
+      get_tile_op =
+        Enum.find(capabilities.operations_metadata.operations, fn op ->
+          op.name == "GetTile"
+        end)
 
       if get_tile_op && get_tile_op.dcp && get_tile_op.dcp.http do
         # Look for GET method with KVP constraint
         get_method = get_tile_op.dcp.http.get
+
         if get_method && get_method.href do
           {:ok, get_method.href}
         else
