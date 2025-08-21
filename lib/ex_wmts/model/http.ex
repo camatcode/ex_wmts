@@ -32,6 +32,7 @@ defmodule ExWMTS.HTTP do
   GetCapabilities, GetTile, and GetFeatureInfo operations.
   """
 
+  import ExWMTS.XPathHelpers
   import SweetXml
 
   alias __MODULE__, as: HTTP
@@ -45,8 +46,8 @@ defmodule ExWMTS.HTTP do
     http_data =
       http_node
       |> xpath(~x".",
-        get: ~x"./*[local-name()='Get']"el,
-        post: ~x"./*[local-name()='Post']"el
+        get: element_list("Get"),
+        post: element_list("Post")
       )
 
     get_methods = HTTPMethod.build(http_data.get)

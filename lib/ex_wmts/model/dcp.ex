@@ -28,6 +28,7 @@ defmodule ExWMTS.DCP do
   access protocols while currently focusing on HTTP-based access patterns.
   """
 
+  import ExWMTS.XPathHelpers
   import SweetXml
 
   alias __MODULE__, as: DCP
@@ -41,7 +42,7 @@ defmodule ExWMTS.DCP do
     dcp_data =
       dcp_node
       |> xpath(~x".",
-        http: ~x"./*[local-name()='HTTP']"e
+        http: element("HTTP")
       )
 
     http = HTTP.build(dcp_data.http)

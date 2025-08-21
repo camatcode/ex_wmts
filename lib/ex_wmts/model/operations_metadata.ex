@@ -28,6 +28,7 @@ defmodule ExWMTS.OperationsMetadata do
   - Constraints and parameters for the operation
   """
 
+  import ExWMTS.XPathHelpers
   import SweetXml
 
   alias __MODULE__, as: OperationsMetadata
@@ -41,7 +42,7 @@ defmodule ExWMTS.OperationsMetadata do
     operations_data =
       operations_node
       |> xpath(~x".",
-        operations: ~x"./*[local-name()='Operation']"el
+        operations: element_list("Operation")
       )
 
     operations = Operation.build(operations_data.operations)

@@ -1,6 +1,7 @@
 defmodule ExWMTS.Metadata do
   @moduledoc false
 
+  import ExWMTS.XPathHelpers
   import SweetXml
 
   alias __MODULE__, as: Metadata
@@ -15,8 +16,8 @@ defmodule ExWMTS.Metadata do
 
   def build(metadata_node) do
     %Metadata{
-      href: metadata_node |> xpath(~x"./@*[local-name()='href']"s),
-      about: metadata_node |> xpath(~x"./@about"s)
+      href: metadata_node |> xpath(attribute("href")),
+      about: metadata_node |> xpath(attribute("about"))
     }
   end
 end

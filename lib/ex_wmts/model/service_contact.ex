@@ -1,6 +1,7 @@
 defmodule ExWMTS.ServiceContact do
   @moduledoc false
 
+  import ExWMTS.XPathHelpers
   import SweetXml
 
   alias __MODULE__, as: ServiceContact
@@ -17,10 +18,10 @@ defmodule ExWMTS.ServiceContact do
 
   defp make_service_contact(contact_node) do
     %{
-      individual_name: contact_node |> xpath(~x"./*[local-name()='IndividualName']/text()"s),
-      position_name: contact_node |> xpath(~x"./*[local-name()='PositionName']/text()"s),
-      contact_info: contact_node |> xpath(~x"./*[local-name()='ContactInfo']") |> ContactInfo.build(),
-      role: contact_node |> xpath(~x"./*[local-name()='Role']/text()"s)
+      individual_name: contact_node |> xpath(text("IndividualName")),
+      position_name: contact_node |> xpath(text("PositionName")),
+      contact_info: contact_node |> xpath(element("ContactInfo")) |> ContactInfo.build(),
+      role: contact_node |> xpath(text("Role"))
     }
   end
 end

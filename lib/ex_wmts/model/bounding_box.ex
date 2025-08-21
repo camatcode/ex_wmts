@@ -1,6 +1,7 @@
 defmodule ExWMTS.BoundingBox do
   @moduledoc false
 
+  import ExWMTS.XPathHelpers
   import SweetXml
 
   alias __MODULE__, as: BoundingBox
@@ -12,9 +13,9 @@ defmodule ExWMTS.BoundingBox do
   def build(bbox_nodes) when is_list(bbox_nodes), do: Enum.map(bbox_nodes, &build/1) |> Enum.reject(&is_nil/1)
 
   def build(bbox_node) do
-    crs = bbox_node |> xpath(~x"./@crs"s)
-    lower = bbox_node |> xpath(~x"./*[local-name()='LowerCorner']/text()"s) |> parse_coords()
-    upper = bbox_node |> xpath(~x"./*[local-name()='UpperCorner']/text()"s) |> parse_coords()
+    crs = bbox_node |> xpath(attribute("crs"))
+    lower = bbox_node |> xpath(text("LowerCorner")) |> parse_coords()
+    upper = bbox_node |> xpath(text("UpperCorner")) |> parse_coords()
 
     case {lower, upper} do
       {{min_x, min_y}, {max_x, max_y}} ->

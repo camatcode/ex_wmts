@@ -1,6 +1,7 @@
 defmodule ExWMTS.Dimension do
   @moduledoc false
 
+  import ExWMTS.XPathHelpers
   import SweetXml
 
   alias __MODULE__, as: Dimension
@@ -15,14 +16,14 @@ defmodule ExWMTS.Dimension do
 
   def build(dim_node) do
     %Dimension{
-      identifier: dim_node |> xpath(~x"./*[local-name()='Identifier']/text()"s),
-      title: dim_node |> xpath(~x"./*[local-name()='Title']/text()"s),
-      abstract: dim_node |> xpath(~x"./*[local-name()='Abstract']/text()"s),
-      units_symbol: dim_node |> xpath(~x"./@unitsSymbol"s),
-      unit_symbol: dim_node |> xpath(~x"./@unitSymbol"s),
-      default: dim_node |> xpath(~x"./*[local-name()='Default']/text()"s),
-      current: dim_node |> xpath(~x"./@current"s),
-      values: dim_node |> xpath(~x"./*[local-name()='Value']/text()"sl)
+      identifier: dim_node |> xpath(text("Identifier")),
+      title: dim_node |> xpath(text("Title")),
+      abstract: dim_node |> xpath(text("Abstract")),
+      units_symbol: dim_node |> xpath(attribute("unitsSymbol")),
+      unit_symbol: dim_node |> xpath(attribute("unitSymbol")),
+      default: dim_node |> xpath(text("Default")),
+      current: dim_node |> xpath(attribute("current")),
+      values: dim_node |> xpath(text_list("Value"))
     }
   end
 end

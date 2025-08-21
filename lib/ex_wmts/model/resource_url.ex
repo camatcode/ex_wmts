@@ -32,6 +32,7 @@ defmodule ExWMTS.ResourceURL do
   This enables RESTful tile access without KVP parameter encoding.
   """
 
+  import ExWMTS.XPathHelpers
   import SweetXml
 
   alias __MODULE__, as: ResourceURL
@@ -46,9 +47,9 @@ defmodule ExWMTS.ResourceURL do
 
   def build(resource_node) do
     %ResourceURL{
-      format: resource_node |> xpath(~x"./@format"s),
-      resource_type: resource_node |> xpath(~x"./@resourceType"s),
-      template: resource_node |> xpath(~x"./@template"s)
+      format: resource_node |> xpath(attribute("format")),
+      resource_type: resource_node |> xpath(attribute("resourceType")),
+      template: resource_node |> xpath(attribute("template"))
     }
   end
 end

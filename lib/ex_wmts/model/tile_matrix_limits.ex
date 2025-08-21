@@ -40,6 +40,7 @@ defmodule ExWMTS.TileMatrixLimits do
   """
 
   import ExWMTS.Model.Common
+  import ExWMTS.XPathHelpers
   import SweetXml
 
   alias __MODULE__, as: TileMatrixLimits
@@ -55,11 +56,11 @@ defmodule ExWMTS.TileMatrixLimits do
     limits_data =
       limits_node
       |> xpath(~x".",
-        tile_matrix: ~x"./*[local-name()='TileMatrix']/text()"s,
-        min_tile_row: ~x"./*[local-name()='MinTileRow']/text()"s,
-        max_tile_row: ~x"./*[local-name()='MaxTileRow']/text()"s,
-        min_tile_col: ~x"./*[local-name()='MinTileCol']/text()"s,
-        max_tile_col: ~x"./*[local-name()='MaxTileCol']/text()"s
+        tile_matrix: text("TileMatrix"),
+        min_tile_row: text("MinTileRow"),
+        max_tile_row: text("MaxTileRow"),
+        min_tile_col: text("MinTileCol"),
+        max_tile_col: text("MaxTileCol")
       )
 
     tile_matrix = normalize_text(limits_data.tile_matrix, nil)

@@ -43,6 +43,7 @@ defmodule ExWMTS.Constraint do
   """
 
   import ExWMTS.Model.Common
+  import ExWMTS.XPathHelpers
   import SweetXml
 
   alias __MODULE__, as: Constraint
@@ -59,7 +60,7 @@ defmodule ExWMTS.Constraint do
     constraint_data =
       constraint_node
       |> xpath(~x".",
-        name: ~x"./@name"s,
+        name: attribute("name"),
         allowed_values: ~x"./*[local-name()='AllowedValues']/*[local-name()='Value']/text()"sl
       )
 

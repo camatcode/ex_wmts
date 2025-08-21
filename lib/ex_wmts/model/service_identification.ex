@@ -24,6 +24,7 @@ defmodule ExWMTS.ServiceIdentification do
   - `access_constraints` - Access constraints applied to assure the protection of privacy or intellectual property
   """
 
+  import ExWMTS.XPathHelpers
   import SweetXml
 
   alias __MODULE__, as: ServiceIdentification
@@ -41,14 +42,14 @@ defmodule ExWMTS.ServiceIdentification do
 
   def build(service_node) do
     %{
-      title: service_node |> xpath(~x"./*[local-name()='Title']/text()"s),
-      abstract: service_node |> xpath(~x"./*[local-name()='Abstract']/text()"s),
+      title: service_node |> xpath(text("Title")),
+      abstract: service_node |> xpath(text("Abstract")),
       keywords: service_node |> xpath(~x"./*[local-name()='Keywords']/*[local-name()='Keyword']/text()"sl),
-      service_type: service_node |> xpath(~x"./*[local-name()='ServiceType']/text()"s),
-      service_type_version: service_node |> xpath(~x"./*[local-name()='ServiceTypeVersion']/text()"s),
-      profile: service_node |> xpath(~x"./*[local-name()='Profile']/text()"sl),
-      fees: service_node |> xpath(~x"./*[local-name()='Fees']/text()"s),
-      access_constraints: service_node |> xpath(~x"./*[local-name()='AccessConstraints']/text()"s)
+      service_type: service_node |> xpath(text("ServiceType")),
+      service_type_version: service_node |> xpath(text("ServiceTypeVersion")),
+      profile: service_node |> xpath(text_list("Profile")),
+      fees: service_node |> xpath(text("Fees")),
+      access_constraints: service_node |> xpath(text("AccessConstraints"))
     }
     |> then(&struct(ServiceIdentification, &1))
   end

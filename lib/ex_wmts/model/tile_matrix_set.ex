@@ -32,6 +32,7 @@ defmodule ExWMTS.TileMatrixSet do
   """
 
   import ExWMTS.Model.Common
+  import ExWMTS.XPathHelpers
   import SweetXml
 
   alias __MODULE__, as: TileMatrixSet
@@ -40,6 +41,14 @@ defmodule ExWMTS.TileMatrixSet do
   defstruct [:identifier, :title, :abstract, :keywords, :supported_crs, :bounding_box, :well_known_scale_set, :matrices]
 
   def build(nil), do: nil
+
+  def build([]), do: nil
+
+  def build(tms_nodes) when is_list(tms_nodes) do
+    tms_nodes
+    |> Enum.map(&build/1)
+    |> Enum.reject(&is_nil/1)
+  end
 
   def build(tms_node) do
     set = make_tile_matrix_set(tms_node)
@@ -50,14 +59,14 @@ defmodule ExWMTS.TileMatrixSet do
     tms_data =
       tms_node
       |> xpath(~x".",
-        identifier: ~x"./*[local-name()='Identifier']/text()"s,
-        title: ~x"./*[local-name()='Title']/text()"s,
-        abstract: ~x"./*[local-name()='Abstract']/text()"s,
+        identifier: text("Identifier"),
+        title: text("Title"),
+        abstract: text("Abstract"),
         keywords: ~x"./*[local-name()='Keywords']/*[local-name()='Keyword']/text()"sl,
-        supported_crs: ~x"./*[local-name()='SupportedCRS']/text()"s,
-        bounding_box: ~x"./*[local-name()='BoundingBox']"e,
-        well_known_scale_set: ~x"./*[local-name()='WellKnownScaleSet']/text()"s,
-        matrices: ~x"./*[local-name()='TileMatrix']"el
+        supported_crs: text("SupportedCRS"),
+        bounding_box: element("BoundingBox"),
+        well_known_scale_set: text("WellKnownScaleSet"),
+        matrices: element_list("TileMatrix")
       )
 
     identifier = normalize_text(tms_data.identifier, nil)

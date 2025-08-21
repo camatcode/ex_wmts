@@ -36,6 +36,7 @@ defmodule ExWMTS.WGS84BoundingBox do
   - Geographic extent validation
   """
 
+  import ExWMTS.XPathHelpers
   import SweetXml
 
   alias __MODULE__, as: WGS84BoundingBox
@@ -46,8 +47,8 @@ defmodule ExWMTS.WGS84BoundingBox do
   def build([]), do: nil
 
   def build(bbox_node) do
-    lower = bbox_node |> xpath(~x"./*[local-name()='LowerCorner']/text()"s) |> parse_coords()
-    upper = bbox_node |> xpath(~x"./*[local-name()='UpperCorner']/text()"s) |> parse_coords()
+    lower = bbox_node |> xpath(text("LowerCorner")) |> parse_coords()
+    upper = bbox_node |> xpath(text("UpperCorner")) |> parse_coords()
 
     case {lower, upper} do
       {{min_x, min_y}, {max_x, max_y}} -> %WGS84BoundingBox{lower_corner: {min_x, min_y}, upper_corner: {max_x, max_y}}

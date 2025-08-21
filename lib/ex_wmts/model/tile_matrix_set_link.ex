@@ -32,6 +32,7 @@ defmodule ExWMTS.TileMatrixSetLink do
   """
 
   import ExWMTS.Model.Common
+  import ExWMTS.XPathHelpers
   import SweetXml
 
   alias __MODULE__, as: TileMatrixSetLink
@@ -48,8 +49,8 @@ defmodule ExWMTS.TileMatrixSetLink do
     link_data =
       link_node
       |> xpath(~x".",
-        tile_matrix_set: ~x"./*[local-name()='TileMatrixSet']/text()"s,
-        tile_matrix_set_limits: ~x"./*[local-name()='TileMatrixSetLimits']"e
+        tile_matrix_set: text("TileMatrixSet"),
+        tile_matrix_set_limits: element("TileMatrixSetLimits")
       )
 
     tile_matrix_set = normalize_text(link_data.tile_matrix_set, nil)

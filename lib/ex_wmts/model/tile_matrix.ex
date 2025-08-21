@@ -36,6 +36,7 @@ defmodule ExWMTS.TileMatrix do
   """
 
   import ExWMTS.Model.Common
+  import ExWMTS.XPathHelpers
   import SweetXml
 
   alias __MODULE__, as: TileMatrix
@@ -75,16 +76,16 @@ defmodule ExWMTS.TileMatrix do
     } =
       tm_node
       |> xpath(~x".",
-        identifier: ~x"./*[local-name()='Identifier']/text()"s,
-        title: ~x"./*[local-name()='Title']/text()"s,
-        abstract: ~x"./*[local-name()='Abstract']/text()"s,
+        identifier: text("Identifier"),
+        title: text("Title"),
+        abstract: text("Abstract"),
         keywords: ~x"./*[local-name()='Keywords']/*[local-name()='Keyword']/text()"sl,
-        scale_denominator: ~x"./*[local-name()='ScaleDenominator']/text()"s,
-        tile_width: ~x"./*[local-name()='TileWidth']/text()"s,
-        tile_height: ~x"./*[local-name()='TileHeight']/text()"s,
-        matrix_width: ~x"./*[local-name()='MatrixWidth']/text()"s,
-        matrix_height: ~x"./*[local-name()='MatrixHeight']/text()"s,
-        top_left_corner: ~x"./*[local-name()='TopLeftCorner']/text()"s
+        scale_denominator: text("ScaleDenominator"),
+        tile_width: text("TileWidth"),
+        tile_height: text("TileHeight"),
+        matrix_width: text("MatrixWidth"),
+        matrix_height: text("MatrixHeight"),
+        top_left_corner: text("TopLeftCorner")
       )
 
     identifier = normalize_text(identifier, nil)

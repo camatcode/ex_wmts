@@ -27,6 +27,7 @@ defmodule ExWMTS.Operation do
   """
 
   import ExWMTS.Model.Common
+  import ExWMTS.XPathHelpers
   import SweetXml
 
   alias __MODULE__, as: Operation
@@ -44,8 +45,8 @@ defmodule ExWMTS.Operation do
     operation_data =
       operation_node
       |> xpath(~x".",
-        name: ~x"./@name"s,
-        dcp: ~x"./*[local-name()='DCP']"e
+        name: attribute("name"),
+        dcp: element("DCP")
       )
 
     name = normalize_text(operation_data.name, nil)

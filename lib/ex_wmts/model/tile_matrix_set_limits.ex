@@ -36,6 +36,7 @@ defmodule ExWMTS.TileMatrixSetLimits do
   efficient tile pre-fetching and caching strategies.
   """
 
+  import ExWMTS.XPathHelpers
   import SweetXml
 
   alias __MODULE__, as: TileMatrixSetLimits
@@ -48,7 +49,7 @@ defmodule ExWMTS.TileMatrixSetLimits do
   def build(limits_node) do
     # TileMatrixSetLimits node contains only TileMatrixLimits children
     # The TileMatrixSet identifier comes from the parent TileMatrixSetLink
-    tile_matrix_limits_nodes = limits_node |> xpath(~x"./*[local-name()='TileMatrixLimits']"el)
+    tile_matrix_limits_nodes = limits_node |> xpath(element_list("TileMatrixLimits"))
 
     if tile_matrix_limits_nodes != [] do
       tile_matrix_limits = TileMatrixLimits.build(tile_matrix_limits_nodes)

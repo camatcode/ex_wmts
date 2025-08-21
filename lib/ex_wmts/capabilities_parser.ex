@@ -45,11 +45,11 @@ defmodule ExWMTS.CapabilitiesParser do
           tile_matrix_sets: ~x"./*[local-name()='TileMatrixSetLink']/*[local-name()='TileMatrixSet']/text()"ls,
           styles: ~x"./*[local-name()='Style']/*[local-name()='Identifier']/text()"ls
         )
-        |> make_layers(),
+        |> Layer.build(),
       tile_matrix_sets:
         parsed_xml
         |> xpath(~x"//*[local-name()='TileMatrixSet']"l)
-        |> make_tile_matrix_sets(),
+        |> TileMatrixSet.build(),
       formats:
         parsed_xml
         |> xpath(~x"//*[local-name()='Format']/text()"ls)
@@ -59,17 +59,5 @@ defmodule ExWMTS.CapabilitiesParser do
     }
 
     {:ok, capabilities}
-  end
-
-  defp make_layers(layers) do
-    layers
-    |> Enum.map(&Layer.build/1)
-    |> Enum.reject(&(&1 == nil))
-  end
-
-  defp make_tile_matrix_sets(tms) do
-    tms
-    |> Enum.map(&TileMatrixSet.build/1)
-    |> Enum.reject(&(&1 == nil))
   end
 end

@@ -1,6 +1,7 @@
 defmodule ExWMTS.ContactInfo do
   @moduledoc false
 
+  import ExWMTS.XPathHelpers
   import SweetXml
 
   alias __MODULE__, as: ContactInfo
@@ -40,8 +41,8 @@ defmodule ExWMTS.ContactInfo do
       address_email:
         info_node |> xpath(~x"./*[local-name()='Address']/*[local-name()='ElectronicMailAddress']/text()"s),
       online_resource: info_node |> xpath(~x"./*[local-name()='OnlineResource']/@*[local-name()='href']"so),
-      hours_of_service: info_node |> xpath(~x"./*[local-name()='HoursOfService']/text()"s),
-      contact_instructions: info_node |> xpath(~x"./*[local-name()='ContactInstructions']/text()"s)
+      hours_of_service: info_node |> xpath(text("HoursOfService")),
+      contact_instructions: info_node |> xpath(text("ContactInstructions"))
     }
   end
 end

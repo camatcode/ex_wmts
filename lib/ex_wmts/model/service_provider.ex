@@ -1,6 +1,7 @@
 defmodule ExWMTS.ServiceProvider do
   @moduledoc false
 
+  import ExWMTS.XPathHelpers
   import SweetXml
 
   alias __MODULE__, as: ServiceProvider
@@ -17,9 +18,9 @@ defmodule ExWMTS.ServiceProvider do
 
   defp make_service_provider(provider_node) do
     %{
-      provider_name: provider_node |> xpath(~x"./*[local-name()='ProviderName']/text()"s),
+      provider_name: provider_node |> xpath(text("ProviderName")),
       provider_site: provider_node |> xpath(~x"./*[local-name()='ProviderSite']/@xlink:href"s),
-      service_contact: provider_node |> xpath(~x"./*[local-name()='ServiceContact']") |> ServiceContact.build()
+      service_contact: provider_node |> xpath(element("ServiceContact")) |> ServiceContact.build()
     }
   end
 end

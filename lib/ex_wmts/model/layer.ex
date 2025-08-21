@@ -51,6 +51,15 @@ defmodule ExWMTS.Layer do
     tile_matrix_set_links: []
   ]
 
+  def build(nil), do: nil
+  def build([]), do: nil
+
+  def build(layer_nodes) when is_list(layer_nodes) do
+    layer_nodes
+    |> Enum.map(&build/1)
+    |> Enum.reject(&is_nil/1)
+  end
+
   def build(m) when is_map(m) do
     case make_layer(m) do
       nil -> nil
@@ -58,10 +67,9 @@ defmodule ExWMTS.Layer do
     end
   end
 
-  def build(nil), do: nil
-
   def build(layer_node) do
-    make_layer(layer_node) |> build()
+    layer = make_layer(layer_node)
+    if layer, do: struct(Layer, layer)
   end
 
   defp make_layer(layer_data) do

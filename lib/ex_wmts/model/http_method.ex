@@ -36,6 +36,7 @@ defmodule ExWMTS.HTTPMethod do
   """
 
   import ExWMTS.Model.Common
+  import ExWMTS.XPathHelpers
   import SweetXml
 
   alias __MODULE__, as: HTTPMethod
@@ -52,8 +53,8 @@ defmodule ExWMTS.HTTPMethod do
     method_data =
       method_node
       |> xpath(~x".",
-        href: ~x"./@*[local-name()='href']"s,
-        constraints: ~x"./*[local-name()='Constraint']"el
+        href: attribute("href"),
+        constraints: element_list("Constraint")
       )
 
     href = normalize_text(method_data.href, nil)
