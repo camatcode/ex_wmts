@@ -3,7 +3,7 @@ defmodule ExWMTS.Layer do
   import ExWMTS.Model.Common
 
   alias __MODULE__, as: Layer
-  alias ExWMTS.{WGS84BoundingBox, BoundingBox, Metadata, Dimension, ResourceURL}
+  alias ExWMTS.{BoundingBox, Dimension, Metadata, ResourceURL, TileMatrixSetLink, WGS84BoundingBox}
 
   defstruct [
     :identifier,
@@ -17,7 +17,8 @@ defmodule ExWMTS.Layer do
     bounding_box: [],
     metadata: [],
     dimensions: [],
-    resource_urls: []
+    resource_urls: [],
+    tile_matrix_set_links: []
   ]
 
   def build(m) when is_map(m) do
@@ -44,6 +45,7 @@ defmodule ExWMTS.Layer do
     metadata = Metadata.build(layer_data.metadata)
     dimensions = Dimension.build(layer_data.dimensions)
     resource_urls = ResourceURL.build(layer_data.resource_urls)
+    tile_matrix_set_links = TileMatrixSetLink.build(layer_data.tile_matrix_set_links || [])
 
     formats = layer_data.formats |> Enum.map(&normalize_text/1) |> Enum.reject(&(&1 == nil)) |> Enum.uniq()
     tile_matrix_sets = layer_data.tile_matrix_sets |> Enum.map(&normalize_text/1) |> Enum.reject(&(&1 == nil))
@@ -69,6 +71,7 @@ defmodule ExWMTS.Layer do
         metadata: metadata,
         dimensions: dimensions,
         resource_urls: resource_urls,
+        tile_matrix_set_links: tile_matrix_set_links,
         formats: formats,
         tile_matrix_sets: tile_matrix_sets,
         styles: styles

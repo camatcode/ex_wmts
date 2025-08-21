@@ -35,6 +35,7 @@ defmodule ExWMTS.CapabilitiesParser do
           metadata: ~x"./*[local-name()='Metadata']"l,
           dimensions: ~x"./*[local-name()='Dimension']"l,
           resource_urls: ~x"./*[local-name()='ResourceURL']"l,
+          tile_matrix_set_links: ~x"./*[local-name()='TileMatrixSetLink']"l,
           formats: ~x"./*[local-name()='Format']/text()"ls,
           tile_matrix_sets: ~x"./*[local-name()='TileMatrixSetLink']/*[local-name()='TileMatrixSet']/text()"ls,
           styles: ~x"./*[local-name()='Style']/*[local-name()='Identifier']/text()"ls
@@ -42,11 +43,7 @@ defmodule ExWMTS.CapabilitiesParser do
         |> make_layers(),
       tile_matrix_sets:
         parsed_xml
-        |> xpath(~x"//*[local-name()='TileMatrixSet']"l,
-          identifier: ~x"./*[local-name()='Identifier']/text()"s,
-          supported_crs: ~x"./*[local-name()='SupportedCRS']/text()"s,
-          matrices: ~x"./*[local-name()='TileMatrix']"l
-        )
+        |> xpath(~x"//*[local-name()='TileMatrixSet']"l)
         |> make_tile_matrix_sets(),
       formats:
         parsed_xml

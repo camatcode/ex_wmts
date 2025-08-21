@@ -8,6 +8,9 @@ defmodule ExWMTS.TileMatrix do
 
   defstruct [
     :identifier,
+    :title,
+    :abstract,
+    :keywords,
     :scale_denominator,
     :tile_width,
     :tile_height,
@@ -26,6 +29,9 @@ defmodule ExWMTS.TileMatrix do
   defp make_tile_matrix(tm_node) do
     %{
       identifier: identifier,
+      title: title,
+      abstract: abstract,
+      keywords: keywords,
       scale_denominator: scale_denominator,
       top_left_corner: top_left_corner,
       tile_width: tile_width,
@@ -36,6 +42,9 @@ defmodule ExWMTS.TileMatrix do
       tm_node
       |> xpath(~x".",
         identifier: ~x"./*[local-name()='Identifier']/text()"s,
+        title: ~x"./*[local-name()='Title']/text()"s,
+        abstract: ~x"./*[local-name()='Abstract']/text()"s,
+        keywords: ~x"./*[local-name()='Keywords']/*[local-name()='Keyword']/text()"sl,
         scale_denominator: ~x"./*[local-name()='ScaleDenominator']/text()"s,
         tile_width: ~x"./*[local-name()='TileWidth']/text()"s,
         tile_height: ~x"./*[local-name()='TileHeight']/text()"s,
@@ -45,6 +54,9 @@ defmodule ExWMTS.TileMatrix do
       )
 
     identifier = normalize_text(identifier, nil)
+    title = normalize_text(title, nil)
+    abstract = normalize_text(abstract, nil)
+    keywords = keywords |> Enum.map(&normalize_text(&1, nil)) |> Enum.reject(&is_nil/1)
     scale_denominator = parse_float(scale_denominator)
     tile_width = parse_integer(tile_width, 256)
     tile_height = parse_integer(tile_height, 256)
@@ -64,6 +76,9 @@ defmodule ExWMTS.TileMatrix do
 
     %{
       identifier: identifier,
+      title: title,
+      abstract: abstract,
+      keywords: keywords,
       scale_denominator: scale_denominator,
       top_left_corner: top_left_corner,
       tile_width: tile_width,
