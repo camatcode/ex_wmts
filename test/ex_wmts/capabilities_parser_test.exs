@@ -20,13 +20,54 @@ defmodule ExWMTS.CapabilitiesParserTest do
         |> CapabilitiesParser.parse()
 
       %{
-        service_identification: %{title: "NASA Global Imagery Browse Services for EOSDIS", service_type: "OGC WMTS"},
+        service_identification: %ExWMTS.ServiceIdentification{
+          title: "NASA Global Imagery Browse Services for EOSDIS",
+          service_type: "OGC WMTS"
+        },
+        operations_metadata: %ExWMTS.OperationsMetadata{
+          operations: [
+            %ExWMTS.Operation{name: "GetCapabilities", dcp: get_cap_dcp},
+            %ExWMTS.Operation{name: "GetTile", dcp: get_tile_dcp}
+          ]
+        },
         layers: layers,
         tile_matrix_sets: tms,
         formats: formats
       } = capabilities
 
-      assert length(capabilities.layers) > 1000
+      assert %ExWMTS.DCP{
+        http: %ExWMTS.HTTP{
+          get: [
+            %ExWMTS.HTTPMethod{
+              href: "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/1.0.0/WMTSCapabilities.xml",
+              constraints: [%ExWMTS.Constraint{name: "GetEncoding", allowed_values: ["RESTful"]}]
+            },
+            %ExWMTS.HTTPMethod{
+              href: "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi?",
+              constraints: [%ExWMTS.Constraint{name: "GetEncoding", allowed_values: ["KVP"]}]
+            }
+          ],
+          post: nil
+        }
+      } = get_cap_dcp
+
+      assert %ExWMTS.DCP{
+        http: %ExWMTS.HTTP{
+          get: [
+            %ExWMTS.HTTPMethod{
+              href: "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/",
+              constraints: [%ExWMTS.Constraint{name: "GetEncoding", allowed_values: ["RESTful"]}]
+            },
+            %ExWMTS.HTTPMethod{
+              href: "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi?",
+              constraints: [%ExWMTS.Constraint{name: "GetEncoding", allowed_values: ["KVP"]}]
+            }
+          ],
+          post: nil
+        }
+      } = get_tile_dcp
+
+      assert length(capabilities.layers) == 1194
       assert "image/png" in formats
       refute Enum.empty?(tms)
       refute Enum.empty?(layers)
@@ -34,6 +75,46 @@ defmodule ExWMTS.CapabilitiesParserTest do
       merra_layer = Enum.find(capabilities.layers, &(&1.identifier == "MERRA2_2m_Air_Temperature_Monthly"))
       assert %{title: title, tile_matrix_sets: ["2km" | _], formats: ["image/png" | _]} = merra_layer
       assert title =~ "Air Temperature"
+
+      assert %ExWMTS.Layer{
+        tile_matrix_set_links: [
+          %ExWMTS.TileMatrixSetLink{
+            tile_matrix_set: "2km",
+            tile_matrix_set_limits: nil
+          }
+        ]
+      } = merra_layer
+
+      goes_east_layer = Enum.find(capabilities.layers, &(&1.identifier == "GOES-East_ABI_Air_Mass"))
+      assert goes_east_layer != nil
+      
+      assert %ExWMTS.Layer{
+        tile_matrix_set_links: [
+          %ExWMTS.TileMatrixSetLink{
+            tile_matrix_set: "2km",
+            tile_matrix_set_limits: %ExWMTS.TileMatrixSetLimits{
+              tile_matrix_set: "2km",
+              tile_matrix_limits: limits
+            }
+          }
+        ]
+      } = goes_east_layer
+
+      assert length(limits) > 0
+      first_limit = List.first(limits)
+      assert %ExWMTS.TileMatrixLimits{
+        tile_matrix: tile_matrix_id,
+        min_tile_row: min_row,
+        max_tile_row: max_row,
+        min_tile_col: min_col,
+        max_tile_col: max_col
+      } = first_limit
+      
+      assert is_binary(tile_matrix_id)
+      assert is_integer(min_row) and min_row >= 0
+      assert is_integer(max_row) and max_row >= min_row
+      assert is_integer(min_col) and min_col >= 0
+      assert is_integer(max_col) and max_col >= min_col
     end
 
     test "parses USGS National Map capabilities" do
@@ -43,8 +124,14 @@ defmodule ExWMTS.CapabilitiesParserTest do
         |> CapabilitiesParser.parse()
 
       %{
-        service_identification: %{title: "USGSShadedReliefOnly", service_type: "OGC WMTS"},
-        layers: [%{identifier: "USGSShadedReliefOnly", tile_matrix_sets: matrix_sets}],
+        service_identification: %ExWMTS.ServiceIdentification{
+          title: "USGSShadedReliefOnly",
+          service_type: "OGC WMTS"
+        },
+        layers: [%ExWMTS.Layer{
+          identifier: "USGSShadedReliefOnly",
+          tile_matrix_sets: matrix_sets
+        }],
         tile_matrix_sets: [_, _] = two_matrix_sets,
         formats: ["image/jpgpng"]
       } = capabilities
@@ -52,14 +139,16 @@ defmodule ExWMTS.CapabilitiesParserTest do
       assert "default028mm" in matrix_sets
       assert "GoogleMapsCompatible" in matrix_sets
 
-      # Check GoogleMapsCompatible has proper Web Mercator structure
       gm_tms = Enum.find(two_matrix_sets, &(&1.identifier == "GoogleMapsCompatible"))
-      assert %{supported_crs: crs, matrices: matrices} = gm_tms
+      assert %ExWMTS.TileMatrixSet{
+        identifier: "GoogleMapsCompatible",
+        supported_crs: crs,
+        matrices: matrices
+      } = gm_tms
       assert crs =~ "3857"
-      assert length(matrices) > 15
+      assert length(matrices) == 19
 
-      # Validate matrix progression (level 0 -> level 1)
-      [%{identifier: "0"} = level_0, %{identifier: "1"} = level_1 | _] =
+      [%ExWMTS.TileMatrix{identifier: "0"} = level_0, %ExWMTS.TileMatrix{identifier: "1"} = level_1 | _] =
         Enum.sort_by(matrices, &String.to_integer(&1.identifier))
 
       assert level_0.scale_denominator > level_1.scale_denominator
@@ -73,7 +162,9 @@ defmodule ExWMTS.CapabilitiesParserTest do
         |> CapabilitiesParser.parse()
 
       %{
-        service_identification: %{service_type: "OGC WMTS"},
+        service_identification: %ExWMTS.ServiceIdentification{
+          service_type: "OGC WMTS"
+        },
         layers: layers,
         tile_matrix_sets: matrix_sets,
         formats: formats
@@ -83,6 +174,52 @@ defmodule ExWMTS.CapabilitiesParserTest do
       assert length(matrix_sets) == 50
       assert length(formats) == 3
       assert Enum.all?(formats, &String.contains?(&1, "image/"))
+
+      sample_layer = Enum.find(layers, fn layer ->
+        case layer.tile_matrix_set_links do
+          [%ExWMTS.TileMatrixSetLink{tile_matrix_set_limits: limits}] when not is_nil(limits) ->
+            case limits.tile_matrix_limits do
+              matrix_limits when is_list(matrix_limits) and length(matrix_limits) > 10 -> true
+              _ -> false
+            end
+          _ -> false
+        end
+      end)
+
+      assert sample_layer != nil
+      
+      assert %ExWMTS.Layer{
+        tile_matrix_set_links: [
+          %ExWMTS.TileMatrixSetLink{
+            tile_matrix_set: tile_matrix_set_id,
+            tile_matrix_set_limits: %ExWMTS.TileMatrixSetLimits{
+              tile_matrix_set: same_id,
+              tile_matrix_limits: detailed_limits
+            }
+          }
+        ]
+      } = sample_layer
+
+      assert tile_matrix_set_id == same_id
+      assert length(detailed_limits) > 10
+
+      limit_matrices = detailed_limits |> Enum.map(&String.to_integer(&1.tile_matrix)) |> Enum.sort()
+      assert limit_matrices == Enum.to_list(0..11)
+
+      matrix_11_limit = Enum.find(detailed_limits, &(&1.tile_matrix == "11"))
+      assert matrix_11_limit != nil
+      assert %ExWMTS.TileMatrixLimits{
+        tile_matrix: "11",
+        min_tile_row: min_row,
+        max_tile_row: max_row,
+        min_tile_col: min_col,
+        max_tile_col: max_col
+      } = matrix_11_limit
+      
+      assert min_row >= 680 and min_row <= 690
+      assert max_row >= 770 and max_row <= 780  
+      assert min_col >= 980 and min_col <= 1000
+      assert max_col >= 1080 and max_col <= 1100
     end
 
     test "parses German Railway capabilities" do
@@ -92,7 +229,7 @@ defmodule ExWMTS.CapabilitiesParserTest do
         |> CapabilitiesParser.parse()
 
       %{
-        service_identification: %{
+        service_identification: %ExWMTS.ServiceIdentification{
           title:
             "(WMTS) Geoinformation Deutsches Zentrum für Schienenverkehrsforschung beim Eisenbahn-Bundesamt (DZSF)",
           service_type: "OGC WMTS"
@@ -123,10 +260,19 @@ defmodule ExWMTS.CapabilitiesParserTest do
       tile_url = Enum.find(hangrutschung_layer.resource_urls, &(&1.resource_type == "tile"))
       assert tile_url.format == "image/png"
       assert tile_url.template =~ "hangrutschungsgefaehrdung_wmts"
+
+      assert %ExWMTS.Layer{
+        tile_matrix_set_links: [
+          %ExWMTS.TileMatrixSetLink{
+            tile_matrix_set: "wmtsgrid",
+            tile_matrix_set_limits: nil
+          }
+        ]
+      } = hangrutschung_layer
     end
 
     test "parses US Navy capabilities" do
-      {:ok, _capabilities} =
+      {:ok, capabilities} =
         "test/support/capabilities/us_navy.xml"
         |> File.read!()
         |> CapabilitiesParser.parse()
@@ -138,11 +284,13 @@ defmodule ExWMTS.CapabilitiesParserTest do
           service_type: "WMTS",
           service_type_version: "1.0.0"
         },
+        operations_metadata: %ExWMTS.OperationsMetadata{
+          operations: operations
+        },
         layers: [
           %ExWMTS.Layer{
             identifier: "OSM_BASEMAP",
             title: "OSM_BASEMAP",
-            abstract: "",
             formats: ["image/png", "image/jpeg"],
             tile_matrix_sets: [
               "GlobalCRS84Scale",
@@ -156,1383 +304,64 @@ defmodule ExWMTS.CapabilitiesParserTest do
             styles: ["default"]
           }
         ],
-        tile_matrix_sets: [
-          %{
-            identifier: "GlobalCRS84Scale",
-            supported_crs: "urn:ogc:def:crs:OGC:1.3:CRS84",
-            matrices: [
-              %{
-                identifier: "0",
-                scale_denominator: 500_000_000.0,
-                matrix_width: 2,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 1,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "1",
-                scale_denominator: 250_000_000.0,
-                matrix_width: 3,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 2,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "2",
-                scale_denominator: 100_000_000.0,
-                matrix_width: 6,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 3,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "3",
-                scale_denominator: 50_000_000.0,
-                matrix_width: 11,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 6,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "4",
-                scale_denominator: 25_000_000.0,
-                matrix_width: 21,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 11,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "5",
-                scale_denominator: 10_000_000.0,
-                matrix_width: 51,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 26,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "6",
-                scale_denominator: 5_000_000.0,
-                matrix_width: 101,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 51,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "7",
-                scale_denominator: 2_500_000.0,
-                matrix_width: 201,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 101,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "8",
-                scale_denominator: 1_000_000.0,
-                matrix_width: 501,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 251,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "9",
-                scale_denominator: 500_000.0,
-                matrix_width: 1001,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 501,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "10",
-                scale_denominator: 250_000.0,
-                matrix_width: 2002,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 1001,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "11",
-                scale_denominator: 100_000.0,
-                matrix_width: 5005,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 2503,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "12",
-                scale_denominator: 50_000.0,
-                matrix_width: 10_009,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 5005,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "13",
-                scale_denominator: 25_000.0,
-                matrix_width: 20_018,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 10_009,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "14",
-                scale_denominator: 10_000.0,
-                matrix_width: 50_044,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 25_022,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "15",
-                scale_denominator: 5000.0,
-                matrix_width: 100_088,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 50_044,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "16",
-                scale_denominator: 2500.0,
-                matrix_width: 200_175,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 100_088,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "17",
-                scale_denominator: 1000.0,
-                matrix_width: 500_438,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 250_219,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "18",
-                scale_denominator: 500.0,
-                matrix_width: 1_000_875,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 500_438,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "19",
-                scale_denominator: 250.0,
-                matrix_width: 2_001_750,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 1_000_875,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "20",
-                scale_denominator: 100.0,
-                matrix_width: 5_004_373,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 2_502_187,
-                tile_height: 256,
-                tile_width: 256
-              }
-            ]
-          },
-          %{
-            identifier: "GlobalCRS84Pixel",
-            supported_crs: "urn:ogc:def:crs:OGC:1.3:CRS84",
-            matrices: [
-              %{
-                identifier: "0",
-                scale_denominator: 795_139_219.9519541,
-                matrix_width: 1,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 1,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "1",
-                scale_denominator: 397_569_609.9759771,
-                matrix_width: 2,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 1,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "2",
-                scale_denominator: 198_784_804.9879885,
-                matrix_width: 3,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 2,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "3",
-                scale_denominator: 132_523_203.3253257,
-                matrix_width: 5,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 3,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "4",
-                scale_denominator: 66_261_601.66266284,
-                matrix_width: 9,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 5,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "5",
-                scale_denominator: 33_130_800.83133142,
-                matrix_width: 17,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 9,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "6",
-                scale_denominator: 13_252_320.33253257,
-                matrix_width: 43,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 22,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "7",
-                scale_denominator: 6_626_160.166266284,
-                matrix_width: 85,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 43,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "8",
-                scale_denominator: 3_313_080.083133142,
-                matrix_width: 169,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 85,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "9",
-                scale_denominator: 1_656_540.041566571,
-                matrix_width: 338,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 169,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "10",
-                scale_denominator: 552_180.0138555235,
-                matrix_width: 1013,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 507,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "11",
-                scale_denominator: 331_308.0083133142,
-                matrix_width: 1688,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 844,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "12",
-                scale_denominator: 110_436.0027711047,
-                matrix_width: 5063,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 2532,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "13",
-                scale_denominator: 55_218.00138555237,
-                matrix_width: 10_125,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 5063,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "14",
-                scale_denominator: 33_130.80083133142,
-                matrix_width: 16_875,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 8438,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "15",
-                scale_denominator: 11_043.60027711047,
-                matrix_width: 50_625,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 25_313,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "16",
-                scale_denominator: 3313.080083133142,
-                matrix_width: 168_750,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 84_375,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "17",
-                scale_denominator: 1104.360027711047,
-                matrix_width: 506_250,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 253_125,
-                tile_height: 256,
-                tile_width: 256
-              }
-            ]
-          },
-          %{
-            identifier: "GoogleCRS84Quad",
-            supported_crs: "urn:ogc:def:crs:OGC:1.3:CRS84",
-            matrices: [
-              %{
-                identifier: "0",
-                scale_denominator: 559_082_264.0287178,
-                matrix_width: 1,
-                top_left_corner: {-180.0, 180.0},
-                matrix_height: 1,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "1",
-                scale_denominator: 279_541_132.0143589,
-                matrix_width: 2,
-                top_left_corner: {-180.0, 180.0},
-                matrix_height: 2,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "2",
-                scale_denominator: 139_770_566.0071794,
-                matrix_width: 4,
-                top_left_corner: {-180.0, 180.0},
-                matrix_height: 4,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "3",
-                scale_denominator: 69_885_283.00358972,
-                matrix_width: 8,
-                top_left_corner: {-180.0, 180.0},
-                matrix_height: 8,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "4",
-                scale_denominator: 34_942_641.50179486,
-                matrix_width: 16,
-                top_left_corner: {-180.0, 180.0},
-                matrix_height: 16,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "5",
-                scale_denominator: 17_471_320.75089743,
-                matrix_width: 32,
-                top_left_corner: {-180.0, 180.0},
-                matrix_height: 32,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "6",
-                scale_denominator: 8_735_660.375448715,
-                matrix_width: 64,
-                top_left_corner: {-180.0, 180.0},
-                matrix_height: 64,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "7",
-                scale_denominator: 4_367_830.187724357,
-                matrix_width: 128,
-                top_left_corner: {-180.0, 180.0},
-                matrix_height: 128,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "8",
-                scale_denominator: 2_183_915.093862179,
-                matrix_width: 256,
-                top_left_corner: {-180.0, 180.0},
-                matrix_height: 256,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "9",
-                scale_denominator: 1_091_957.546931089,
-                matrix_width: 512,
-                top_left_corner: {-180.0, 180.0},
-                matrix_height: 512,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "10",
-                scale_denominator: 545_978.7734655447,
-                matrix_width: 1024,
-                top_left_corner: {-180.0, 180.0},
-                matrix_height: 1024,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "11",
-                scale_denominator: 272_989.3867327723,
-                matrix_width: 2048,
-                top_left_corner: {-180.0, 180.0},
-                matrix_height: 2048,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "12",
-                scale_denominator: 136_494.6933663862,
-                matrix_width: 4096,
-                top_left_corner: {-180.0, 180.0},
-                matrix_height: 4096,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "13",
-                scale_denominator: 68_247.34668319309,
-                matrix_width: 8192,
-                top_left_corner: {-180.0, 180.0},
-                matrix_height: 8192,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "14",
-                scale_denominator: 34_123.67334159654,
-                matrix_width: 16_384,
-                top_left_corner: {-180.0, 180.0},
-                matrix_height: 16_384,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "15",
-                scale_denominator: 17_061.83667079827,
-                matrix_width: 32_768,
-                top_left_corner: {-180.0, 180.0},
-                matrix_height: 32_768,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "16",
-                scale_denominator: 8530.918335399136,
-                matrix_width: 65_536,
-                top_left_corner: {-180.0, 180.0},
-                matrix_height: 65_536,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "17",
-                scale_denominator: 4265.459167699568,
-                matrix_width: 131_072,
-                top_left_corner: {-180.0, 180.0},
-                matrix_height: 131_072,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "18",
-                scale_denominator: 2132.729583849784,
-                matrix_width: 262_144,
-                top_left_corner: {-180.0, 180.0},
-                matrix_height: 262_144,
-                tile_height: 256,
-                tile_width: 256
-              }
-            ]
-          },
-          %{
-            identifier: "GoogleMapsCompatible",
-            supported_crs: "urn:ogc:def:crs:EPSG:6.18:3:3857",
-            matrices: [
-              %{
-                identifier: "0",
-                scale_denominator: 559_082_264.0287178,
-                matrix_width: 1,
-                top_left_corner: {-20_037_508.34279, 20_037_508.34279},
-                matrix_height: 1,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "1",
-                scale_denominator: 279_541_132.0143589,
-                matrix_width: 2,
-                top_left_corner: {-20_037_508.34279, 20_037_508.34279},
-                matrix_height: 2,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "2",
-                scale_denominator: 139_770_566.00717944,
-                matrix_width: 4,
-                top_left_corner: {-20_037_508.34279, 20_037_508.34279},
-                matrix_height: 4,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "3",
-                scale_denominator: 69_885_283.00358972,
-                matrix_width: 8,
-                top_left_corner: {-20_037_508.34279, 20_037_508.34279},
-                matrix_height: 8,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "4",
-                scale_denominator: 34_942_641.50179486,
-                matrix_width: 16,
-                top_left_corner: {-20_037_508.34279, 20_037_508.34279},
-                matrix_height: 16,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "5",
-                scale_denominator: 17_471_320.75089743,
-                matrix_width: 32,
-                top_left_corner: {-20_037_508.34279, 20_037_508.34279},
-                matrix_height: 32,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "6",
-                scale_denominator: 8_735_660.375448715,
-                matrix_width: 64,
-                top_left_corner: {-20_037_508.34279, 20_037_508.34279},
-                matrix_height: 64,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "7",
-                scale_denominator: 4_367_830.1877243575,
-                matrix_width: 128,
-                top_left_corner: {-20_037_508.34279, 20_037_508.34279},
-                matrix_height: 128,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "8",
-                scale_denominator: 2_183_915.0938621787,
-                matrix_width: 256,
-                top_left_corner: {-20_037_508.34279, 20_037_508.34279},
-                matrix_height: 256,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "9",
-                scale_denominator: 1_091_957.5469310894,
-                matrix_width: 512,
-                top_left_corner: {-20_037_508.34279, 20_037_508.34279},
-                matrix_height: 512,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "10",
-                scale_denominator: 545_978.7734655447,
-                matrix_width: 1024,
-                top_left_corner: {-20_037_508.34279, 20_037_508.34279},
-                matrix_height: 1024,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "11",
-                scale_denominator: 272_989.38673277234,
-                matrix_width: 2048,
-                top_left_corner: {-20_037_508.34279, 20_037_508.34279},
-                matrix_height: 2048,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "12",
-                scale_denominator: 136_494.69336638617,
-                matrix_width: 4096,
-                top_left_corner: {-20_037_508.34279, 20_037_508.34279},
-                matrix_height: 4096,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "13",
-                scale_denominator: 68_247.34668319309,
-                matrix_width: 8192,
-                top_left_corner: {-20_037_508.34279, 20_037_508.34279},
-                matrix_height: 8192,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "14",
-                scale_denominator: 34_123.67334159654,
-                matrix_width: 16_384,
-                top_left_corner: {-20_037_508.34279, 20_037_508.34279},
-                matrix_height: 16_384,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "15",
-                scale_denominator: 17_061.83667079827,
-                matrix_width: 32_768,
-                top_left_corner: {-20_037_508.34279, 20_037_508.34279},
-                matrix_height: 32_768,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "16",
-                scale_denominator: 8530.918335399136,
-                matrix_width: 65_536,
-                top_left_corner: {-20_037_508.34279, 20_037_508.34279},
-                matrix_height: 65_536,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "17",
-                scale_denominator: 4265.459167699568,
-                matrix_width: 131_072,
-                top_left_corner: {-20_037_508.34279, 20_037_508.34279},
-                matrix_height: 131_072,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "18",
-                scale_denominator: 2132.729583849784,
-                matrix_width: 262_144,
-                top_left_corner: {-20_037_508.34279, 20_037_508.34279},
-                matrix_height: 262_144,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "19",
-                scale_denominator: 1066.364791924892,
-                matrix_width: 524_288,
-                top_left_corner: {-20_037_508.34279, 20_037_508.34279},
-                matrix_height: 524_288,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "20",
-                scale_denominator: 533.182395962446,
-                matrix_width: 1_048_576,
-                top_left_corner: {-20_037_508.34279, 20_037_508.34279},
-                matrix_height: 1_048_576,
-                tile_height: 256,
-                tile_width: 256
-              }
-            ]
-          },
-          %{
-            identifier: "NRLTileScheme",
-            supported_crs: "urn:ogc:def:crs:OGC:1.3:CRS84",
-            matrices: [
-              %{
-                identifier: "1",
-                scale_denominator: 147_748_799.285417,
-                matrix_width: 2,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 1,
-                tile_height: 512,
-                tile_width: 512
-              },
-              %{
-                identifier: "2",
-                scale_denominator: 73_874_399.6427085,
-                matrix_width: 4,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 2,
-                tile_height: 512,
-                tile_width: 512
-              },
-              %{
-                identifier: "3",
-                scale_denominator: 36_937_199.82135425,
-                matrix_width: 8,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 4,
-                tile_height: 512,
-                tile_width: 512
-              },
-              %{
-                identifier: "4",
-                scale_denominator: 18_468_599.910677124,
-                matrix_width: 16,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 8,
-                tile_height: 512,
-                tile_width: 512
-              },
-              %{
-                identifier: "5",
-                scale_denominator: 9_234_299.955338562,
-                matrix_width: 32,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 16,
-                tile_height: 512,
-                tile_width: 512
-              },
-              %{
-                identifier: "6",
-                scale_denominator: 4_617_149.977669281,
-                matrix_width: 64,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 32,
-                tile_height: 512,
-                tile_width: 512
-              },
-              %{
-                identifier: "7",
-                scale_denominator: 2_308_574.9888346405,
-                matrix_width: 128,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 64,
-                tile_height: 512,
-                tile_width: 512
-              },
-              %{
-                identifier: "8",
-                scale_denominator: 1_154_287.4944173202,
-                matrix_width: 256,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 128,
-                tile_height: 512,
-                tile_width: 512
-              },
-              %{
-                identifier: "9",
-                scale_denominator: 577_143.7472086601,
-                matrix_width: 512,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 256,
-                tile_height: 512,
-                tile_width: 512
-              },
-              %{
-                identifier: "10",
-                scale_denominator: 288_571.87360433006,
-                matrix_width: 1024,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 512,
-                tile_height: 512,
-                tile_width: 512
-              },
-              %{
-                identifier: "11",
-                scale_denominator: 144_285.93680216503,
-                matrix_width: 2048,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 1024,
-                tile_height: 512,
-                tile_width: 512
-              },
-              %{
-                identifier: "12",
-                scale_denominator: 72_142.96840108251,
-                matrix_width: 4096,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 2048,
-                tile_height: 512,
-                tile_width: 512
-              },
-              %{
-                identifier: "13",
-                scale_denominator: 36_071.48420054126,
-                matrix_width: 8192,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 4096,
-                tile_height: 512,
-                tile_width: 512
-              },
-              %{
-                identifier: "14",
-                scale_denominator: 18_035.74210027063,
-                matrix_width: 16_384,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 8192,
-                tile_height: 512,
-                tile_width: 512
-              },
-              %{
-                identifier: "15",
-                scale_denominator: 9017.871050135314,
-                matrix_width: 32_768,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 16_384,
-                tile_height: 512,
-                tile_width: 512
-              },
-              %{
-                identifier: "16",
-                scale_denominator: 4508.935525067657,
-                matrix_width: 65_536,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 32_768,
-                tile_height: 512,
-                tile_width: 512
-              },
-              %{
-                identifier: "17",
-                scale_denominator: 2254.4677625338286,
-                matrix_width: 131_072,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 65_536,
-                tile_height: 512,
-                tile_width: 512
-              },
-              %{
-                identifier: "18",
-                scale_denominator: 1127.2338812669143,
-                matrix_width: 262_144,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 131_072,
-                tile_height: 512,
-                tile_width: 512
-              },
-              %{
-                identifier: "19",
-                scale_denominator: 563.6169406334571,
-                matrix_width: 524_288,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 262_144,
-                tile_height: 512,
-                tile_width: 512
-              },
-              %{
-                identifier: "20",
-                scale_denominator: 281.8084703167286,
-                matrix_width: 1_048_576,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 524_288,
-                tile_height: 512,
-                tile_width: 512
-              },
-              %{
-                identifier: "21",
-                scale_denominator: 140.9042351583643,
-                matrix_width: 2_097_152,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 1_048_576,
-                tile_height: 512,
-                tile_width: 512
-              },
-              %{
-                identifier: "22",
-                scale_denominator: 70.45211757918214,
-                matrix_width: 4_194_304,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 2_097_152,
-                tile_height: 512,
-                tile_width: 512
-              }
-            ]
-          },
-          %{
-            identifier: "NRLTileScheme256",
-            supported_crs: "urn:ogc:def:crs:OGC:1.3:CRS84",
-            matrices: [
-              %{
-                identifier: "1",
-                scale_denominator: 279_541_132.0143589,
-                matrix_width: 2,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 1,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "2",
-                scale_denominator: 139_770_566.00717944,
-                matrix_width: 4,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 2,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "3",
-                scale_denominator: 69_885_283.00358972,
-                matrix_width: 8,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 4,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "4",
-                scale_denominator: 34_942_641.50179486,
-                matrix_width: 16,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 8,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "5",
-                scale_denominator: 17_471_320.75089743,
-                matrix_width: 32,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 16,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "6",
-                scale_denominator: 8_735_660.375448715,
-                matrix_width: 64,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 32,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "7",
-                scale_denominator: 4_367_830.1877243575,
-                matrix_width: 128,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 64,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "8",
-                scale_denominator: 2_183_915.0938621787,
-                matrix_width: 256,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 128,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "9",
-                scale_denominator: 1_091_957.5469310894,
-                matrix_width: 512,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 256,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "10",
-                scale_denominator: 545_978.7734655447,
-                matrix_width: 1024,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 512,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "11",
-                scale_denominator: 272_989.38673277234,
-                matrix_width: 2048,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 1024,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "12",
-                scale_denominator: 136_494.69336638617,
-                matrix_width: 4096,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 2048,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "13",
-                scale_denominator: 68_247.34668319309,
-                matrix_width: 8192,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 4096,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "14",
-                scale_denominator: 34_123.67334159654,
-                matrix_width: 16_384,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 8192,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "15",
-                scale_denominator: 17_061.83667079827,
-                matrix_width: 32_768,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 16_384,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "16",
-                scale_denominator: 8530.918335399136,
-                matrix_width: 65_536,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 32_768,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "17",
-                scale_denominator: 4265.459167699568,
-                matrix_width: 131_072,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 65_536,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "18",
-                scale_denominator: 2132.729583849784,
-                matrix_width: 262_144,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 131_072,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "19",
-                scale_denominator: 1066.364791924892,
-                matrix_width: 524_288,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 262_144,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "20",
-                scale_denominator: 533.182395962446,
-                matrix_width: 1_048_576,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 524_288,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "21",
-                scale_denominator: 266.591197981223,
-                matrix_width: 2_097_152,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 1_048_576,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "22",
-                scale_denominator: 133.2955989906115,
-                matrix_width: 4_194_304,
-                top_left_corner: {-180.0, 90.0},
-                matrix_height: 2_097_152,
-                tile_height: 256,
-                tile_width: 256
-              }
-            ]
-          },
-          %{
-            identifier: "EPSG3395TiledMercator",
-            supported_crs: "EPSG:3395",
-            matrices: [
-              %{
-                identifier: "0",
-                scale_denominator: 559_082_264.028718,
-                matrix_width: 1,
-                top_left_corner: {-20_037_508.342789244, 20_037_508.342789244},
-                matrix_height: 1,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "1",
-                scale_denominator: 279_541_132.014359,
-                matrix_width: 2,
-                top_left_corner: {-20_037_508.342789244, 20_037_508.342789244},
-                matrix_height: 2,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "2",
-                scale_denominator: 139_770_566.0071795,
-                matrix_width: 4,
-                top_left_corner: {-20_037_508.342789244, 20_037_508.342789244},
-                matrix_height: 4,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "3",
-                scale_denominator: 69_885_283.00358975,
-                matrix_width: 8,
-                top_left_corner: {-20_037_508.342789244, 20_037_508.342789244},
-                matrix_height: 8,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "4",
-                scale_denominator: 34_942_641.501794875,
-                matrix_width: 16,
-                top_left_corner: {-20_037_508.342789244, 20_037_508.342789244},
-                matrix_height: 16,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "5",
-                scale_denominator: 17_471_320.750897437,
-                matrix_width: 32,
-                top_left_corner: {-20_037_508.342789244, 20_037_508.342789244},
-                matrix_height: 32,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "6",
-                scale_denominator: 8_735_660.375448719,
-                matrix_width: 64,
-                top_left_corner: {-20_037_508.342789244, 20_037_508.342789244},
-                matrix_height: 64,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "7",
-                scale_denominator: 4_367_830.187724359,
-                matrix_width: 128,
-                top_left_corner: {-20_037_508.342789244, 20_037_508.342789244},
-                matrix_height: 128,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "8",
-                scale_denominator: 2_183_915.0938621797,
-                matrix_width: 256,
-                top_left_corner: {-20_037_508.342789244, 20_037_508.342789244},
-                matrix_height: 256,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "9",
-                scale_denominator: 1_091_957.5469310898,
-                matrix_width: 512,
-                top_left_corner: {-20_037_508.342789244, 20_037_508.342789244},
-                matrix_height: 512,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "10",
-                scale_denominator: 545_978.7734655449,
-                matrix_width: 1024,
-                top_left_corner: {-20_037_508.342789244, 20_037_508.342789244},
-                matrix_height: 1024,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "11",
-                scale_denominator: 272_989.38673277246,
-                matrix_width: 2048,
-                top_left_corner: {-20_037_508.342789244, 20_037_508.342789244},
-                matrix_height: 2048,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "12",
-                scale_denominator: 136_494.69336638623,
-                matrix_width: 4096,
-                top_left_corner: {-20_037_508.342789244, 20_037_508.342789244},
-                matrix_height: 4096,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "13",
-                scale_denominator: 68_247.34668319311,
-                matrix_width: 8192,
-                top_left_corner: {-20_037_508.342789244, 20_037_508.342789244},
-                matrix_height: 8192,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "14",
-                scale_denominator: 34_123.67334159656,
-                matrix_width: 16_384,
-                top_left_corner: {-20_037_508.342789244, 20_037_508.342789244},
-                matrix_height: 16_384,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "15",
-                scale_denominator: 17_061.83667079828,
-                matrix_width: 32_768,
-                top_left_corner: {-20_037_508.342789244, 20_037_508.342789244},
-                matrix_height: 32_768,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "16",
-                scale_denominator: 8530.91833539914,
-                matrix_width: 65_536,
-                top_left_corner: {-20_037_508.342789244, 20_037_508.342789244},
-                matrix_height: 65_536,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "17",
-                scale_denominator: 4265.45916769957,
-                matrix_width: 131_072,
-                top_left_corner: {-20_037_508.342789244, 20_037_508.342789244},
-                matrix_height: 131_072,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "18",
-                scale_denominator: 2132.729583849785,
-                matrix_width: 262_144,
-                top_left_corner: {-20_037_508.342789244, 20_037_508.342789244},
-                matrix_height: 262_144,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "19",
-                scale_denominator: 1066.3647919248924,
-                matrix_width: 524_288,
-                top_left_corner: {-20_037_508.342789244, 20_037_508.342789244},
-                matrix_height: 524_288,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "20",
-                scale_denominator: 533.1823959624462,
-                matrix_width: 1_048_576,
-                top_left_corner: {-20_037_508.342789244, 20_037_508.342789244},
-                matrix_height: 1_048_576,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "21",
-                scale_denominator: 266.5911979812231,
-                matrix_width: 2_097_152,
-                top_left_corner: {-20_037_508.342789244, 20_037_508.342789244},
-                matrix_height: 2_097_152,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "22",
-                scale_denominator: 133.29559899061155,
-                matrix_width: 4_194_304,
-                top_left_corner: {-20_037_508.342789244, 20_037_508.342789244},
-                matrix_height: 4_194_304,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "23",
-                scale_denominator: 66.64779949530578,
-                matrix_width: 8_388_608,
-                top_left_corner: {-20_037_508.342789244, 20_037_508.342789244},
-                matrix_height: 8_388_608,
-                tile_height: 256,
-                tile_width: 256
-              },
-              %{
-                identifier: "24",
-                scale_denominator: 33.32389974765289,
-                matrix_width: 16_777_216,
-                top_left_corner: {-20_037_508.342789244, 20_037_508.342789244},
-                matrix_height: 16_777_216,
-                tile_height: 256,
-                tile_width: 256
-              }
-            ]
-          }
-        ]
-      }
+        tile_matrix_sets: tile_matrix_sets
+      } = capabilities
+
+      assert length(tile_matrix_sets) == 7
+      
+      global_crs84_tms = Enum.find(tile_matrix_sets, &(&1.identifier == "GlobalCRS84Scale"))
+      assert %ExWMTS.TileMatrixSet{
+        identifier: "GlobalCRS84Scale",
+        supported_crs: "urn:ogc:def:crs:OGC:1.3:CRS84",
+        matrices: global_crs84_matrices
+      } = global_crs84_tms
+      
+      assert length(global_crs84_matrices) == 21
+      
+      level_0 = Enum.find(global_crs84_matrices, &(&1.identifier == "0"))
+      assert level_0.scale_denominator == 500_000_000.0
+      assert level_0.matrix_width == 2
+      assert level_0.matrix_height == 1
+      
+      level_20 = Enum.find(global_crs84_matrices, &(&1.identifier == "20"))
+      assert level_20.scale_denominator == 100.0
+      assert level_20.matrix_width == 5_004_373
+      assert level_20.matrix_height == 2_502_187
+      
+      gm_tms = Enum.find(tile_matrix_sets, &(&1.identifier == "GoogleMapsCompatible"))
+      assert %ExWMTS.TileMatrixSet{
+        identifier: "GoogleMapsCompatible",
+        supported_crs: crs,
+        matrices: gm_matrices
+      } = gm_tms
+      assert crs =~ "3857"
+      assert length(gm_matrices) == 21
+      
+      gm_level_0 = Enum.find(gm_matrices, &(&1.identifier == "0"))
+      assert gm_level_0.matrix_width == 1
+      assert gm_level_0.matrix_height == 1
+      assert gm_level_0.top_left_corner == {-20_037_508.34279, 20_037_508.34279}
+      
+      nrl_tms = Enum.find(tile_matrix_sets, &(&1.identifier == "NRLTileScheme"))
+      nrl256_tms = Enum.find(tile_matrix_sets, &(&1.identifier == "NRLTileScheme256"))
+      
+      assert length(nrl_tms.matrices) == 22
+      assert length(nrl256_tms.matrices) == 22
+      
+      nrl_level_1 = Enum.find(nrl_tms.matrices, &(&1.identifier == "1"))
+      nrl256_level_1 = Enum.find(nrl256_tms.matrices, &(&1.identifier == "1"))
+      
+      assert nrl_level_1.tile_width == 512     # NRLTileScheme uses 512px tiles
+      assert nrl256_level_1.tile_width == 256  # NRLTileScheme256 uses 256px tiles
+
+      assert length(operations) == 3
+      get_capabilities_op = Enum.find(operations, &(&1.name == "GetCapabilities"))
+      get_tile_op = Enum.find(operations, &(&1.name == "GetTile"))
+      
+      assert get_capabilities_op != nil
+      assert get_tile_op != nil
+      assert get_capabilities_op.dcp.http.get != []
+      assert get_tile_op.dcp.http.get != []
     end
 
     test "handles minimal XML structure" do
@@ -1591,11 +420,11 @@ defmodule ExWMTS.CapabilitiesParserTest do
            }
          ],
          tile_matrix_sets: [
-           %{
+           %ExWMTS.TileMatrixSet{
              identifier: "test_matrix",
              supported_crs: "EPSG:3857",
              matrices: [
-               %{
+               %ExWMTS.TileMatrix{
                  identifier: "0",
                  scale_denominator: 559_082_264.0,
                  matrix_width: 1,
