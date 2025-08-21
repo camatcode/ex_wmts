@@ -1,423 +1,402 @@
+<?xml version="1.0"?>
 <Capabilities xmlns="http://www.opengis.net/wmts/1.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://www.opengis.net/wmts/1.0   http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd http://inspire.ec.europa.eu/schemas/inspire_vs/1.0 http://inspire.ec.europa.eu/schemas/inspire_vs/1.0/inspire_vs.xsd http://inspire.ec.europa.eu/schemas/common/1.0 http://inspire.ec.europa.eu/schemas/common/1.0/common.xsd" version="1.0.0">
-
-<ows:ServiceIdentification>
-	<ows:Title>(WMTS) Geoinformation Deutsches Zentrum für Schienenverkehrsforschung beim Eisenbahn-Bundesamt (DZSF)</ows:Title>
-	<ows:Abstract>Geoinformationen des Deutschen Zentrums für Schienenverkehrsforschung. Weiterführende Informationen zu den jeweiligen Features befinden sich in den jeweiligen Metadaten zum Feature.</ows:Abstract>    
-	<ows:ServiceType>OGC WMTS</ows:ServiceType>
-	<ows:ServiceTypeVersion>1.0.0</ows:ServiceTypeVersion>
-	<ows:Fees>keine</ows:Fees>
-	<ows:AccessConstraints>Die Daten sind urheberrechtlich geschützt. Der Datensatz wird entgeltfrei mit Copyright: CC 0 https://creativecommons.org/publicdomain/zero/1.0/deed.de zur Verfügung gestellt.</ows:AccessConstraints>
-	<ows:Keywords>
-		<ows:Keyword>WMTS Geoinformation Deutsches Zentrum für Schienenverkehrsforschung</ows:Keyword>
-	</ows:Keywords>
-</ows:ServiceIdentification>
-
-<ows:ServiceProvider>
-	<ows:ProviderName>Deutsches Zentrum für Schienenverkehrsforschung beim Eisenbahn-Bundesamt (DZSF)</ows:ProviderName>
-	<ows:ProviderSite xlink:href="www.dzsf.de"/>
-	<ows:ServiceContact>
-		<ows:IndividualName/>
-		<ows:PositionName/>
-		<ows:ContactInfo>
-			<ows:Phone>
-				<ows:Voice>+49 351 47931-0</ows:Voice>
-			</ows:Phone>
-			<ows:Address>
-				<ows:DeliveryPoint>August-Bebel-Straße 10</ows:DeliveryPoint>
-				<ows:City>Dresden</ows:City>
-				<ows:PostalCode>D-01219</ows:PostalCode>
-				<ows:Country>Germany</ows:Country>
-				<ows:ElectronicMailAddress>forschung@dzsf.bund.de</ows:ElectronicMailAddress>
-			</ows:Address>
-		</ows:ContactInfo>
-	</ows:ServiceContact>
-</ows:ServiceProvider>
-
-<ows:OperationsMetadata>
-	<ows:Operation name="GetCapabilities">
-		<ows:DCP>
-			<ows:HTTP>
-				<ows:Get xlink:href="https://geoinformation.eisenbahn-bundesamt.de/wmts/dzsf/WMTSCapabilities.xml?">
-					<ows:Constraint name="GetEncoding">
-						<ows:AllowedValues>
-							<ows:Value>KVP</ows:Value>
-						</ows:AllowedValues>
-					</ows:Constraint>
-				</ows:Get>
-			</ows:HTTP>
-		</ows:DCP>
-	</ows:Operation>
-	
-	<ows:Operation name="GetTile">
-		<ows:DCP>
-			<ows:HTTP>
-				<ows:Get xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/service?"/>
-			</ows:HTTP>
-		</ows:DCP>
-	</ows:Operation>
-	
-	<ows:Operation name="GetFeatureInfo">
-		<ows:DCP>
-			<ows:HTTP>
-				<ows:Get xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf?"/>
-			</ows:HTTP>
-		</ows:DCP>
-	</ows:Operation>
-	
-	<ows:Operation name="LinkViewService">
-		<ows:DCP>
-			<ows:HTTP>
-				<ows:Get xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?"/>
-			</ows:HTTP>
-		</ows:DCP>
-	</ows:Operation>
-	
-	<!-- <ows:ExtendedCapabilities> -->
-		<ows:AccessConstraints>Nutzungsbedingungen: Die Daten sind urheberrechtlich geschützt. Der Datensatz wird entgeltfrei mit Copyright: CC 0 https://creativecommons.org/publicdomain/zero/1.0/deed.de zur Verfügung gestellt.</ows:AccessConstraints>
-		<inspire_vs:ExtendedCapabilities xmlns:inspire_vs="http://inspire.ec.europa.eu/schemas/inspire_vs/1.0">
-			<inspire_common:MetadataUrl xsi:type="inspire_common:resourceLocatorType" xmlns:inspire_common="http://inspire.ec.europa.eu/schemas/common/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-				<inspire_common:URL xmlns:inspire_common="http://inspire.ec.europa.eu/schemas/common/1.0">https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?Service=CSW&amp;Request=GetRecordById&amp;Version=2.0.2&amp;id=518e738e-35cf-4590-981c-93a86b695b9e&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full</inspire_common:URL>
-				<inspire_common:MediaType xmlns:inspire_common="http://inspire.ec.europa.eu/schemas/common/1.0">application/xml</inspire_common:MediaType>
-			</inspire_common:MetadataUrl>
-			<inspire_common:SupportedLanguages xmlns:inspire_common="http://inspire.ec.europa.eu/schemas/common/1.0">
-				<inspire_common:DefaultLanguage xmlns:inspire_common="http://inspire.ec.europa.eu/schemas/common/1.0">
-					<inspire_common:Language xmlns:inspire_common="http://inspire.ec.europa.eu/schemas/common/1.0">ger</inspire_common:Language>
-				</inspire_common:DefaultLanguage>
-			</inspire_common:SupportedLanguages>
-			<inspire_common:ResponseLanguage xmlns:inspire_common="http://inspire.ec.europa.eu/schemas/common/1.0">
-				<inspire_common:Language xmlns:inspire_common="http://inspire.ec.europa.eu/schemas/common/1.0">ger</inspire_common:Language>
-			</inspire_common:ResponseLanguage> 
-		</inspire_vs:ExtendedCapabilities>
-	<!-- </ows:ExtendedCapabilities> -->
-</ows:OperationsMetadata>
-
-<Contents>
-	
-	<Layer>
-		<ows:Title>Hangrutschungsgefährdung WMTS</ows:Title>
-		<ows:Abstract>Der Datensatz stellt die Gefährdung der Schieneninfrastruktur durch Hangrutschungen räumlich differenziert dar. Dieses Produkt der Hangrutschungsgefährdung ist das Ergebnis des Forschungsprojektes „Erstellung einer ingenieurgeologischen Gefahrenhinweiskarte zu Hang- und Böschungsrutschungen entlang des deutschen Schienennetzes“ des Eisenbahn-Bundesamtes im Rahmen der Arbeiten des BMDV-Expertennetzwerks im Themenfeld Klimawandelfolgen und Anpassung (bmdv-expertennetzwerk.de). Die Sachinformationen und Gefährdungsklassen werden ausschließlich für den Bereich der Schieneninfrastruktur bereitgestellt. Datengrundlage hierfür ist der Datensatz ‚geo-strecke‘, welcher von der Deutschen Bahn (DB) unter der Lizenz Creative Commons Attribution 4.0 International (CC BY 4.0) bereitgestellt wird (http://data.deutschebahn.com/dataset/geo-strecke). Dargestellt sind die potenziellen Gefährdungsbereiche und Puffer (0 m und 50 m) bezogen auf die Gefahrenklassen größer bzw. gleich 10) (s. Abschlussbericht „Erstellung einer ingenieurgeologischen Gefahrenhinweiskarte zu Hang- und Böschungsrutschungen entlang des deutschen Schienennetzes“ - Eisenbahn-Bundesamt: 11vb/018-0099#22; S. 100). Das Attribut „Gef_ber“ wurde hinzugefügt und in drei Klassen unterteilt in Bereiche der Gefahrenklasse >= 10 wurde der direkte Einflussbereich (0) sowie ein Puffer von 50 m (50) berücksichtigt. Bereiche mit einer geringeren errechneten Gefahrenklasse oder außerhalb des Puffers sind mit ‚999‘ kodiert.</ows:Abstract>
-		<ows:Keywords>
-			<ows:Keyword>Hangrutschungsgefährdung WMTS</ows:Keyword>
-		</ows:Keywords>
-		<ows:WGS84BoundingBox>
-			<ows:LowerCorner>4.34738512723 46.7961383601</ows:LowerCorner>
-			<ows:UpperCorner>16.9787143025 55.3482568074</ows:UpperCorner>
-		</ows:WGS84BoundingBox>
-		<ows:Identifier>hangrutschungsgefaehrdung_wmts</ows:Identifier>
-		<ows:Metadata xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?SERVICE=CSW&amp;Version=2.0.2&amp;REQUEST=GetRecordById&amp;elementSetName=full&amp;OutputSchema=http://www.isotc211.org/2005/gmd&amp;ID=81dd034e-30a7-462a-9da5-6163a227fd50"></ows:Metadata>
-		<Style>
-			<ows:Title>Style Hangrutschungsgefährdung</ows:Title>
-			<ows:Identifier>hangrutschungsgefaehrdung_wmts</ows:Identifier>
-			<LegendURL format="image/png" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/service?format=image%2Fpng&amp;layer=hangrutschungsgefaehrdung_wmts&amp;sld_version=1.1.0&amp;request=GetLegendGraphic&amp;service=WMS&amp;version=1.1.1&amp;styles="/>
-		</Style>
-		<Format>image/png</Format>
-		<TileMatrixSetLink>
-			<TileMatrixSet>wmtsgrid</TileMatrixSet>
-		</TileMatrixSetLink>
-		<ResourceURL format="image/png" resourceType="tile" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/hangrutschungsgefaehrdung_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/>
-		<ResourceURL format="text/html" resourceType="FeatureInfo" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/hangrutschungsgefaehrdung_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}/{I}/{J}.html"/>
-	</Layer>
-	
-	<Layer>
-		<ows:Title>Hochwassergefährdung_HQ100 WMTS</ows:Title>
-		<ows:Abstract>Der Datensatz stellt die Gefährdung der Schieneninfrastruktur durch Hangrutschungen räumlich differenziert dar. Dieses Produkt der Hangrutschungsgefährdung ist das Ergebnis des Forschungsprojektes „Erstellung einer ingenieurgeologischen Gefahrenhinweiskarte zu Hang- und Böschungsrutschungen entlang des deutschen Schienennetzes“ des Eisenbahn-Bundesamtes im Rahmen der Arbeiten des BMDV-Expertennetzwerks im Themenfeld Klimawandelfolgen und Anpassung (bmdv-expertennetzwerk.de). Die Sachinformationen und Gefährdungsklassen werden ausschließlich für den Bereich der Schieneninfrastruktur bereitgestellt. Datengrundlage hierfür ist der Datensatz ‚geo-strecke‘, welcher von der Deutschen Bahn (DB) unter der Lizenz Creative Commons Attribution 4.0 International (CC BY 4.0) bereitgestellt wird (http://data.deutschebahn.com/dataset/geo-strecke). Dargestellt sind die potenziellen Gefährdungsbereiche und Puffer (0 m und 50 m) bezogen auf die Gefahrenklassen größer bzw. gleich 10) (s. Abschlussbericht „Erstellung einer ingenieurgeologischen Gefahrenhinweiskarte zu Hang- und Böschungsrutschungen entlang des deutschen Schienennetzes“ - Eisenbahn-Bundesamt: 11vb/018-0099#22; S. 100). Das Attribut „Gef_ber“ wurde hinzugefügt und in drei Klassen unterteilt in Bereiche der Gefahrenklasse >= 10 wurde der direkte Einflussbereich (0) sowie ein Puffer von 50 m (50) berücksichtigt. Bereiche mit einer geringeren errechneten Gefahrenklasse oder außerhalb des Puffers sind mit ‚999‘ kodiert.</ows:Abstract>
-		<ows:Keywords>
-			<ows:Keyword>Hochwassergefährdung_HQ100 WMTS</ows:Keyword>
-		</ows:Keywords>
-		<ows:WGS84BoundingBox>
-			<ows:LowerCorner>4.34738512723 46.7961383601</ows:LowerCorner>
-			<ows:UpperCorner>16.9787143025 55.3482568074</ows:UpperCorner>
-		</ows:WGS84BoundingBox>
-		<ows:Identifier>hochwassergefaehrdung_wmts</ows:Identifier>
-		<ows:Metadata xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?SERVICE=CSW&amp;Version=2.0.2&amp;REQUEST=GetRecordById&amp;elementSetName=full&amp;OutputSchema=http://www.isotc211.org/2005/gmd&amp;ID=d8034bfc-b7ec-4f19-bbe0-63f61b9a31e8"></ows:Metadata>
-		<Style>
-			<ows:Title>Style Hochwassergefaehrdung_HQ100</ows:Title>
-			<ows:Identifier>hochwassergefaehrdung_wmts</ows:Identifier>
-			<LegendURL format="image/png" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/service?format=image%2Fpng&amp;layer=hochwassergefaehrdung_wmts&amp;sld_version=1.1.0&amp;request=GetLegendGraphic&amp;service=WMS&amp;version=1.1.1&amp;styles="/>
-		</Style>
-		<Format>image/png</Format>
-		<TileMatrixSetLink>
-			<TileMatrixSet>wmtsgrid</TileMatrixSet>
-		</TileMatrixSetLink>
-		<ResourceURL format="image/png" resourceType="tile" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/hochwassergefaehrdung_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/>
-		<ResourceURL format="text/html" resourceType="FeatureInfo" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/hochwassergefaehrdung_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}/{I}/{J}.html"/>
-	</Layer>
-
-	<Layer>
-		<ows:Title>potentielle Hangmuren WMTS</ows:Title>
-		<ows:Abstract><![CDATA[Der Datensatz stellt die potentiellen Fließwege und Reichweiten simulierter Hangmuren entlang des deutschen Schienennetzes dar. Dieses Produkt der potentiellen Hangmuren ist das Ergebnis des Forschungsprojektes „Analysen zu schnellen wasserhaltigen Massenbewegungen: Bundesweite Untersuchungen zur Exposition des deutschen Schienennetzes und Modellierungen der räumlichen Ausbreitung“ des Eisenbahn-Bundesamtes im Rahmen der Arbeiten des BMDV-Expertennetzwerks im Themenfeld Klimawandelfolgen und Anpassung (bmdv-expertennetzwerk.de). Die Sachinformationen und Gefährdungsklassen werden ausschließlich für den anliegenden Bereich der Schieneninfrastruktur bereitgestellt. Dargestellt sind die potenziellen simulierten Hangmuren in Abstufung der Größe nach kleinen, mittleren und großen Ereignissen  (s. Abschlussbericht des Projektes auf der Website des dzsf (www.dzsf.bund.de)). Wert 1 = kleines Ereignis, 2 = mittleres Ereignis, 3 = großes Ereignis. Dabei gilt für die Größenordnung der simulierten Kubaturen: <100 m3: kleines Ereignis 100–1'000 m3: mittleres Ereignis = 1'000 m3: großes Ereignis Der Datensatz bildet keine Eintrittswahrscheinlichkeit der Ereignisse ab. Bestehende Schutzmaßnahmen und dadurch gesicherte Bereiche wurden in den Modellierungen nicht berücksichtigt.]]></ows:Abstract>
-		<ows:Keywords>
-			<ows:Keyword>potentielle Hangmuren WMTS</ows:Keyword>
-		</ows:Keywords>
-		<ows:WGS84BoundingBox>
-			<ows:LowerCorner>4.34738512723 46.7961383601</ows:LowerCorner>
-			<ows:UpperCorner>16.9787143025 55.3482568074</ows:UpperCorner>
-		</ows:WGS84BoundingBox>
-		<ows:Identifier>potentielle_hangmuren_wmts</ows:Identifier>
-		<ows:Metadata xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?SERVICE=CSW&amp;Version=2.0.2&amp;REQUEST=GetRecordById&amp;elementSetName=full&amp;OutputSchema=http://www.isotc211.org/2005/gmd&amp;ID=d665f78a-cf97-491a-841a-7252d53bfbc5"></ows:Metadata>
-		<Style>
-			<ows:Title>Style potentielle Hangmuren</ows:Title>
-			<ows:Identifier>potentielle_hangmuren_wmts</ows:Identifier>
-			<LegendURL format="image/png" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/service?format=image%2Fpng&amp;layer=potentielle_hangmuren_wmts&amp;sld_version=1.1.0&amp;request=GetLegendGraphic&amp;service=WMS&amp;version=1.1.1&amp;styles="/>
-		</Style>
-		<Format>image/png</Format>
-		<TileMatrixSetLink>
-			<TileMatrixSet>wmtsgrid</TileMatrixSet>
-		</TileMatrixSetLink>
-		<ResourceURL format="image/png" resourceType="tile" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/potentielle_hangmuren_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/>
-		<ResourceURL format="text/html" resourceType="FeatureInfo" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/potentielle_hangmuren_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}/{I}/{J}.html"/>
-	</Layer>	
-
-	<Layer>
-		<ows:Title>potentielle Murgänge WMTS</ows:Title>
-		<ows:Abstract><![CDATA[Der Datensatz stellt die potentiellen Fließwege und Reichweiten simulierter Murgänge entlang des deutschen Schienennetzes dar. Dieses Produkt der potentiellen Murgänge ist das Ergebnis des Forschungsprojektes „Analysen zu schnellen wasserhaltigen Massenbewegungen: Bundesweite Untersuchungen zur Exposition des deutschen Schienennetzes und Modellierungen der räumlichen Ausbreitung“ des Eisenbahn-Bundesamtes im Rahmen der Arbeiten des BMDV-Expertennetzwerks im Themenfeld Klimawandelfolgen und Anpassung (bmdv-expertennetzwerk.de). Die Sachinformationen und Gefährdungsklassen werden ausschließlich für den anliegenden Bereich der Schieneninfrastruktur bereitgestellt. Dargestellt sind die potenziellen simulierten Murgänge in Abstufung der Größe nach kleinen, mittleren und großen Ereignissen  (s. Abschlussbericht des Projektes auf der Website des dzsf (www.dzsf.bund.de)). Wert 1 = kleines Ereignis, 2 = mittleres Ereignis, 3 = großes Ereignis. Dabei gilt für die Größenordnung der simulierten Kubaturen: <100 m3: kleines Ereignis 100–1'000 m3: mittleres Ereignis = 1'000 m3: großes Ereignis Der Datensatz bildet keine Eintrittswahrscheinlichkeit der Ereignisse ab. Bestehende Schutzmaßnahmen und dadurch gesicherte Bereiche wurden in den Modellierungen nicht berücksichtigt.]]></ows:Abstract>
-		<ows:Keywords>
-			<ows:Keyword>potentielle Murgänge WMTS</ows:Keyword>
-		</ows:Keywords>
-		<ows:WGS84BoundingBox>
-			<ows:LowerCorner>4.34738512723 46.7961383601</ows:LowerCorner>
-			<ows:UpperCorner>16.9787143025 55.3482568074</ows:UpperCorner>
-		</ows:WGS84BoundingBox>
-		<ows:Identifier>potentielle_murgaenge_wmts</ows:Identifier>
-		<ows:Metadata xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?SERVICE=CSW&amp;Version=2.0.2&amp;REQUEST=GetRecordById&amp;elementSetName=full&amp;OutputSchema=http://www.isotc211.org/2005/gmd&amp;ID=f318cd4f-8e4b-4f10-9437-93b1b4ae6c0a"></ows:Metadata>
-		<Style>
-			<ows:Title>Style potentielle Murgänge</ows:Title>
-			<ows:Identifier>potentielle_murgaenge_wmts</ows:Identifier>
-			<LegendURL format="image/png" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/service?format=image%2Fpng&amp;layer=potentielle_murgaenge_wmts&amp;sld_version=1.1.0&amp;request=GetLegendGraphic&amp;service=WMS&amp;version=1.1.1&amp;styles="/>
-		</Style>
-		<Format>image/png</Format>
-		<TileMatrixSetLink>
-			<TileMatrixSet>wmtsgrid</TileMatrixSet>
-		</TileMatrixSetLink>
-		<ResourceURL format="image/png" resourceType="tile" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/potentielle_murgaenge_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/>
-		<ResourceURL format="text/html" resourceType="FeatureInfo" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/potentielle_murgaenge_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}/{I}/{J}.html"/>
-	</Layer>
-	
-	<Layer>
-		<ows:Title>potentielle Murgänge und Hangmuren WMTS</ows:Title>
-		<ows:Abstract><![CDATA[Der Datensatz stellt die potentiellen Fließwege und Reichweiten simulierter Murgänge (mg) und Hangmuren (hm) entlang des deutschen Schienennetzes dar. Dieses Produkt der potentiellen Murgänge und Hangmuren ist das Ergebnis des Forschungsprojektes „Analysen zu schnellen wasserhaltigen Massenbewegungen: Bundesweite Untersuchungen zur Exposition des deutschen Schienennetzes und Modellierungen der räumlichen Ausbreitung“ des Eisenbahn-Bundesamtes im Rahmen der Arbeiten des BMDV-Expertennetzwerks im Themenfeld Klimawandelfolgen und Anpassung (bmdv-expertennetzwerk.de). Die Sachinformationen und Gefährdungsklassen werden ausschließlich für den anliegenden Bereich der Schieneninfrastruktur bereitgestellt. Dargestellt sind die potenziellen simulierten Murgänge und hangmuren in Abstufung der Größe nach kleinen, mittleren und großen Ereignissen  (s. Abschlussbericht des Projektes auf der Website des dzsf (www.dzsf.bund.de)). Wert 1 = kleines Ereignis, 2 = mittleres Ereignis, 3 = großes Ereignis. In diesem Datensatz sind die potenziellen simulierten Ereignisse der Murgänge und Hangmuren kombiniert abgebildet. Eine Prozessunterscheidung ist über die Ansicht der Datensätze Murganggefährdung und Hangmurengefährdung möglich. Dabei gilt für die Größenordnung der simulierten Kubaturen: <100 m3: kleines Ereignis 100–1'000 m3: mittleres Ereignis = 1'000 m3: großes Ereignis Der Datensatz bildet keine Eintrittswahrscheinlichkeit der Ereignisse ab. Bestehende Schutzmaßnahmen und dadurch gesicherte Bereiche wurden in den Modellierungen nicht berücksichtigt.]]></ows:Abstract>
-		<ows:Keywords>
-			<ows:Keyword>potentielle Murgänge und Hangmuren WMTS</ows:Keyword>
-		</ows:Keywords>
-		<ows:WGS84BoundingBox>
-			<ows:LowerCorner>4.34738512723 46.7961383601</ows:LowerCorner>
-			<ows:UpperCorner>16.9787143025 55.3482568074</ows:UpperCorner>
-		</ows:WGS84BoundingBox>
-		<ows:Identifier>potentielle_murgaenge_mangmuren_wmts</ows:Identifier>
-		<ows:Metadata xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?SERVICE=CSW&amp;Version=2.0.2&amp;REQUEST=GetRecordById&amp;elementSetName=full&amp;OutputSchema=http://www.isotc211.org/2005/gmd&amp;ID=0198904f-7037-4b4f-afca-c5bb786b9ac0"></ows:Metadata>
-		<Style>
-			<ows:Title>Style potentielle Murgänge und Hangmuren</ows:Title>
-			<ows:Identifier>potentielle_murgaenge_mangmuren_wmts</ows:Identifier>
-			<LegendURL format="image/png" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/service?format=image%2Fpng&amp;layer=potentielle_murgaenge_mangmuren_wmts&amp;sld_version=1.1.0&amp;request=GetLegendGraphic&amp;service=WMS&amp;version=1.1.1&amp;styles="/>
-		</Style>
-		<Format>image/png</Format>
-		<TileMatrixSetLink>
-			<TileMatrixSet>wmtsgrid</TileMatrixSet>
-		</TileMatrixSetLink>
-		<ResourceURL format="image/png" resourceType="tile" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/potentielle_murgaenge_mangmuren_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/>
-		<ResourceURL format="text/html" resourceType="FeatureInfo" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/potentielle_murgaenge_mangmuren_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}/{I}/{J}.html"/>
-	</Layer>
-
-	<Layer>
-		<ows:Title>Hangmurengefährdung WMTS</ows:Title>
-		<ows:Abstract><![CDATA[Der Datensatz stellt die Gefährdung der Schieneninfrastruktur durch Hangmuren räumlich differenziert dar. Dieses Produkt der Hangmurengefährdung ist das Ergebnis des Forschungsprojektes Analysen zu schnellen wasserhaltigen Massenbewegungen: Bundesweite Untersuchungen zur Exposition des deutschen Schienennetzes und Modellierungen der räumlichen Ausbreitung des Eisenbahn-Bundesamtes im Rahmen der Arbeiten des BMDV-Expertennetzwerks im Themenfeld Klimawandelfolgen und Anpassung (bmdv-expertennetzwerk.de). Die Sachinformationen und Gefährdungsklassen werden ausschließlich für den Bereich der Schieneninfrastruktur bereitgestellt. Datengrundlage hierfür ist der Datensatz ‚geo-strecke‘ (Stand 10/2019), welcher von der Deutschen Bahn (DB) unter der Lizenz Creative Commons Attribution 4.0 International (CC BY 4.0) bereitgestellt wird (http://data.deutschebahn.com/dataset/geo-strecke). Dargestellt sind die potenziellen Gefährdungsbereiche der Schieneninfrastruktur kleiner, mittlerer und großer potenzieller simulierter Ereignisse  (s. Abschlussbericht des Projektes auf der Website des dzsf (www.dzsf.bund.de)). Das Attribut Gefährdung unterscheidet diese drei Gefahrenklasse (1 = kleines Ereignis, 2 = mittleres Ereignis, 3 = großes Ereignis) sowie 0 = keine Gefährdung und 99 = Tunnel. Dabei gilt für die Größenordnung der simulierten Kubaturen: <100 m3: kleines Ereignis 100–1000 m3: mittleres Ereignis = 1000 m3: großes Ereignis Der Datensatz bildet keine Eintrittswahrscheinlichkeit der Ereignisse ab. Bestehende Schutzmaßnahmen und dadurch gesicherte Bereiche wurden in den Modellierungen nicht berücksichtigt.]]></ows:Abstract>
-		<ows:Keywords>
-			<ows:Keyword>Hangmurengefährdung WMTS</ows:Keyword>
-		</ows:Keywords>
-		<ows:WGS84BoundingBox>
-			<ows:LowerCorner>4.34738512723 46.7961383601</ows:LowerCorner>
-			<ows:UpperCorner>16.9787143025 55.3482568074</ows:UpperCorner>
-		</ows:WGS84BoundingBox>
-		<ows:Identifier>hangmurengefaehrdung_wmts</ows:Identifier>
-		<ows:Metadata xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?SERVICE=CSW&amp;Version=2.0.2&amp;REQUEST=GetRecordById&amp;elementSetName=full&amp;OutputSchema=http://www.isotc211.org/2005/gmd&amp;ID=d823fd13-af81-4184-bcbf-3f4fc1c6d81c"></ows:Metadata>
-		<Style>
-			<ows:Title>Style Hangmurengefährdung</ows:Title>
-			<ows:Identifier>hangmurengefaehrdung_wmts</ows:Identifier>
-			<LegendURL format="image/png" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/service?format=image%2Fpng&amp;layer=hangmurengefaehrdung_wmts&amp;sld_version=1.1.0&amp;request=GetLegendGraphic&amp;service=WMS&amp;version=1.1.1&amp;styles="/>
-		</Style>
-		<Format>image/png</Format>
-		<TileMatrixSetLink>
-			<TileMatrixSet>wmtsgrid</TileMatrixSet>
-		</TileMatrixSetLink>
-		<ResourceURL format="image/png" resourceType="tile" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/hangmurengefaehrdung_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/>
-		<ResourceURL format="text/html" resourceType="FeatureInfo" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/hangmurengefaehrdung_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}/{I}/{J}.html"/>
-	</Layer>
-
-	<Layer>
-		<ows:Title>Murganggefährdung WMTS</ows:Title>
-		<ows:Abstract><![CDATA[Der Datensatz stellt die Gefährdung der Schieneninfrastruktur durch Murgänge räumlich differenziert dar. Dieses Produkt der Murganggefährdung ist das Ergebnis des Forschungsprojektes „Analysen zu schnellen wasserhaltigen Massenbewegungen: Bundesweite Untersuchungen zur Exposition des deutschen Schienennetzes und Modellierungen der räumlichen Ausbreitung“ des Eisenbahn-Bundesamtes im Rahmen der Arbeiten des BMDV-Expertennetzwerks im Themenfeld Klimawandelfolgen und Anpassung (bmdv-expertennetzwerk.de). Die Sachinformationen und Gefährdungsklassen werden ausschließlich für den Bereich der Schieneninfrastruktur bereitgestellt. Datengrundlage hierfür ist der Datensatz ‚geo-strecke‘ (Stand 10/2019), welcher von der Deutschen Bahn (DB) unter der Lizenz Creative Commons Attribution 4.0 International (CC BY 4.0) bereitgestellt wird (http://data.deutschebahn.com/dataset/geo-strecke). Dargestellt sind die potenziellen Gefährdungsbereiche der Schieneninfrastruktur kleiner, mittlerer und großer potenzieller simulierter Ereignisse  (s. Abschlussbericht des Projektes auf der Website des dzsf (www.dzsf.bund.de)). Das Attribut „Gefährdung“ unterscheidet diese drei Gefahrenklasse (1 = kleines Ereignis, 2 = mittleres Ereignis, 3 = großes Ereignis) sowie 0 = keine Gefährdung und 99 = Tunnel. Dabei gilt für die Größenordnung der simulierten Kubaturen: <100 m3: kleines Ereignis 100–1000 m3: mittleres Ereignis = 1000 m3: großes Ereignis Der Datensatz bildet keine Eintrittswahrscheinlichkeit der Ereignisse ab. Bestehende Schutzmaßnahmen und dadurch gesicherte Bereiche wurden in den Modellierungen nicht berücksichtigt.]]></ows:Abstract>
-		<ows:Keywords>
-			<ows:Keyword>Murganggefährdung WMTS</ows:Keyword>
-		</ows:Keywords>
-		<ows:WGS84BoundingBox>
-			<ows:LowerCorner>4.34738512723 46.7961383601</ows:LowerCorner>
-			<ows:UpperCorner>16.9787143025 55.3482568074</ows:UpperCorner>
-		</ows:WGS84BoundingBox>
-		<ows:Identifier>murganggefaehrdung_wmts</ows:Identifier>
-		<ows:Metadata xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?SERVICE=CSW&amp;Version=2.0.2&amp;REQUEST=GetRecordById&amp;elementSetName=full&amp;OutputSchema=http://www.isotc211.org/2005/gmd&amp;ID=52c9d739-b2bc-4a55-adf8-45135ed4b8fb"></ows:Metadata>
-		<Style>
-			<ows:Title>Style Murganggefährdung</ows:Title>
-			<ows:Identifier>murganggefaehrdung_wmts</ows:Identifier>
-			<LegendURL format="image/png" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/service?format=image%2Fpng&amp;layer=murganggefaehrdung_wmts&amp;sld_version=1.1.0&amp;request=GetLegendGraphic&amp;service=WMS&amp;version=1.1.1&amp;styles="/>
-		</Style>
-		<Format>image/png</Format>
-		<TileMatrixSetLink>
-			<TileMatrixSet>wmtsgrid</TileMatrixSet>
-		</TileMatrixSetLink>
-		<ResourceURL format="image/png" resourceType="tile" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/murganggefaehrdung_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/>
-		<ResourceURL format="text/html" resourceType="FeatureInfo" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/murganggefaehrdung_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}/{I}/{J}.html"/>
-	</Layer>
-	
-	<Layer>
-		<ows:Title>Murgang- und Hangmurengefährdung WMTS</ows:Title>
-		<ows:Abstract><![CDATA[Der Datensatz stellt die Gefährdung der Schieneninfrastruktur durch Murgänge (mg) und Hangmuren (hm) räumlich differenziert dar. Dieses Produkt der Murgang- und Hangmurengefährdung ist das Ergebnis des Forschungsprojektes Analysen zu schnellen wasserhaltigen Massenbewegungen: Bundesweite Untersuchungen zur Exposition des deutschen Schienennetzes und Modellierungen der räumlichen Ausbreitung des Eisenbahn-Bundesamtes im Rahmen der Arbeiten des BMDV-Expertennetzwerks im Themenfeld Klimawandelfolgen und Anpassung (bmdv-expertennetzwerk.de). Die Sachinformationen und Gefährdungsklassen werden ausschließlich für den Bereich der Schieneninfrastruktur bereitgestellt. Datengrundlage hierfür ist der Datensatz geo-strecke (Stand 10/2019), welcher von der Deutschen Bahn (DB) unter der Lizenz Creative Commons Attribution 4.0 International (CC BY 4.0) bereitgestellt wird (http://data.deutschebahn.com/dataset/geo-strecke). Dargestellt sind die potenziellen Gefährdungsbereiche der Schieneninfrastruktur kleiner, mittlerer und großer potenzieller simulierter Ereignisse (s. Abschlussbericht des Projektes auf der Website des dzsf (www.dzsf.bund.de)). Das Attribut Gefährdung unterscheidet diese drei Gefahrenklasse (1 = kleines Ereignis, 2 = mittleres Ereignis, 3 = großes Ereignis) sowie 0 = keine Gefährdung und 99 = Tunnel. In diesem Datensatz sind die potenziellen simulierten Ereignisse der Murgänge und Hangmuren kombiniert abgebildet. Eine Prozessunterscheidung ist über die Ansicht der Datensätze Murganggefährdung und Hangmurengefährdung möglich. Dabei gilt für die Größenordnung der simulierten Kubaturen: <100 m3: kleines Ereignis 100–1000 m3: mittleres Ereignis = 1000 m3: großes Ereignis Der Datensatz bildet keine Eintrittswahrscheinlichkeit der Ereignisse ab. Bestehende Schutzmaßnahmen und dadurch gesicherte Bereiche wurden in den Modellierungen nicht berücksichtigt.]]></ows:Abstract>
-		<ows:Keywords>
-			<ows:Keyword>Murgang- und Hangmurengefährdung WMTS</ows:Keyword>
-		</ows:Keywords>
-		<ows:WGS84BoundingBox>
-			<ows:LowerCorner>4.34738512723 46.7961383601</ows:LowerCorner>
-			<ows:UpperCorner>16.9787143025 55.3482568074</ows:UpperCorner>
-		</ows:WGS84BoundingBox>
-		<ows:Identifier>mur_und_hangmur_wmts</ows:Identifier>
-		<ows:Metadata xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?SERVICE=CSW&amp;Version=2.0.2&amp;REQUEST=GetRecordById&amp;elementSetName=full&amp;OutputSchema=http://www.isotc211.org/2005/gmd&amp;ID=a14d6fe3-4363-483e-92ee-7cceb8f80cb0"></ows:Metadata>
-		<Style>
-			<ows:Title>Style Murgang- und Hangmurengefährdung</ows:Title>
-			<ows:Identifier>mur_und_hangmur_wmts</ows:Identifier>
-			<LegendURL format="image/png" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/service?format=image%2Fpng&amp;layer=mur_und_hangmur_wmts&amp;sld_version=1.1.0&amp;request=GetLegendGraphic&amp;service=WMS&amp;version=1.1.1&amp;styles="/>
-		</Style>
-		<Format>image/png</Format>
-		<TileMatrixSetLink>
-			<TileMatrixSet>wmtsgrid</TileMatrixSet>
-		</TileMatrixSetLink>
-		<ResourceURL format="image/png" resourceType="tile" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/mur_und_hangmur_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/>
-		<ResourceURL format="text/html" resourceType="FeatureInfo" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/mur_und_hangmur_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}/{I}/{J}.html"/>
-	</Layer>
-	
-	<Layer>
-		<ows:Title>(Beta) Böschungsbrandgefährdung aggregiert WMTS</ows:Title>
-		<ows:Abstract>Der Datensatz stellt die Gefährdung von Flächen entlang der Schieneninfrastruktur gegenüber dem Entzünden und Ausbreiten von Böschungsbränden dar.  Dieses Produkt der Böschungsbrandgefährdung (aggregiert) ist das Ergebnis des Forschungsprojektes „Sensitivitätsanalyse Vegetation entlang der Bundesverkehrswege bezüglich Sturmwurfgefahren und Böschungsbränden“ des Deutschen Zentrums für Schienenverkehrsforschung beim Eisenbahn-Bundesamtes im Rahmen der Arbeiten des BMDV-Expertennetzwerks im Themenfeld Klimawandelfolgen und Anpassung (bmdv-expertennetzwerk.de). Die Sachinformationen und Gefährdungsklassen werden ausschließlich für den Bereich der Schieneninfrastruktur bereitgestellt. Datengrundlage hierfür ist der Datensatz ‚geo-strecke‘, welcher von der Deutschen Bahn (DB) unter der Lizenz Creative Commons Attribution 4.0 International (CC BY 4.0) bereitgestellt wird (http://data.deutschebahn.com/dataset/geo-strecke). Dargestellt sind Gefährdungsabschätzungen für das Entzünden und Ausbreiten von Böschungsbränden im Bereich der Schieneninfrasturktur zu jeweils 50 m beidseitig des Gleises. Die initiale Gefährdungsabschätzung erfolgte mithilfe eines MaxEnt Modells basierend auf vergangenen Ereignisse sowie Datensätzen zu Topographie, Vegetation, Meteorologie und Bahnspezifischen Parametern. Das Gefährdungspotenzial wird dabei zwischen 0-1 angegeben, wobei ein höherer Wert lediglich eine höhere Anfälligkeit eines Bereiches zu Entzündung und Brandausbreitung auf Basis der Modellparameter abbildet. In diesem Datensatz werden die Gefahrenpotenziale aggegriert auf Streckenabschnitte mit einer Länge von je etwa 500 m Länge dargestellt. Zur Aggregation wurde der Mittelwert aller Pixel innerhalb des Streckenabschnittes gebildet. Ein höherer Wert des Attributes ""MaxEnt"" beschreibt somit, dass innerhalb dieses Streckenabschnittes Rasterzellen mit einer hohen Gefährdungsabschätzung vorhanden sind. Aufgrund der geringen Datenbasis vergangener Ereignisse sind die Gefährdungsabschätzungen als eine erste Einschätzung zu interpretieren. Eine umfangreiche Validierung und Kontrolle der Daten wird angestrebt.</ows:Abstract>
-		<ows:Keywords>
-			<ows:Keyword>Böschungsbrandgefährdung aggregiert WMTS</ows:Keyword>
-		</ows:Keywords>
-		<ows:WGS84BoundingBox>
-			<ows:LowerCorner>4.34738512723 46.7961383601</ows:LowerCorner>
-			<ows:UpperCorner>16.9787143025 55.3482568074</ows:UpperCorner>
-		</ows:WGS84BoundingBox>
-		<ows:Identifier>boeschungsbrandgefaehrdung_agg_wmts</ows:Identifier>
-		<ows:Metadata xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?SERVICE=CSW&amp;Version=2.0.2&amp;REQUEST=GetRecordById&amp;elementSetName=full&amp;OutputSchema=http://www.isotc211.org/2005/gmd&amp;ID=32f97fc9-24aa-427a-b5fe-b62f214b413d"></ows:Metadata>
-		<Style>
-			<ows:Title>Style Böschungsbrandgefährdung aggregiert</ows:Title>
-			<ows:Identifier>boeschungsbrandgefaehrdung_agg_wmts</ows:Identifier>
-			<LegendURL format="image/png" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/service?format=image%2Fpng&amp;layer=boeschungsbrandgefaehrdung_agg_wmts&amp;sld_version=1.1.0&amp;request=GetLegendGraphic&amp;service=WMS&amp;version=1.1.1&amp;styles="/>
-		</Style>
-		<Format>image/png</Format>
-		<TileMatrixSetLink>
-			<TileMatrixSet>wmtsgrid</TileMatrixSet>
-		</TileMatrixSetLink>
-		<ResourceURL format="image/png" resourceType="tile" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/boeschungsbrandgefaehrdung_agg_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/>
-		<ResourceURL format="text/html" resourceType="FeatureInfo" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/boeschungsbrandgefaehrdung_agg_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}/{I}/{J}.html"/>
-	</Layer>
-	
-	<Layer>
-		<ows:Title>(Beta) Böschungsbrandgefährdung WMTS</ows:Title>
-		<ows:Abstract><![CDATA[Der Datensatz stellt die potentiellen Fließwege und Reichweiten simulierter Murgänge (mg) und Hangmuren (hm) entlang des deutschen Schienennetzes dar. Dieses Produkt der potentiellen Murgänge und Hangmuren ist das Ergebnis des Forschungsprojektes „Analysen zu schnellen wasserhaltigen Massenbewegungen: Bundesweite Untersuchungen zur Exposition des deutschen Schienennetzes und Modellierungen der räumlichen Ausbreitung“ des Eisenbahn-Bundesamtes im Rahmen der Arbeiten des BMDV-Expertennetzwerks im Themenfeld Klimawandelfolgen und Anpassung (bmdv-expertennetzwerk.de). Die Sachinformationen und Gefährdungsklassen werden ausschließlich für den anliegenden Bereich der Schieneninfrastruktur bereitgestellt. Dargestellt sind die potenziellen simulierten Murgänge und hangmuren in Abstufung der Größe nach kleinen, mittleren und großen Ereignissen  (s. Abschlussbericht des Projektes auf der Website des dzsf (www.dzsf.bund.de)). Wert 1 = kleines Ereignis, 2 = mittleres Ereignis, 3 = großes Ereignis. In diesem Datensatz sind die potenziellen simulierten Ereignisse der Murgänge und Hangmuren kombiniert abgebildet. Eine Prozessunterscheidung ist über die Ansicht der Datensätze Murganggefährdung und Hangmurengefährdung möglich. Dabei gilt für die Größenordnung der simulierten Kubaturen: <100 m3: kleines Ereignis 100–1'000 m3: mittleres Ereignis = 1'000 m3: großes Ereignis Der Datensatz bildet keine Eintrittswahrscheinlichkeit der Ereignisse ab. Bestehende Schutzmaßnahmen und dadurch gesicherte Bereiche wurden in den Modellierungen nicht berücksichtigt.]]></ows:Abstract>
-		<ows:Keywords>
-			<ows:Keyword>Böschungsbrandgefährdung WMTS</ows:Keyword>
-		</ows:Keywords>
-		<ows:WGS84BoundingBox>
-			<ows:LowerCorner>4.34738512723 46.7961383601</ows:LowerCorner>
-			<ows:UpperCorner>16.9787143025 55.3482568074</ows:UpperCorner>
-		</ows:WGS84BoundingBox>
-		<ows:Identifier>boeschungsbrandgefaehrdung_wmts</ows:Identifier>
-		<ows:Metadata xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?SERVICE=CSW&amp;Version=2.0.2&amp;REQUEST=GetRecordById&amp;elementSetName=full&amp;OutputSchema=http://www.isotc211.org/2005/gmd&amp;ID=a2692559-705b-44a8-ae85-090c0d5f4d4f"></ows:Metadata>
-		<Style>
-			<ows:Title>Style Böschungsbrandgefährdung aggregiert</ows:Title>
-			<ows:Identifier>boeschungsbrandgefaehrdung_wmts</ows:Identifier>
-			<LegendURL format="image/png" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/service?format=image%2Fpng&amp;layer=boeschungsbrandgefaehrdung_wmts&amp;sld_version=1.1.0&amp;request=GetLegendGraphic&amp;service=WMS&amp;version=1.1.1&amp;styles="/>
-		</Style>
-		<Format>image/png</Format>
-		<TileMatrixSetLink>
-			<TileMatrixSet>wmtsgrid</TileMatrixSet>
-		</TileMatrixSetLink>
-		<ResourceURL format="image/png" resourceType="tile" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/boeschungsbrandgefaehrdung_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/>
-		<ResourceURL format="text/html" resourceType="FeatureInfo" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/boeschungsbrandgefaehrdung_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}/{I}/{J}.html"/>
-	</Layer>
-
-	<!-- <Layer> -->
-		<!-- <ows:Title>Sturmwurfexposition WMTS</ows:Title> -->
-		<!-- <ows:Abstract><![CDATA[Der Datensatz stellt die Exposition der Schieneninfrastruktur gegenüber Sturmwurf innerhalb der Bundesländer NRW und Thüringen dar (Bundesweite Berechnung in Planung).  Dieses Produkt der Sturmwurfexposition ist das Ergebnis des Forschungsprojektes „Ableitung des Baumbestandes entlang des deutschen Schienennetzes“ des Deutschen Zentrums für Schienenverkehrsforschung beim Eisenbahn-Bundesamtes im Rahmen der Arbeiten des BMDV-Expertennetzwerks im Themenfeld Klimawandelfolgen und Anpassung (bmdv-expertennetzwerk.de). Die Sachinformationen und Gefährdungsklassen werden ausschließlich für den Bereich der Schieneninfrastruktur bereitgestellt. Dargestellt sind die Baumbestände entlang der Schieneninfrasturktur zu jeweils 50 m beidseitig des Gleises. Der Baumbestand ist auf Ebene der Einzelbäume auf Basis von digitalen Höhenmodellen und Luftbildern ermittelt worden. Die Exposition des Schienennetzes gegenüber Sturmwurf wird dabei durch das Attribut ""exp_m"" in vier unterschiedlichen Klassen von 1-4 abgebildet. ""exp_m"" basiert dabei auf einer modellierten Baumhöhe, die zu der gemessenen Baumhöhe bei Aufnahme der Höheninformationen einen mittleren Wachstumszuschlag für den Zeitpunkt 1.11.2020 addiert. Die Expositionsklassen gliedern sich wie folgt: 1: Abstand > aktuelle/zukünftige Baumhöhe mit 2 m Unsicherheitsbereich	2: Abstand > aktuelle/zukünftige Baumhöhe ohne 2 m Unsicherheitsbereich 3: Abstand < aktuelle/zukünftige Baumhöhe und außerhalb der 6 m-Freihaltungszone 4: Abstand < aktuelle/zukünftige Baumhöhe und innerhalb 6 m Freihaltungszone.]]></ows:Abstract> -->
-		<!-- <ows:Keywords> -->
-			<!-- <ows:Keyword>Sturmwurfexposition WMTS</ows:Keyword> -->
-		<!-- </ows:Keywords> -->
-		<!-- <ows:WGS84BoundingBox> -->
-			<!-- <ows:LowerCorner>4.34738512723 46.7961383601</ows:LowerCorner> -->
-			<!-- <ows:UpperCorner>16.9787143025 55.3482568074</ows:UpperCorner> -->
-		<!-- </ows:WGS84BoundingBox> -->
-		<!-- <ows:Identifier>sturmwurfexposition_wmts</ows:Identifier> -->
-		<!-- <ows:Metadata xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?SERVICE=CSW&amp;Version=2.0.2&amp;REQUEST=GetRecordById&amp;elementSetName=full&amp;OutputSchema=http://www.isotc211.org/2005/gmd&amp;ID=8f4a6d73-2efc-4ec2-b314-2ffe35deb19f"></ows:Metadata> -->
-		<!-- <Style> -->
-			<!-- <ows:Title>Style Sturmwurfexposition</ows:Title> -->
-			<!-- <ows:Identifier>sturmwurfexposition_wmts</ows:Identifier> -->
-			<!-- <LegendURL format="image/png" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/service?format=image%2Fpng&amp;layer=sturmwurfexposition_wmts&amp;sld_version=1.1.0&amp;request=GetLegendGraphic&amp;service=WMS&amp;version=1.1.1&amp;styles="/> -->
-		<!-- </Style> -->
-		<!-- <Format>image/png</Format> -->
-		<!-- <TileMatrixSetLink> -->
-			<!-- <TileMatrixSet>wmtsgrid</TileMatrixSet> -->
-		<!-- </TileMatrixSetLink> -->
-		<!-- <ResourceURL format="image/png" resourceType="tile" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/sturmwurfexposition_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/> -->
-		<!-- <ResourceURL format="text/html" resourceType="FeatureInfo" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/sturmwurfexposition_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}/{I}/{J}.html"/> -->
-	<!-- </Layer> -->
-	
-	<!-- <Layer> -->
-		<!-- <ows:Title>Sturmwurfwahrscheinlichkeit WMTS</ows:Title> -->
-		<!-- <ows:Abstract> <![CDATA[Der Datensatz stellt die berechnete und geschätzte Wahrscheinlichkeit von Baumbeständen entlang der Schieneninfrastruktur der Bundesländer NRW und Thürungen gegenüber Baumsturz dar (Bundesweite Berechnung in Planung).  Dieses Produkt der Sturmwurfwahrscheinlichkeit ist das Ergebnis des Forschungsprojektes „Sensitivitätsanalyse Vegetation entlang der Bundesverkehrswege bezüglich Sturmwurfgefahren und Böschungsbränden“ des Deutschen Zentrums für Schienenverkehrsforschung beim Eisenbahn-Bundesamtes im Rahmen der Arbeiten des BMDV-Expertennetzwerks im Themenfeld Klimawandelfolgen und Anpassung (bmdv-expertennetzwerk.de). Die Sachinformationen und Gefährdungsklassen werden ausschließlich für den Bereich der Schieneninfrastruktur bereitgestellt. Dargestellt sind Wahrscheinlichkeitsabschätzungen für das Umstürzen von Baumbeständen im Bereich der Schieneninfrastruktur zu jeweils 50 m beidseitig des Gleises. Die Risikoabschätzungen sind auf Ebene von Einzelbäumen berechnet worden, die in einem vorhergehenden Projekt Ableitung des Baumbestandes entlang des deutschen Schienennetzes des DZSF mithilfe von Luftbildern und digitalen Höhenmodellen ermittelt wurden (vgl. DZSF Forschungsbericht 10/2021; Sturmwurfexposition). Die Wahrscheinlichkeitsabschätzung erfolgte mithilfe eines MaxEnt-Modells basierend auf vergangenen Ereignisse sowie Datensätzen zu Topographie, Vegetation, Meteorologie und Boden. Das Potenzial wird zwischen 0 und 1 angegeben, wobei ein höherer Wert eine höhere Anfälligkeit der Vegetation für das Umstürzen auf Basis der Modellparameter abbildet. Es sind nur die Baumpolygone zu sehen, die in dem Datensatz Sturmwurfexposition die Expositionsklassen 3 und 4 besitzen. Hierdurch wird dargestellt, welche Bäume bei einem Sturz potenziell gefährlich für die Schieneninfrastruktur sein könnten.]]></ows:Abstract> -->
-		<!-- <ows:Keywords> -->
-			<!-- <ows:Keyword>Sturmwurfwahrscheinlichkeit WMTS</ows:Keyword> -->
-		<!-- </ows:Keywords> -->
-		<!-- <ows:WGS84BoundingBox> -->
-			<!-- <ows:LowerCorner>4.34738512723 46.7961383601</ows:LowerCorner> -->
-			<!-- <ows:UpperCorner>16.9787143025 55.3482568074</ows:UpperCorner> -->
-		<!-- </ows:WGS84BoundingBox> -->
-		<!-- <ows:Identifier>sturmwurfwahrscheinlichkeit_wmts</ows:Identifier> -->
-		<!-- <ows:Metadata xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?SERVICE=CSW&amp;Version=2.0.2&amp;REQUEST=GetRecordById&amp;elementSetName=full&amp;OutputSchema=http://www.isotc211.org/2005/gmd&amp;ID=31211ec9-9e7d-4651-b0a1-95e78424cd7c"></ows:Metadata> -->
-		<!-- <Style> -->
-			<!-- <ows:Title>Style Sturmwurfwahrscheinlichkeit</ows:Title> -->
-			<!-- <ows:Identifier>sturmwurfwahrscheinlichkeit_wmts</ows:Identifier> -->
-			<!-- <LegendURL format="image/png" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/service?format=image%2Fpng&amp;layer=sturmwurfwahrscheinlichkeit_wmts&amp;sld_version=1.1.0&amp;request=GetLegendGraphic&amp;service=WMS&amp;version=1.1.1&amp;styles="/> -->
-		<!-- </Style> -->
-		<!-- <Format>image/png</Format> -->
-		<!-- <TileMatrixSetLink> -->
-			<!-- <TileMatrixSet>wmtsgrid</TileMatrixSet> -->
-		<!-- </TileMatrixSetLink> -->
-		<!-- <ResourceURL format="image/png" resourceType="tile" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/sturmwurfwahrscheinlichkeit_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/> -->
-		<!-- <ResourceURL format="text/html" resourceType="FeatureInfo" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/sturmwurfwahrscheinlichkeit_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}/{I}/{J}.html"/> -->
-	<!-- </Layer> -->
-	
-	<!-- <Layer> -->
-		<!-- <ows:Title>Sturmwurfgefährdung aggregiert WMTS</ows:Title> -->
-		<!-- <ows:Abstract><![CDATA[Dieser aggregierte Datensatz stellt eine kombinierte Ansicht der Exposition und der Wahrscheinlichkeit von Baumstürzen auf die Schieneninfrastruktur in NRW und Thüringen gegenüber Baumsturz dar. Dieses Produkt der Sturmwurfgefährdung ist das Ergebnis des Forschungsprojektes „Sensitivitätsanalyse Vegetation entlang der Bundesverkehrswege bezüglich Sturmwurfgefahren und Böschungsbränden“ des Deutschen Zentrums für Schienenverkehrsforschung beim Eisenbahn-Bundesamtes im Rahmen der Arbeiten des BMDV-Expertennetzwerks im Themenfeld Klimawandelfolgen und Anpassung (bmdv-expertennetzwerk.de). Die Sachinformationen und Gefährdungsklassen werden ausschließlich für den Bereich der Schieneninfrastruktur bereitgestellt. Dargestellt sind Streckenabschnitten mit je 500 m Länge. Für jeden Streckenabschnitt wurde der Mittelwert der Gefährdungsabschätzungen (siehe Sturmwurfwahrscheinlichkeit) für das Umstürzen von Baumbeständen mit der Exposition 3 und 4 (siehe Sturmwurfexposition), sowie die Anzahl der Bäume innerhalb des Abschnittes mit der Expositionsklasse 3 und 4 ermittelt. Der Datensatz wird in Form einer Matrix aus den beiden Attributen MaxEnt MW eines Streckenabschnittes und Anzahl Bäume je Streckenabschnitt dargestellt.]]></ows:Abstract> -->
-		<!-- <ows:Keywords> -->
-			<!-- <ows:Keyword>Sturmwurfgefährdung aggregiert WMTS</ows:Keyword> -->
-		<!-- </ows:Keywords> -->
-		<!-- <ows:WGS84BoundingBox> -->
-			<!-- <ows:LowerCorner>4.34738512723 46.7961383601</ows:LowerCorner> -->
-			<!-- <ows:UpperCorner>16.9787143025 55.3482568074</ows:UpperCorner> -->
-		<!-- </ows:WGS84BoundingBox> -->
-		<!-- <ows:Identifier>sturmwurfgefaehrdung_wmts</ows:Identifier> -->
-		<!-- <ows:Metadata xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?SERVICE=CSW&amp;Version=2.0.2&amp;REQUEST=GetRecordById&amp;elementSetName=full&amp;OutputSchema=http://www.isotc211.org/2005/gmd&amp;ID=2bce1125-01da-48f5-870c-03b4eab0d835"></ows:Metadata> -->
-		<!-- <Style> -->
-			<!-- <ows:Title>Style Sturmwurfgefährdung aggregiert</ows:Title> -->
-			<!-- <ows:Identifier>sturmwurfgefaehrdung_wmts</ows:Identifier> -->
-			<!-- <LegendURL format="image/png" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/service?format=image%2Fpng&amp;layer=sturmwurfgefaehrdung_wmts&amp;sld_version=1.1.0&amp;request=GetLegendGraphic&amp;service=WMS&amp;version=1.1.1&amp;styles="/> -->
-		<!-- </Style> -->
-		<!-- <Format>image/png</Format> -->
-		<!-- <TileMatrixSetLink> -->
-			<!-- <TileMatrixSet>wmtsgrid</TileMatrixSet> -->
-		<!-- </TileMatrixSetLink> -->
-		<!-- <ResourceURL format="image/png" resourceType="tile" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/sturmwurfgefaehrdung_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/> -->
-		<!-- <ResourceURL format="text/html" resourceType="FeatureInfo" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/sturmwurfgefaehrdung_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}/{I}/{J}.html"/> -->
-	<!-- </Layer> -->
-	
+  <ows:ServiceIdentification>
+    <ows:Title>(WMTS) Geoinformation Deutsches Zentrum f&#xFC;r Schienenverkehrsforschung beim Eisenbahn-Bundesamt (DZSF)</ows:Title>
+    <ows:Abstract>Geoinformationen des Deutschen Zentrums f&#xFC;r Schienenverkehrsforschung. Weiterf&#xFC;hrende Informationen zu den jeweiligen Features befinden sich in den jeweiligen Metadaten zum Feature.</ows:Abstract>
+    <ows:ServiceType>OGC WMTS</ows:ServiceType>
+    <ows:ServiceTypeVersion>1.0.0</ows:ServiceTypeVersion>
+    <ows:Fees>keine</ows:Fees>
+    <ows:AccessConstraints>Die Daten sind urheberrechtlich gesch&#xFC;tzt. Der Datensatz wird entgeltfrei mit Copyright: CC 0 https://creativecommons.org/publicdomain/zero/1.0/deed.de zur Verf&#xFC;gung gestellt.</ows:AccessConstraints>
+    <ows:Keywords>
+      <ows:Keyword>WMTS Geoinformation Deutsches Zentrum f&#xFC;r Schienenverkehrsforschung</ows:Keyword>
+    </ows:Keywords>
+  </ows:ServiceIdentification>
+  <ows:ServiceProvider>
+    <ows:ProviderName>Deutsches Zentrum f&#xFC;r Schienenverkehrsforschung beim Eisenbahn-Bundesamt (DZSF)</ows:ProviderName>
+    <ows:ProviderSite xlink:href="www.dzsf.de"/>
+    <ows:ServiceContact>
+      <ows:IndividualName/>
+      <ows:PositionName/>
+      <ows:ContactInfo>
+        <ows:Phone>
+          <ows:Voice>+49 351 47931-0</ows:Voice>
+        </ows:Phone>
+        <ows:Address>
+          <ows:DeliveryPoint>August-Bebel-Stra&#xDF;e 10</ows:DeliveryPoint>
+          <ows:City>Dresden</ows:City>
+          <ows:PostalCode>D-01219</ows:PostalCode>
+          <ows:Country>Germany</ows:Country>
+          <ows:ElectronicMailAddress>forschung@dzsf.bund.de</ows:ElectronicMailAddress>
+        </ows:Address>
+      </ows:ContactInfo>
+    </ows:ServiceContact>
+  </ows:ServiceProvider>
+  <ows:OperationsMetadata>
+    <ows:Operation name="GetCapabilities">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="https://geoinformation.eisenbahn-bundesamt.de/wmts/dzsf/WMTSCapabilities.xml?">
+            <ows:Constraint name="GetEncoding">
+              <ows:AllowedValues>
+                <ows:Value>KVP</ows:Value>
+              </ows:AllowedValues>
+            </ows:Constraint>
+          </ows:Get>
+        </ows:HTTP>
+      </ows:DCP>
+    </ows:Operation>
+    <ows:Operation name="GetTile">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/service?"/>
+        </ows:HTTP>
+      </ows:DCP>
+    </ows:Operation>
+    <ows:Operation name="GetFeatureInfo">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf?"/>
+        </ows:HTTP>
+      </ows:DCP>
+    </ows:Operation>
+    <ows:Operation name="LinkViewService">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?"/>
+        </ows:HTTP>
+      </ows:DCP>
+    </ows:Operation>
+    <!-- <ows:ExtendedCapabilities> -->
+    <ows:AccessConstraints>Nutzungsbedingungen: Die Daten sind urheberrechtlich gesch&#xFC;tzt. Der Datensatz wird entgeltfrei mit Copyright: CC 0 https://creativecommons.org/publicdomain/zero/1.0/deed.de zur Verf&#xFC;gung gestellt.</ows:AccessConstraints>
+    <inspire_vs:ExtendedCapabilities xmlns:inspire_vs="http://inspire.ec.europa.eu/schemas/inspire_vs/1.0">
+      <inspire_common:MetadataUrl xmlns:inspire_common="http://inspire.ec.europa.eu/schemas/common/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="inspire_common:resourceLocatorType">
+        <inspire_common:URL xmlns:inspire_common="http://inspire.ec.europa.eu/schemas/common/1.0">https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?Service=CSW&amp;Request=GetRecordById&amp;Version=2.0.2&amp;id=518e738e-35cf-4590-981c-93a86b695b9e&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full</inspire_common:URL>
+        <inspire_common:MediaType xmlns:inspire_common="http://inspire.ec.europa.eu/schemas/common/1.0">application/xml</inspire_common:MediaType>
+      </inspire_common:MetadataUrl>
+      <inspire_common:SupportedLanguages xmlns:inspire_common="http://inspire.ec.europa.eu/schemas/common/1.0">
+        <inspire_common:DefaultLanguage xmlns:inspire_common="http://inspire.ec.europa.eu/schemas/common/1.0">
+          <inspire_common:Language xmlns:inspire_common="http://inspire.ec.europa.eu/schemas/common/1.0">ger</inspire_common:Language>
+        </inspire_common:DefaultLanguage>
+      </inspire_common:SupportedLanguages>
+      <inspire_common:ResponseLanguage xmlns:inspire_common="http://inspire.ec.europa.eu/schemas/common/1.0">
+        <inspire_common:Language xmlns:inspire_common="http://inspire.ec.europa.eu/schemas/common/1.0">ger</inspire_common:Language>
+      </inspire_common:ResponseLanguage>
+    </inspire_vs:ExtendedCapabilities>
+    <!-- </ows:ExtendedCapabilities> -->
+  </ows:OperationsMetadata>
+  <Contents>
+    <Layer>
+      <ows:Title>Hangrutschungsgef&#xE4;hrdung WMTS</ows:Title>
+      <ows:Abstract>Der Datensatz stellt die Gef&#xE4;hrdung der Schieneninfrastruktur durch Hangrutschungen r&#xE4;umlich differenziert dar. Dieses Produkt der Hangrutschungsgef&#xE4;hrdung ist das Ergebnis des Forschungsprojektes &#x201E;Erstellung einer ingenieurgeologischen Gefahrenhinweiskarte zu Hang- und B&#xF6;schungsrutschungen entlang des deutschen Schienennetzes&#x201C; des Eisenbahn-Bundesamtes im Rahmen der Arbeiten des BMDV-Expertennetzwerks im Themenfeld Klimawandelfolgen und Anpassung (bmdv-expertennetzwerk.de). Die Sachinformationen und Gef&#xE4;hrdungsklassen werden ausschlie&#xDF;lich f&#xFC;r den Bereich der Schieneninfrastruktur bereitgestellt. Datengrundlage hierf&#xFC;r ist der Datensatz &#x201A;geo-strecke&#x2018;, welcher von der Deutschen Bahn (DB) unter der Lizenz Creative Commons Attribution 4.0 International (CC BY 4.0) bereitgestellt wird (http://data.deutschebahn.com/dataset/geo-strecke). Dargestellt sind die potenziellen Gef&#xE4;hrdungsbereiche und Puffer (0 m und 50 m) bezogen auf die Gefahrenklassen gr&#xF6;&#xDF;er bzw. gleich 10) (s. Abschlussbericht &#x201E;Erstellung einer ingenieurgeologischen Gefahrenhinweiskarte zu Hang- und B&#xF6;schungsrutschungen entlang des deutschen Schienennetzes&#x201C; - Eisenbahn-Bundesamt: 11vb/018-0099#22; S. 100). Das Attribut &#x201E;Gef_ber&#x201C; wurde hinzugef&#xFC;gt und in drei Klassen unterteilt in Bereiche der Gefahrenklasse &gt;= 10 wurde der direkte Einflussbereich (0) sowie ein Puffer von 50 m (50) ber&#xFC;cksichtigt. Bereiche mit einer geringeren errechneten Gefahrenklasse oder au&#xDF;erhalb des Puffers sind mit &#x201A;999&#x2018; kodiert.</ows:Abstract>
+      <ows:Keywords>
+        <ows:Keyword>Hangrutschungsgef&#xE4;hrdung WMTS</ows:Keyword>
+      </ows:Keywords>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>4.34738512723 46.7961383601</ows:LowerCorner>
+        <ows:UpperCorner>16.9787143025 55.3482568074</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>hangrutschungsgefaehrdung_wmts</ows:Identifier>
+      <ows:Metadata xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?SERVICE=CSW&amp;Version=2.0.2&amp;REQUEST=GetRecordById&amp;elementSetName=full&amp;OutputSchema=http://www.isotc211.org/2005/gmd&amp;ID=81dd034e-30a7-462a-9da5-6163a227fd50"/>
+      <Style>
+        <ows:Title>Style Hangrutschungsgef&#xE4;hrdung</ows:Title>
+        <ows:Identifier>hangrutschungsgefaehrdung_wmts</ows:Identifier>
+        <LegendURL xmlns:xlink="http://www.w3.org/1999/xlink" format="image/png" xlink:type="simple" xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/service?format=image%2Fpng&amp;layer=hangrutschungsgefaehrdung_wmts&amp;sld_version=1.1.0&amp;request=GetLegendGraphic&amp;service=WMS&amp;version=1.1.1&amp;styles="/>
+      </Style>
+      <Format>image/png</Format>
+      <TileMatrixSetLink>
+        <TileMatrixSet>wmtsgrid</TileMatrixSet>
+      </TileMatrixSetLink>
+      <ResourceURL format="image/png" resourceType="tile" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/hangrutschungsgefaehrdung_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/>
+      <ResourceURL format="text/html" resourceType="FeatureInfo" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/hangrutschungsgefaehrdung_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}/{I}/{J}.html"/>
+    </Layer>
+    <Layer>
+      <ows:Title>Hochwassergef&#xE4;hrdung_HQ100 WMTS</ows:Title>
+      <ows:Abstract>Der Datensatz stellt die Gef&#xE4;hrdung der Schieneninfrastruktur durch Hangrutschungen r&#xE4;umlich differenziert dar. Dieses Produkt der Hangrutschungsgef&#xE4;hrdung ist das Ergebnis des Forschungsprojektes &#x201E;Erstellung einer ingenieurgeologischen Gefahrenhinweiskarte zu Hang- und B&#xF6;schungsrutschungen entlang des deutschen Schienennetzes&#x201C; des Eisenbahn-Bundesamtes im Rahmen der Arbeiten des BMDV-Expertennetzwerks im Themenfeld Klimawandelfolgen und Anpassung (bmdv-expertennetzwerk.de). Die Sachinformationen und Gef&#xE4;hrdungsklassen werden ausschlie&#xDF;lich f&#xFC;r den Bereich der Schieneninfrastruktur bereitgestellt. Datengrundlage hierf&#xFC;r ist der Datensatz &#x201A;geo-strecke&#x2018;, welcher von der Deutschen Bahn (DB) unter der Lizenz Creative Commons Attribution 4.0 International (CC BY 4.0) bereitgestellt wird (http://data.deutschebahn.com/dataset/geo-strecke). Dargestellt sind die potenziellen Gef&#xE4;hrdungsbereiche und Puffer (0 m und 50 m) bezogen auf die Gefahrenklassen gr&#xF6;&#xDF;er bzw. gleich 10) (s. Abschlussbericht &#x201E;Erstellung einer ingenieurgeologischen Gefahrenhinweiskarte zu Hang- und B&#xF6;schungsrutschungen entlang des deutschen Schienennetzes&#x201C; - Eisenbahn-Bundesamt: 11vb/018-0099#22; S. 100). Das Attribut &#x201E;Gef_ber&#x201C; wurde hinzugef&#xFC;gt und in drei Klassen unterteilt in Bereiche der Gefahrenklasse &gt;= 10 wurde der direkte Einflussbereich (0) sowie ein Puffer von 50 m (50) ber&#xFC;cksichtigt. Bereiche mit einer geringeren errechneten Gefahrenklasse oder au&#xDF;erhalb des Puffers sind mit &#x201A;999&#x2018; kodiert.</ows:Abstract>
+      <ows:Keywords>
+        <ows:Keyword>Hochwassergef&#xE4;hrdung_HQ100 WMTS</ows:Keyword>
+      </ows:Keywords>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>4.34738512723 46.7961383601</ows:LowerCorner>
+        <ows:UpperCorner>16.9787143025 55.3482568074</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>hochwassergefaehrdung_wmts</ows:Identifier>
+      <ows:Metadata xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?SERVICE=CSW&amp;Version=2.0.2&amp;REQUEST=GetRecordById&amp;elementSetName=full&amp;OutputSchema=http://www.isotc211.org/2005/gmd&amp;ID=d8034bfc-b7ec-4f19-bbe0-63f61b9a31e8"/>
+      <Style>
+        <ows:Title>Style Hochwassergefaehrdung_HQ100</ows:Title>
+        <ows:Identifier>hochwassergefaehrdung_wmts</ows:Identifier>
+        <LegendURL xmlns:xlink="http://www.w3.org/1999/xlink" format="image/png" xlink:type="simple" xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/service?format=image%2Fpng&amp;layer=hochwassergefaehrdung_wmts&amp;sld_version=1.1.0&amp;request=GetLegendGraphic&amp;service=WMS&amp;version=1.1.1&amp;styles="/>
+      </Style>
+      <Format>image/png</Format>
+      <TileMatrixSetLink>
+        <TileMatrixSet>wmtsgrid</TileMatrixSet>
+      </TileMatrixSetLink>
+      <ResourceURL format="image/png" resourceType="tile" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/hochwassergefaehrdung_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/>
+      <ResourceURL format="text/html" resourceType="FeatureInfo" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/hochwassergefaehrdung_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}/{I}/{J}.html"/>
+    </Layer>
+    <Layer>
+      <ows:Title>potentielle Hangmuren WMTS</ows:Title>
+      <ows:Abstract><![CDATA[Der Datensatz stellt die potentiellen Fließwege und Reichweiten simulierter Hangmuren entlang des deutschen Schienennetzes dar. Dieses Produkt der potentiellen Hangmuren ist das Ergebnis des Forschungsprojektes „Analysen zu schnellen wasserhaltigen Massenbewegungen: Bundesweite Untersuchungen zur Exposition des deutschen Schienennetzes und Modellierungen der räumlichen Ausbreitung“ des Eisenbahn-Bundesamtes im Rahmen der Arbeiten des BMDV-Expertennetzwerks im Themenfeld Klimawandelfolgen und Anpassung (bmdv-expertennetzwerk.de). Die Sachinformationen und Gefährdungsklassen werden ausschließlich für den anliegenden Bereich der Schieneninfrastruktur bereitgestellt. Dargestellt sind die potenziellen simulierten Hangmuren in Abstufung der Größe nach kleinen, mittleren und großen Ereignissen  (s. Abschlussbericht des Projektes auf der Website des dzsf (www.dzsf.bund.de)). Wert 1 = kleines Ereignis, 2 = mittleres Ereignis, 3 = großes Ereignis. Dabei gilt für die Größenordnung der simulierten Kubaturen: <100 m3: kleines Ereignis 100–1'000 m3: mittleres Ereignis = 1'000 m3: großes Ereignis Der Datensatz bildet keine Eintrittswahrscheinlichkeit der Ereignisse ab. Bestehende Schutzmaßnahmen und dadurch gesicherte Bereiche wurden in den Modellierungen nicht berücksichtigt.]]></ows:Abstract>
+      <ows:Keywords>
+        <ows:Keyword>potentielle Hangmuren WMTS</ows:Keyword>
+      </ows:Keywords>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>4.34738512723 46.7961383601</ows:LowerCorner>
+        <ows:UpperCorner>16.9787143025 55.3482568074</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>potentielle_hangmuren_wmts</ows:Identifier>
+      <ows:Metadata xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?SERVICE=CSW&amp;Version=2.0.2&amp;REQUEST=GetRecordById&amp;elementSetName=full&amp;OutputSchema=http://www.isotc211.org/2005/gmd&amp;ID=d665f78a-cf97-491a-841a-7252d53bfbc5"/>
+      <Style>
+        <ows:Title>Style potentielle Hangmuren</ows:Title>
+        <ows:Identifier>potentielle_hangmuren_wmts</ows:Identifier>
+        <LegendURL xmlns:xlink="http://www.w3.org/1999/xlink" format="image/png" xlink:type="simple" xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/service?format=image%2Fpng&amp;layer=potentielle_hangmuren_wmts&amp;sld_version=1.1.0&amp;request=GetLegendGraphic&amp;service=WMS&amp;version=1.1.1&amp;styles="/>
+      </Style>
+      <Format>image/png</Format>
+      <TileMatrixSetLink>
+        <TileMatrixSet>wmtsgrid</TileMatrixSet>
+      </TileMatrixSetLink>
+      <ResourceURL format="image/png" resourceType="tile" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/potentielle_hangmuren_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/>
+      <ResourceURL format="text/html" resourceType="FeatureInfo" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/potentielle_hangmuren_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}/{I}/{J}.html"/>
+    </Layer>
+    <Layer>
+      <ows:Title>potentielle Murg&#xE4;nge WMTS</ows:Title>
+      <ows:Abstract><![CDATA[Der Datensatz stellt die potentiellen Fließwege und Reichweiten simulierter Murgänge entlang des deutschen Schienennetzes dar. Dieses Produkt der potentiellen Murgänge ist das Ergebnis des Forschungsprojektes „Analysen zu schnellen wasserhaltigen Massenbewegungen: Bundesweite Untersuchungen zur Exposition des deutschen Schienennetzes und Modellierungen der räumlichen Ausbreitung“ des Eisenbahn-Bundesamtes im Rahmen der Arbeiten des BMDV-Expertennetzwerks im Themenfeld Klimawandelfolgen und Anpassung (bmdv-expertennetzwerk.de). Die Sachinformationen und Gefährdungsklassen werden ausschließlich für den anliegenden Bereich der Schieneninfrastruktur bereitgestellt. Dargestellt sind die potenziellen simulierten Murgänge in Abstufung der Größe nach kleinen, mittleren und großen Ereignissen  (s. Abschlussbericht des Projektes auf der Website des dzsf (www.dzsf.bund.de)). Wert 1 = kleines Ereignis, 2 = mittleres Ereignis, 3 = großes Ereignis. Dabei gilt für die Größenordnung der simulierten Kubaturen: <100 m3: kleines Ereignis 100–1'000 m3: mittleres Ereignis = 1'000 m3: großes Ereignis Der Datensatz bildet keine Eintrittswahrscheinlichkeit der Ereignisse ab. Bestehende Schutzmaßnahmen und dadurch gesicherte Bereiche wurden in den Modellierungen nicht berücksichtigt.]]></ows:Abstract>
+      <ows:Keywords>
+        <ows:Keyword>potentielle Murg&#xE4;nge WMTS</ows:Keyword>
+      </ows:Keywords>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>4.34738512723 46.7961383601</ows:LowerCorner>
+        <ows:UpperCorner>16.9787143025 55.3482568074</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>potentielle_murgaenge_wmts</ows:Identifier>
+      <ows:Metadata xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?SERVICE=CSW&amp;Version=2.0.2&amp;REQUEST=GetRecordById&amp;elementSetName=full&amp;OutputSchema=http://www.isotc211.org/2005/gmd&amp;ID=f318cd4f-8e4b-4f10-9437-93b1b4ae6c0a"/>
+      <Style>
+        <ows:Title>Style potentielle Murg&#xE4;nge</ows:Title>
+        <ows:Identifier>potentielle_murgaenge_wmts</ows:Identifier>
+        <LegendURL xmlns:xlink="http://www.w3.org/1999/xlink" format="image/png" xlink:type="simple" xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/service?format=image%2Fpng&amp;layer=potentielle_murgaenge_wmts&amp;sld_version=1.1.0&amp;request=GetLegendGraphic&amp;service=WMS&amp;version=1.1.1&amp;styles="/>
+      </Style>
+      <Format>image/png</Format>
+      <TileMatrixSetLink>
+        <TileMatrixSet>wmtsgrid</TileMatrixSet>
+      </TileMatrixSetLink>
+      <ResourceURL format="image/png" resourceType="tile" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/potentielle_murgaenge_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/>
+      <ResourceURL format="text/html" resourceType="FeatureInfo" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/potentielle_murgaenge_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}/{I}/{J}.html"/>
+    </Layer>
+    <Layer>
+      <ows:Title>potentielle Murg&#xE4;nge und Hangmuren WMTS</ows:Title>
+      <ows:Abstract><![CDATA[Der Datensatz stellt die potentiellen Fließwege und Reichweiten simulierter Murgänge (mg) und Hangmuren (hm) entlang des deutschen Schienennetzes dar. Dieses Produkt der potentiellen Murgänge und Hangmuren ist das Ergebnis des Forschungsprojektes „Analysen zu schnellen wasserhaltigen Massenbewegungen: Bundesweite Untersuchungen zur Exposition des deutschen Schienennetzes und Modellierungen der räumlichen Ausbreitung“ des Eisenbahn-Bundesamtes im Rahmen der Arbeiten des BMDV-Expertennetzwerks im Themenfeld Klimawandelfolgen und Anpassung (bmdv-expertennetzwerk.de). Die Sachinformationen und Gefährdungsklassen werden ausschließlich für den anliegenden Bereich der Schieneninfrastruktur bereitgestellt. Dargestellt sind die potenziellen simulierten Murgänge und hangmuren in Abstufung der Größe nach kleinen, mittleren und großen Ereignissen  (s. Abschlussbericht des Projektes auf der Website des dzsf (www.dzsf.bund.de)). Wert 1 = kleines Ereignis, 2 = mittleres Ereignis, 3 = großes Ereignis. In diesem Datensatz sind die potenziellen simulierten Ereignisse der Murgänge und Hangmuren kombiniert abgebildet. Eine Prozessunterscheidung ist über die Ansicht der Datensätze Murganggefährdung und Hangmurengefährdung möglich. Dabei gilt für die Größenordnung der simulierten Kubaturen: <100 m3: kleines Ereignis 100–1'000 m3: mittleres Ereignis = 1'000 m3: großes Ereignis Der Datensatz bildet keine Eintrittswahrscheinlichkeit der Ereignisse ab. Bestehende Schutzmaßnahmen und dadurch gesicherte Bereiche wurden in den Modellierungen nicht berücksichtigt.]]></ows:Abstract>
+      <ows:Keywords>
+        <ows:Keyword>potentielle Murg&#xE4;nge und Hangmuren WMTS</ows:Keyword>
+      </ows:Keywords>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>4.34738512723 46.7961383601</ows:LowerCorner>
+        <ows:UpperCorner>16.9787143025 55.3482568074</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>potentielle_murgaenge_mangmuren_wmts</ows:Identifier>
+      <ows:Metadata xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?SERVICE=CSW&amp;Version=2.0.2&amp;REQUEST=GetRecordById&amp;elementSetName=full&amp;OutputSchema=http://www.isotc211.org/2005/gmd&amp;ID=0198904f-7037-4b4f-afca-c5bb786b9ac0"/>
+      <Style>
+        <ows:Title>Style potentielle Murg&#xE4;nge und Hangmuren</ows:Title>
+        <ows:Identifier>potentielle_murgaenge_mangmuren_wmts</ows:Identifier>
+        <LegendURL xmlns:xlink="http://www.w3.org/1999/xlink" format="image/png" xlink:type="simple" xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/service?format=image%2Fpng&amp;layer=potentielle_murgaenge_mangmuren_wmts&amp;sld_version=1.1.0&amp;request=GetLegendGraphic&amp;service=WMS&amp;version=1.1.1&amp;styles="/>
+      </Style>
+      <Format>image/png</Format>
+      <TileMatrixSetLink>
+        <TileMatrixSet>wmtsgrid</TileMatrixSet>
+      </TileMatrixSetLink>
+      <ResourceURL format="image/png" resourceType="tile" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/potentielle_murgaenge_mangmuren_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/>
+      <ResourceURL format="text/html" resourceType="FeatureInfo" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/potentielle_murgaenge_mangmuren_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}/{I}/{J}.html"/>
+    </Layer>
+    <Layer>
+      <ows:Title>Hangmurengef&#xE4;hrdung WMTS</ows:Title>
+      <ows:Abstract><![CDATA[Der Datensatz stellt die Gefährdung der Schieneninfrastruktur durch Hangmuren räumlich differenziert dar. Dieses Produkt der Hangmurengefährdung ist das Ergebnis des Forschungsprojektes Analysen zu schnellen wasserhaltigen Massenbewegungen: Bundesweite Untersuchungen zur Exposition des deutschen Schienennetzes und Modellierungen der räumlichen Ausbreitung des Eisenbahn-Bundesamtes im Rahmen der Arbeiten des BMDV-Expertennetzwerks im Themenfeld Klimawandelfolgen und Anpassung (bmdv-expertennetzwerk.de). Die Sachinformationen und Gefährdungsklassen werden ausschließlich für den Bereich der Schieneninfrastruktur bereitgestellt. Datengrundlage hierfür ist der Datensatz ‚geo-strecke‘ (Stand 10/2019), welcher von der Deutschen Bahn (DB) unter der Lizenz Creative Commons Attribution 4.0 International (CC BY 4.0) bereitgestellt wird (http://data.deutschebahn.com/dataset/geo-strecke). Dargestellt sind die potenziellen Gefährdungsbereiche der Schieneninfrastruktur kleiner, mittlerer und großer potenzieller simulierter Ereignisse  (s. Abschlussbericht des Projektes auf der Website des dzsf (www.dzsf.bund.de)). Das Attribut Gefährdung unterscheidet diese drei Gefahrenklasse (1 = kleines Ereignis, 2 = mittleres Ereignis, 3 = großes Ereignis) sowie 0 = keine Gefährdung und 99 = Tunnel. Dabei gilt für die Größenordnung der simulierten Kubaturen: <100 m3: kleines Ereignis 100–1000 m3: mittleres Ereignis = 1000 m3: großes Ereignis Der Datensatz bildet keine Eintrittswahrscheinlichkeit der Ereignisse ab. Bestehende Schutzmaßnahmen und dadurch gesicherte Bereiche wurden in den Modellierungen nicht berücksichtigt.]]></ows:Abstract>
+      <ows:Keywords>
+        <ows:Keyword>Hangmurengef&#xE4;hrdung WMTS</ows:Keyword>
+      </ows:Keywords>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>4.34738512723 46.7961383601</ows:LowerCorner>
+        <ows:UpperCorner>16.9787143025 55.3482568074</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>hangmurengefaehrdung_wmts</ows:Identifier>
+      <ows:Metadata xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?SERVICE=CSW&amp;Version=2.0.2&amp;REQUEST=GetRecordById&amp;elementSetName=full&amp;OutputSchema=http://www.isotc211.org/2005/gmd&amp;ID=d823fd13-af81-4184-bcbf-3f4fc1c6d81c"/>
+      <Style>
+        <ows:Title>Style Hangmurengef&#xE4;hrdung</ows:Title>
+        <ows:Identifier>hangmurengefaehrdung_wmts</ows:Identifier>
+        <LegendURL xmlns:xlink="http://www.w3.org/1999/xlink" format="image/png" xlink:type="simple" xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/service?format=image%2Fpng&amp;layer=hangmurengefaehrdung_wmts&amp;sld_version=1.1.0&amp;request=GetLegendGraphic&amp;service=WMS&amp;version=1.1.1&amp;styles="/>
+      </Style>
+      <Format>image/png</Format>
+      <TileMatrixSetLink>
+        <TileMatrixSet>wmtsgrid</TileMatrixSet>
+      </TileMatrixSetLink>
+      <ResourceURL format="image/png" resourceType="tile" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/hangmurengefaehrdung_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/>
+      <ResourceURL format="text/html" resourceType="FeatureInfo" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/hangmurengefaehrdung_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}/{I}/{J}.html"/>
+    </Layer>
+    <Layer>
+      <ows:Title>Murganggef&#xE4;hrdung WMTS</ows:Title>
+      <ows:Abstract><![CDATA[Der Datensatz stellt die Gefährdung der Schieneninfrastruktur durch Murgänge räumlich differenziert dar. Dieses Produkt der Murganggefährdung ist das Ergebnis des Forschungsprojektes „Analysen zu schnellen wasserhaltigen Massenbewegungen: Bundesweite Untersuchungen zur Exposition des deutschen Schienennetzes und Modellierungen der räumlichen Ausbreitung“ des Eisenbahn-Bundesamtes im Rahmen der Arbeiten des BMDV-Expertennetzwerks im Themenfeld Klimawandelfolgen und Anpassung (bmdv-expertennetzwerk.de). Die Sachinformationen und Gefährdungsklassen werden ausschließlich für den Bereich der Schieneninfrastruktur bereitgestellt. Datengrundlage hierfür ist der Datensatz ‚geo-strecke‘ (Stand 10/2019), welcher von der Deutschen Bahn (DB) unter der Lizenz Creative Commons Attribution 4.0 International (CC BY 4.0) bereitgestellt wird (http://data.deutschebahn.com/dataset/geo-strecke). Dargestellt sind die potenziellen Gefährdungsbereiche der Schieneninfrastruktur kleiner, mittlerer und großer potenzieller simulierter Ereignisse  (s. Abschlussbericht des Projektes auf der Website des dzsf (www.dzsf.bund.de)). Das Attribut „Gefährdung“ unterscheidet diese drei Gefahrenklasse (1 = kleines Ereignis, 2 = mittleres Ereignis, 3 = großes Ereignis) sowie 0 = keine Gefährdung und 99 = Tunnel. Dabei gilt für die Größenordnung der simulierten Kubaturen: <100 m3: kleines Ereignis 100–1000 m3: mittleres Ereignis = 1000 m3: großes Ereignis Der Datensatz bildet keine Eintrittswahrscheinlichkeit der Ereignisse ab. Bestehende Schutzmaßnahmen und dadurch gesicherte Bereiche wurden in den Modellierungen nicht berücksichtigt.]]></ows:Abstract>
+      <ows:Keywords>
+        <ows:Keyword>Murganggef&#xE4;hrdung WMTS</ows:Keyword>
+      </ows:Keywords>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>4.34738512723 46.7961383601</ows:LowerCorner>
+        <ows:UpperCorner>16.9787143025 55.3482568074</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>murganggefaehrdung_wmts</ows:Identifier>
+      <ows:Metadata xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?SERVICE=CSW&amp;Version=2.0.2&amp;REQUEST=GetRecordById&amp;elementSetName=full&amp;OutputSchema=http://www.isotc211.org/2005/gmd&amp;ID=52c9d739-b2bc-4a55-adf8-45135ed4b8fb"/>
+      <Style>
+        <ows:Title>Style Murganggef&#xE4;hrdung</ows:Title>
+        <ows:Identifier>murganggefaehrdung_wmts</ows:Identifier>
+        <LegendURL xmlns:xlink="http://www.w3.org/1999/xlink" format="image/png" xlink:type="simple" xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/service?format=image%2Fpng&amp;layer=murganggefaehrdung_wmts&amp;sld_version=1.1.0&amp;request=GetLegendGraphic&amp;service=WMS&amp;version=1.1.1&amp;styles="/>
+      </Style>
+      <Format>image/png</Format>
+      <TileMatrixSetLink>
+        <TileMatrixSet>wmtsgrid</TileMatrixSet>
+      </TileMatrixSetLink>
+      <ResourceURL format="image/png" resourceType="tile" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/murganggefaehrdung_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/>
+      <ResourceURL format="text/html" resourceType="FeatureInfo" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/murganggefaehrdung_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}/{I}/{J}.html"/>
+    </Layer>
+    <Layer>
+      <ows:Title>Murgang- und Hangmurengef&#xE4;hrdung WMTS</ows:Title>
+      <ows:Abstract><![CDATA[Der Datensatz stellt die Gefährdung der Schieneninfrastruktur durch Murgänge (mg) und Hangmuren (hm) räumlich differenziert dar. Dieses Produkt der Murgang- und Hangmurengefährdung ist das Ergebnis des Forschungsprojektes Analysen zu schnellen wasserhaltigen Massenbewegungen: Bundesweite Untersuchungen zur Exposition des deutschen Schienennetzes und Modellierungen der räumlichen Ausbreitung des Eisenbahn-Bundesamtes im Rahmen der Arbeiten des BMDV-Expertennetzwerks im Themenfeld Klimawandelfolgen und Anpassung (bmdv-expertennetzwerk.de). Die Sachinformationen und Gefährdungsklassen werden ausschließlich für den Bereich der Schieneninfrastruktur bereitgestellt. Datengrundlage hierfür ist der Datensatz geo-strecke (Stand 10/2019), welcher von der Deutschen Bahn (DB) unter der Lizenz Creative Commons Attribution 4.0 International (CC BY 4.0) bereitgestellt wird (http://data.deutschebahn.com/dataset/geo-strecke). Dargestellt sind die potenziellen Gefährdungsbereiche der Schieneninfrastruktur kleiner, mittlerer und großer potenzieller simulierter Ereignisse (s. Abschlussbericht des Projektes auf der Website des dzsf (www.dzsf.bund.de)). Das Attribut Gefährdung unterscheidet diese drei Gefahrenklasse (1 = kleines Ereignis, 2 = mittleres Ereignis, 3 = großes Ereignis) sowie 0 = keine Gefährdung und 99 = Tunnel. In diesem Datensatz sind die potenziellen simulierten Ereignisse der Murgänge und Hangmuren kombiniert abgebildet. Eine Prozessunterscheidung ist über die Ansicht der Datensätze Murganggefährdung und Hangmurengefährdung möglich. Dabei gilt für die Größenordnung der simulierten Kubaturen: <100 m3: kleines Ereignis 100–1000 m3: mittleres Ereignis = 1000 m3: großes Ereignis Der Datensatz bildet keine Eintrittswahrscheinlichkeit der Ereignisse ab. Bestehende Schutzmaßnahmen und dadurch gesicherte Bereiche wurden in den Modellierungen nicht berücksichtigt.]]></ows:Abstract>
+      <ows:Keywords>
+        <ows:Keyword>Murgang- und Hangmurengef&#xE4;hrdung WMTS</ows:Keyword>
+      </ows:Keywords>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>4.34738512723 46.7961383601</ows:LowerCorner>
+        <ows:UpperCorner>16.9787143025 55.3482568074</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>mur_und_hangmur_wmts</ows:Identifier>
+      <ows:Metadata xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?SERVICE=CSW&amp;Version=2.0.2&amp;REQUEST=GetRecordById&amp;elementSetName=full&amp;OutputSchema=http://www.isotc211.org/2005/gmd&amp;ID=a14d6fe3-4363-483e-92ee-7cceb8f80cb0"/>
+      <Style>
+        <ows:Title>Style Murgang- und Hangmurengef&#xE4;hrdung</ows:Title>
+        <ows:Identifier>mur_und_hangmur_wmts</ows:Identifier>
+        <LegendURL xmlns:xlink="http://www.w3.org/1999/xlink" format="image/png" xlink:type="simple" xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/service?format=image%2Fpng&amp;layer=mur_und_hangmur_wmts&amp;sld_version=1.1.0&amp;request=GetLegendGraphic&amp;service=WMS&amp;version=1.1.1&amp;styles="/>
+      </Style>
+      <Format>image/png</Format>
+      <TileMatrixSetLink>
+        <TileMatrixSet>wmtsgrid</TileMatrixSet>
+      </TileMatrixSetLink>
+      <ResourceURL format="image/png" resourceType="tile" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/mur_und_hangmur_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/>
+      <ResourceURL format="text/html" resourceType="FeatureInfo" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/mur_und_hangmur_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}/{I}/{J}.html"/>
+    </Layer>
+    <Layer>
+      <ows:Title>(Beta) B&#xF6;schungsbrandgef&#xE4;hrdung aggregiert WMTS</ows:Title>
+      <ows:Abstract>Der Datensatz stellt die Gef&#xE4;hrdung von Fl&#xE4;chen entlang der Schieneninfrastruktur gegen&#xFC;ber dem Entz&#xFC;nden und Ausbreiten von B&#xF6;schungsbr&#xE4;nden dar.  Dieses Produkt der B&#xF6;schungsbrandgef&#xE4;hrdung (aggregiert) ist das Ergebnis des Forschungsprojektes &#x201E;Sensitivit&#xE4;tsanalyse Vegetation entlang der Bundesverkehrswege bez&#xFC;glich Sturmwurfgefahren und B&#xF6;schungsbr&#xE4;nden&#x201C; des Deutschen Zentrums f&#xFC;r Schienenverkehrsforschung beim Eisenbahn-Bundesamtes im Rahmen der Arbeiten des BMDV-Expertennetzwerks im Themenfeld Klimawandelfolgen und Anpassung (bmdv-expertennetzwerk.de). Die Sachinformationen und Gef&#xE4;hrdungsklassen werden ausschlie&#xDF;lich f&#xFC;r den Bereich der Schieneninfrastruktur bereitgestellt. Datengrundlage hierf&#xFC;r ist der Datensatz &#x201A;geo-strecke&#x2018;, welcher von der Deutschen Bahn (DB) unter der Lizenz Creative Commons Attribution 4.0 International (CC BY 4.0) bereitgestellt wird (http://data.deutschebahn.com/dataset/geo-strecke). Dargestellt sind Gef&#xE4;hrdungsabsch&#xE4;tzungen f&#xFC;r das Entz&#xFC;nden und Ausbreiten von B&#xF6;schungsbr&#xE4;nden im Bereich der Schieneninfrasturktur zu jeweils 50 m beidseitig des Gleises. Die initiale Gef&#xE4;hrdungsabsch&#xE4;tzung erfolgte mithilfe eines MaxEnt Modells basierend auf vergangenen Ereignisse sowie Datens&#xE4;tzen zu Topographie, Vegetation, Meteorologie und Bahnspezifischen Parametern. Das Gef&#xE4;hrdungspotenzial wird dabei zwischen 0-1 angegeben, wobei ein h&#xF6;herer Wert lediglich eine h&#xF6;here Anf&#xE4;lligkeit eines Bereiches zu Entz&#xFC;ndung und Brandausbreitung auf Basis der Modellparameter abbildet. In diesem Datensatz werden die Gefahrenpotenziale aggegriert auf Streckenabschnitte mit einer L&#xE4;nge von je etwa 500 m L&#xE4;nge dargestellt. Zur Aggregation wurde der Mittelwert aller Pixel innerhalb des Streckenabschnittes gebildet. Ein h&#xF6;herer Wert des Attributes ""MaxEnt"" beschreibt somit, dass innerhalb dieses Streckenabschnittes Rasterzellen mit einer hohen Gef&#xE4;hrdungsabsch&#xE4;tzung vorhanden sind. Aufgrund der geringen Datenbasis vergangener Ereignisse sind die Gef&#xE4;hrdungsabsch&#xE4;tzungen als eine erste Einsch&#xE4;tzung zu interpretieren. Eine umfangreiche Validierung und Kontrolle der Daten wird angestrebt.</ows:Abstract>
+      <ows:Keywords>
+        <ows:Keyword>B&#xF6;schungsbrandgef&#xE4;hrdung aggregiert WMTS</ows:Keyword>
+      </ows:Keywords>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>4.34738512723 46.7961383601</ows:LowerCorner>
+        <ows:UpperCorner>16.9787143025 55.3482568074</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>boeschungsbrandgefaehrdung_agg_wmts</ows:Identifier>
+      <ows:Metadata xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?SERVICE=CSW&amp;Version=2.0.2&amp;REQUEST=GetRecordById&amp;elementSetName=full&amp;OutputSchema=http://www.isotc211.org/2005/gmd&amp;ID=32f97fc9-24aa-427a-b5fe-b62f214b413d"/>
+      <Style>
+        <ows:Title>Style B&#xF6;schungsbrandgef&#xE4;hrdung aggregiert</ows:Title>
+        <ows:Identifier>boeschungsbrandgefaehrdung_agg_wmts</ows:Identifier>
+        <LegendURL xmlns:xlink="http://www.w3.org/1999/xlink" format="image/png" xlink:type="simple" xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/service?format=image%2Fpng&amp;layer=boeschungsbrandgefaehrdung_agg_wmts&amp;sld_version=1.1.0&amp;request=GetLegendGraphic&amp;service=WMS&amp;version=1.1.1&amp;styles="/>
+      </Style>
+      <Format>image/png</Format>
+      <TileMatrixSetLink>
+        <TileMatrixSet>wmtsgrid</TileMatrixSet>
+      </TileMatrixSetLink>
+      <ResourceURL format="image/png" resourceType="tile" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/boeschungsbrandgefaehrdung_agg_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/>
+      <ResourceURL format="text/html" resourceType="FeatureInfo" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/boeschungsbrandgefaehrdung_agg_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}/{I}/{J}.html"/>
+    </Layer>
+    <Layer>
+      <ows:Title>(Beta) B&#xF6;schungsbrandgef&#xE4;hrdung WMTS</ows:Title>
+      <ows:Abstract><![CDATA[Der Datensatz stellt die potentiellen Fließwege und Reichweiten simulierter Murgänge (mg) und Hangmuren (hm) entlang des deutschen Schienennetzes dar. Dieses Produkt der potentiellen Murgänge und Hangmuren ist das Ergebnis des Forschungsprojektes „Analysen zu schnellen wasserhaltigen Massenbewegungen: Bundesweite Untersuchungen zur Exposition des deutschen Schienennetzes und Modellierungen der räumlichen Ausbreitung“ des Eisenbahn-Bundesamtes im Rahmen der Arbeiten des BMDV-Expertennetzwerks im Themenfeld Klimawandelfolgen und Anpassung (bmdv-expertennetzwerk.de). Die Sachinformationen und Gefährdungsklassen werden ausschließlich für den anliegenden Bereich der Schieneninfrastruktur bereitgestellt. Dargestellt sind die potenziellen simulierten Murgänge und hangmuren in Abstufung der Größe nach kleinen, mittleren und großen Ereignissen  (s. Abschlussbericht des Projektes auf der Website des dzsf (www.dzsf.bund.de)). Wert 1 = kleines Ereignis, 2 = mittleres Ereignis, 3 = großes Ereignis. In diesem Datensatz sind die potenziellen simulierten Ereignisse der Murgänge und Hangmuren kombiniert abgebildet. Eine Prozessunterscheidung ist über die Ansicht der Datensätze Murganggefährdung und Hangmurengefährdung möglich. Dabei gilt für die Größenordnung der simulierten Kubaturen: <100 m3: kleines Ereignis 100–1'000 m3: mittleres Ereignis = 1'000 m3: großes Ereignis Der Datensatz bildet keine Eintrittswahrscheinlichkeit der Ereignisse ab. Bestehende Schutzmaßnahmen und dadurch gesicherte Bereiche wurden in den Modellierungen nicht berücksichtigt.]]></ows:Abstract>
+      <ows:Keywords>
+        <ows:Keyword>B&#xF6;schungsbrandgef&#xE4;hrdung WMTS</ows:Keyword>
+      </ows:Keywords>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>4.34738512723 46.7961383601</ows:LowerCorner>
+        <ows:UpperCorner>16.9787143025 55.3482568074</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>boeschungsbrandgefaehrdung_wmts</ows:Identifier>
+      <ows:Metadata xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?SERVICE=CSW&amp;Version=2.0.2&amp;REQUEST=GetRecordById&amp;elementSetName=full&amp;OutputSchema=http://www.isotc211.org/2005/gmd&amp;ID=a2692559-705b-44a8-ae85-090c0d5f4d4f"/>
+      <Style>
+        <ows:Title>Style B&#xF6;schungsbrandgef&#xE4;hrdung aggregiert</ows:Title>
+        <ows:Identifier>boeschungsbrandgefaehrdung_wmts</ows:Identifier>
+        <LegendURL xmlns:xlink="http://www.w3.org/1999/xlink" format="image/png" xlink:type="simple" xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/service?format=image%2Fpng&amp;layer=boeschungsbrandgefaehrdung_wmts&amp;sld_version=1.1.0&amp;request=GetLegendGraphic&amp;service=WMS&amp;version=1.1.1&amp;styles="/>
+      </Style>
+      <Format>image/png</Format>
+      <TileMatrixSetLink>
+        <TileMatrixSet>wmtsgrid</TileMatrixSet>
+      </TileMatrixSetLink>
+      <ResourceURL format="image/png" resourceType="tile" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/boeschungsbrandgefaehrdung_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/>
+      <ResourceURL format="text/html" resourceType="FeatureInfo" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/boeschungsbrandgefaehrdung_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}/{I}/{J}.html"/>
+    </Layer>
+    <!-- <Layer> -->
+    <!-- <ows:Title>Sturmwurfexposition WMTS</ows:Title> -->
+    <!-- <ows:Abstract><![CDATA[Der Datensatz stellt die Exposition der Schieneninfrastruktur gegenüber Sturmwurf innerhalb der Bundesländer NRW und Thüringen dar (Bundesweite Berechnung in Planung).  Dieses Produkt der Sturmwurfexposition ist das Ergebnis des Forschungsprojektes „Ableitung des Baumbestandes entlang des deutschen Schienennetzes“ des Deutschen Zentrums für Schienenverkehrsforschung beim Eisenbahn-Bundesamtes im Rahmen der Arbeiten des BMDV-Expertennetzwerks im Themenfeld Klimawandelfolgen und Anpassung (bmdv-expertennetzwerk.de). Die Sachinformationen und Gefährdungsklassen werden ausschließlich für den Bereich der Schieneninfrastruktur bereitgestellt. Dargestellt sind die Baumbestände entlang der Schieneninfrasturktur zu jeweils 50 m beidseitig des Gleises. Der Baumbestand ist auf Ebene der Einzelbäume auf Basis von digitalen Höhenmodellen und Luftbildern ermittelt worden. Die Exposition des Schienennetzes gegenüber Sturmwurf wird dabei durch das Attribut ""exp_m"" in vier unterschiedlichen Klassen von 1-4 abgebildet. ""exp_m"" basiert dabei auf einer modellierten Baumhöhe, die zu der gemessenen Baumhöhe bei Aufnahme der Höheninformationen einen mittleren Wachstumszuschlag für den Zeitpunkt 1.11.2020 addiert. Die Expositionsklassen gliedern sich wie folgt: 1: Abstand > aktuelle/zukünftige Baumhöhe mit 2 m Unsicherheitsbereich	2: Abstand > aktuelle/zukünftige Baumhöhe ohne 2 m Unsicherheitsbereich 3: Abstand < aktuelle/zukünftige Baumhöhe und außerhalb der 6 m-Freihaltungszone 4: Abstand < aktuelle/zukünftige Baumhöhe und innerhalb 6 m Freihaltungszone.]]></ows:Abstract> -->
+    <!-- <ows:Keywords> -->
+    <!-- <ows:Keyword>Sturmwurfexposition WMTS</ows:Keyword> -->
+    <!-- </ows:Keywords> -->
+    <!-- <ows:WGS84BoundingBox> -->
+    <!-- <ows:LowerCorner>4.34738512723 46.7961383601</ows:LowerCorner> -->
+    <!-- <ows:UpperCorner>16.9787143025 55.3482568074</ows:UpperCorner> -->
+    <!-- </ows:WGS84BoundingBox> -->
+    <!-- <ows:Identifier>sturmwurfexposition_wmts</ows:Identifier> -->
+    <!-- <ows:Metadata xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?SERVICE=CSW&amp;Version=2.0.2&amp;REQUEST=GetRecordById&amp;elementSetName=full&amp;OutputSchema=http://www.isotc211.org/2005/gmd&amp;ID=8f4a6d73-2efc-4ec2-b314-2ffe35deb19f"></ows:Metadata> -->
+    <!-- <Style> -->
+    <!-- <ows:Title>Style Sturmwurfexposition</ows:Title> -->
+    <!-- <ows:Identifier>sturmwurfexposition_wmts</ows:Identifier> -->
+    <!-- <LegendURL format="image/png" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/service?format=image%2Fpng&amp;layer=sturmwurfexposition_wmts&amp;sld_version=1.1.0&amp;request=GetLegendGraphic&amp;service=WMS&amp;version=1.1.1&amp;styles="/> -->
+    <!-- </Style> -->
+    <!-- <Format>image/png</Format> -->
+    <!-- <TileMatrixSetLink> -->
+    <!-- <TileMatrixSet>wmtsgrid</TileMatrixSet> -->
+    <!-- </TileMatrixSetLink> -->
+    <!-- <ResourceURL format="image/png" resourceType="tile" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/sturmwurfexposition_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/> -->
+    <!-- <ResourceURL format="text/html" resourceType="FeatureInfo" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/sturmwurfexposition_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}/{I}/{J}.html"/> -->
+    <!-- </Layer> -->
+    <!-- <Layer> -->
+    <!-- <ows:Title>Sturmwurfwahrscheinlichkeit WMTS</ows:Title> -->
+    <!-- <ows:Abstract> <![CDATA[Der Datensatz stellt die berechnete und geschätzte Wahrscheinlichkeit von Baumbeständen entlang der Schieneninfrastruktur der Bundesländer NRW und Thürungen gegenüber Baumsturz dar (Bundesweite Berechnung in Planung).  Dieses Produkt der Sturmwurfwahrscheinlichkeit ist das Ergebnis des Forschungsprojektes „Sensitivitätsanalyse Vegetation entlang der Bundesverkehrswege bezüglich Sturmwurfgefahren und Böschungsbränden“ des Deutschen Zentrums für Schienenverkehrsforschung beim Eisenbahn-Bundesamtes im Rahmen der Arbeiten des BMDV-Expertennetzwerks im Themenfeld Klimawandelfolgen und Anpassung (bmdv-expertennetzwerk.de). Die Sachinformationen und Gefährdungsklassen werden ausschließlich für den Bereich der Schieneninfrastruktur bereitgestellt. Dargestellt sind Wahrscheinlichkeitsabschätzungen für das Umstürzen von Baumbeständen im Bereich der Schieneninfrastruktur zu jeweils 50 m beidseitig des Gleises. Die Risikoabschätzungen sind auf Ebene von Einzelbäumen berechnet worden, die in einem vorhergehenden Projekt Ableitung des Baumbestandes entlang des deutschen Schienennetzes des DZSF mithilfe von Luftbildern und digitalen Höhenmodellen ermittelt wurden (vgl. DZSF Forschungsbericht 10/2021; Sturmwurfexposition). Die Wahrscheinlichkeitsabschätzung erfolgte mithilfe eines MaxEnt-Modells basierend auf vergangenen Ereignisse sowie Datensätzen zu Topographie, Vegetation, Meteorologie und Boden. Das Potenzial wird zwischen 0 und 1 angegeben, wobei ein höherer Wert eine höhere Anfälligkeit der Vegetation für das Umstürzen auf Basis der Modellparameter abbildet. Es sind nur die Baumpolygone zu sehen, die in dem Datensatz Sturmwurfexposition die Expositionsklassen 3 und 4 besitzen. Hierdurch wird dargestellt, welche Bäume bei einem Sturz potenziell gefährlich für die Schieneninfrastruktur sein könnten.]]></ows:Abstract> -->
+    <!-- <ows:Keywords> -->
+    <!-- <ows:Keyword>Sturmwurfwahrscheinlichkeit WMTS</ows:Keyword> -->
+    <!-- </ows:Keywords> -->
+    <!-- <ows:WGS84BoundingBox> -->
+    <!-- <ows:LowerCorner>4.34738512723 46.7961383601</ows:LowerCorner> -->
+    <!-- <ows:UpperCorner>16.9787143025 55.3482568074</ows:UpperCorner> -->
+    <!-- </ows:WGS84BoundingBox> -->
+    <!-- <ows:Identifier>sturmwurfwahrscheinlichkeit_wmts</ows:Identifier> -->
+    <!-- <ows:Metadata xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?SERVICE=CSW&amp;Version=2.0.2&amp;REQUEST=GetRecordById&amp;elementSetName=full&amp;OutputSchema=http://www.isotc211.org/2005/gmd&amp;ID=31211ec9-9e7d-4651-b0a1-95e78424cd7c"></ows:Metadata> -->
+    <!-- <Style> -->
+    <!-- <ows:Title>Style Sturmwurfwahrscheinlichkeit</ows:Title> -->
+    <!-- <ows:Identifier>sturmwurfwahrscheinlichkeit_wmts</ows:Identifier> -->
+    <!-- <LegendURL format="image/png" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/service?format=image%2Fpng&amp;layer=sturmwurfwahrscheinlichkeit_wmts&amp;sld_version=1.1.0&amp;request=GetLegendGraphic&amp;service=WMS&amp;version=1.1.1&amp;styles="/> -->
+    <!-- </Style> -->
+    <!-- <Format>image/png</Format> -->
+    <!-- <TileMatrixSetLink> -->
+    <!-- <TileMatrixSet>wmtsgrid</TileMatrixSet> -->
+    <!-- </TileMatrixSetLink> -->
+    <!-- <ResourceURL format="image/png" resourceType="tile" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/sturmwurfwahrscheinlichkeit_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/> -->
+    <!-- <ResourceURL format="text/html" resourceType="FeatureInfo" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/sturmwurfwahrscheinlichkeit_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}/{I}/{J}.html"/> -->
+    <!-- </Layer> -->
+    <!-- <Layer> -->
+    <!-- <ows:Title>Sturmwurfgefährdung aggregiert WMTS</ows:Title> -->
+    <!-- <ows:Abstract><![CDATA[Dieser aggregierte Datensatz stellt eine kombinierte Ansicht der Exposition und der Wahrscheinlichkeit von Baumstürzen auf die Schieneninfrastruktur in NRW und Thüringen gegenüber Baumsturz dar. Dieses Produkt der Sturmwurfgefährdung ist das Ergebnis des Forschungsprojektes „Sensitivitätsanalyse Vegetation entlang der Bundesverkehrswege bezüglich Sturmwurfgefahren und Böschungsbränden“ des Deutschen Zentrums für Schienenverkehrsforschung beim Eisenbahn-Bundesamtes im Rahmen der Arbeiten des BMDV-Expertennetzwerks im Themenfeld Klimawandelfolgen und Anpassung (bmdv-expertennetzwerk.de). Die Sachinformationen und Gefährdungsklassen werden ausschließlich für den Bereich der Schieneninfrastruktur bereitgestellt. Dargestellt sind Streckenabschnitten mit je 500 m Länge. Für jeden Streckenabschnitt wurde der Mittelwert der Gefährdungsabschätzungen (siehe Sturmwurfwahrscheinlichkeit) für das Umstürzen von Baumbeständen mit der Exposition 3 und 4 (siehe Sturmwurfexposition), sowie die Anzahl der Bäume innerhalb des Abschnittes mit der Expositionsklasse 3 und 4 ermittelt. Der Datensatz wird in Form einer Matrix aus den beiden Attributen MaxEnt MW eines Streckenabschnittes und Anzahl Bäume je Streckenabschnitt dargestellt.]]></ows:Abstract> -->
+    <!-- <ows:Keywords> -->
+    <!-- <ows:Keyword>Sturmwurfgefährdung aggregiert WMTS</ows:Keyword> -->
+    <!-- </ows:Keywords> -->
+    <!-- <ows:WGS84BoundingBox> -->
+    <!-- <ows:LowerCorner>4.34738512723 46.7961383601</ows:LowerCorner> -->
+    <!-- <ows:UpperCorner>16.9787143025 55.3482568074</ows:UpperCorner> -->
+    <!-- </ows:WGS84BoundingBox> -->
+    <!-- <ows:Identifier>sturmwurfgefaehrdung_wmts</ows:Identifier> -->
+    <!-- <ows:Metadata xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/dzsf/ger/csw?SERVICE=CSW&amp;Version=2.0.2&amp;REQUEST=GetRecordById&amp;elementSetName=full&amp;OutputSchema=http://www.isotc211.org/2005/gmd&amp;ID=2bce1125-01da-48f5-870c-03b4eab0d835"></ows:Metadata> -->
+    <!-- <Style> -->
+    <!-- <ows:Title>Style Sturmwurfgefährdung aggregiert</ows:Title> -->
+    <!-- <ows:Identifier>sturmwurfgefaehrdung_wmts</ows:Identifier> -->
+    <!-- <LegendURL format="image/png" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/service?format=image%2Fpng&amp;layer=sturmwurfgefaehrdung_wmts&amp;sld_version=1.1.0&amp;request=GetLegendGraphic&amp;service=WMS&amp;version=1.1.1&amp;styles="/> -->
+    <!-- </Style> -->
+    <!-- <Format>image/png</Format> -->
+    <!-- <TileMatrixSetLink> -->
+    <!-- <TileMatrixSet>wmtsgrid</TileMatrixSet> -->
+    <!-- </TileMatrixSetLink> -->
+    <!-- <ResourceURL format="image/png" resourceType="tile" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/sturmwurfgefaehrdung_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/> -->
+    <!-- <ResourceURL format="text/html" resourceType="FeatureInfo" template="https://geoinformation.eisenbahn-bundesamt.de/mapproxy/dzsf/wmts/sturmwurfgefaehrdung_wmts/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}/{I}/{J}.html"/> -->
+    <!-- </Layer> -->
     <TileMatrixSet>
       <ows:Identifier>wmtsgrid</ows:Identifier>
       <ows:SupportedCRS>EPSG:25832</ows:SupportedCRS>
@@ -441,7 +420,8 @@
       </TileMatrix>
       <TileMatrix>
         <ows:Identifier>02</ows:Identifier>
-        <ScaleDenominator>3245099.74888</ScaleDenominator><TopLeftCorner>204485.0 6134557.0</TopLeftCorner>
+        <ScaleDenominator>3245099.74888</ScaleDenominator>
+        <TopLeftCorner>204485.0 6134557.0</TopLeftCorner>
         <TileWidth>256</TileWidth>
         <TileHeight>256</TileHeight>
         <MatrixWidth>4</MatrixWidth>
@@ -602,6 +582,5 @@
       </TileMatrix>
     </TileMatrixSet>
   </Contents>
-
   <ServiceMetadataURL xlink:href="https://geoinformation.eisenbahn-bundesamt.de/geonetwork/srv/eng/csw?Service=CSW&amp;Request=GetRecordById&amp;Version=2.0.2&amp;id=518e738e-35cf-4590-981c-93a86b695b9e&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full"/>
 </Capabilities>
