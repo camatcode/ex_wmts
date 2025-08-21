@@ -7,6 +7,7 @@ defmodule ExWMTS.CapabilitiesParser do
 
   alias ExWMTS.Layer
   alias ExWMTS.Model.Common
+  alias ExWMTS.OperationsMetadata
   alias ExWMTS.ServiceIdentification
   alias ExWMTS.ServiceProvider
   alias ExWMTS.TileMatrixSet
@@ -23,6 +24,10 @@ defmodule ExWMTS.CapabilitiesParser do
         parsed_xml
         |> xpath(~x"//*[local-name()='ServiceProvider']")
         |> ServiceProvider.build(),
+      operations_metadata:
+        parsed_xml
+        |> xpath(~x"//*[local-name()='OperationsMetadata']")
+        |> OperationsMetadata.build(),
       layers:
         parsed_xml
         |> xpath(~x"//*[local-name()='Layer']"l,

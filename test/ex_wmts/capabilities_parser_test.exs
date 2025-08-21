@@ -18,7 +18,6 @@ defmodule ExWMTS.CapabilitiesParserTest do
         "test/support/capabilities/nasa_gibs.xml"
         |> File.read!()
         |> CapabilitiesParser.parse()
-        |> IO.inspect()
 
       %{
         service_identification: %{title: "NASA Global Imagery Browse Services for EOSDIS", service_type: "OGC WMTS"},
