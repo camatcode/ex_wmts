@@ -1,5 +1,32 @@
 defmodule ExWMTS.OperationsMetadata do
-  @moduledoc false
+  @moduledoc """
+  Operations metadata section describing the operations implemented by the server.
+
+  From OGC WMTS Implementation Standard (OGC 07-057r7), Section 7.1.2:
+
+  "The OperationsMetadata section of a GetCapabilities operation response shall describe the 
+  operations implemented by this server. This OperationsMetadata section shall include the 
+  operations GetCapabilities, GetTile, and optionally GetFeatureInfo."
+
+  ## Required Elements
+
+  - `operations` - List of Operation elements describing implemented operations
+
+  ## Standard Operations
+
+  From Section 7.1.2.1: "The mandatory operations are:
+  - GetCapabilities: Returns service metadata
+  - GetTile: Returns a tile"
+
+  From Section 7.1.2.2: "The optional operations are:
+  - GetFeatureInfo: Returns information about features in a tile"
+
+  Each Operation element describes:
+  - Operation name (GetCapabilities, GetTile, GetFeatureInfo)
+  - DCP (Distributed Computing Platform) access methods
+  - HTTP binding information including GET and POST endpoints
+  - Constraints and parameters for the operation
+  """
 
   import SweetXml
 

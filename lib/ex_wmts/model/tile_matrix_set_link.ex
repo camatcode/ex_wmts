@@ -1,5 +1,35 @@
 defmodule ExWMTS.TileMatrixSetLink do
-  @moduledoc false
+  @moduledoc """
+  TileMatrixSetLink connecting a layer to a specific TileMatrixSet with optional limits.
+
+  From OGC WMTS Implementation Standard (OGC 07-057r7), Section 7.2.4.6:
+
+  "A TileMatrixSetLink element identifies a TileMatrixSet and optionally identifies a subset 
+  of the tile matrices using a TileMatrixSetLimits element."
+
+  ## Required Elements
+
+  - `tile_matrix_set` - Reference to an available TileMatrixSet identifier
+
+  ## Optional Elements  
+
+  - `tile_matrix_set_limits` - Limits restricting the available tile matrices
+
+  From Section 7.2.4.6.1: "The TileMatrixSet element shall contain the identifier of a 
+  TileMatrixSet offered by the server."
+
+  From Section 7.2.4.6.2: "The TileMatrixSetLimits element shall define the spatial and/or 
+  resolution limits of the tiles and allow a server to describe a layer as having a limited 
+  spatial and/or resolution extent. If this element is not present, there are no limits on 
+  the tile matrix indices except those imposed by the tile matrix definition."
+
+  ## Usage
+
+  This element allows layers to:
+  - Reference which TileMatrixSets can be used for tile requests
+  - Optionally constrain the available tiles within those sets
+  - Define geographic or zoom level boundaries for efficient tile access
+  """
 
   import ExWMTS.Model.Common
   import SweetXml

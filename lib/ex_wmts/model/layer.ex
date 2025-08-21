@@ -1,5 +1,35 @@
 defmodule ExWMTS.Layer do
-  @moduledoc false
+  @moduledoc """
+  Layer element describing an individual layer served by a WMTS server.
+
+  From OGC WMTS Implementation Standard (OGC 07-057r7), Section 7.2.4:
+
+  "A Layer element describes an individual layer served by a WMTS server. A Layer element shall have 
+  an Identifier, Title, and one or more Format elements. The server shall list for each layer all the 
+  TileMatrixSet elements that can be used to request tiles from the layer."
+
+  ## Required Elements
+
+  - `identifier` - Unique identifier for the layer
+  - `title` - Human-readable title for the layer  
+  - `formats` - List of MIME types supported for tiles of this layer
+  - `tile_matrix_sets` - List of identifiers of TileMatrixSets applicable to this layer
+  - `styles` - List of style identifiers applicable to this layer
+
+  ## Optional Elements
+
+  - `abstract` - Brief narrative description of the layer
+  - `keywords` - List of descriptive keywords about the layer
+  - `wgs84_bounding_box` - Minimum bounding rectangle in WGS84 longitude-latitude  
+  - `bounding_box` - Minimum bounding rectangle in other coordinate reference systems
+  - `metadata` - List of metadata references providing additional information
+  - `dimensions` - List of dimension descriptions for multi-dimensional layers
+  - `resource_urls` - List of resource URLs for different access patterns
+  - `tile_matrix_set_links` - Links to TileMatrixSets with potential limits
+
+  From Section 7.2.4.1: "The Format element shall indicate a supported output format for a tile. 
+  The content of the element shall be a MIME type as defined by RFC 2046."
+  """
   import ExWMTS.Model.Common
 
   alias __MODULE__, as: Layer

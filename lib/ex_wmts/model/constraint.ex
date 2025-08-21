@@ -1,5 +1,46 @@
 defmodule ExWMTS.Constraint do
-  @moduledoc false
+  @moduledoc """
+  Constraint element defining valid parameter values for an operation or method.
+
+  From OGC WMTS Implementation Standard (OGC 07-057r7) and OWS Common (OGC 06-121r9):
+
+  "A Constraint element specifies a constraint on valid values of an operation parameter 
+  or other item. The constraint can be specified using an allowed list of values or ranges."
+
+  ## Required Elements
+
+  - `name` - Name of the parameter being constrained
+
+  ## Optional Elements
+
+  - `allowed_values` - List of allowed values for this parameter
+
+  ## Common Constraints
+
+  From the WMTS standard, typical constraint names include:
+  - "GetEncoding" - Valid request encoding methods (KVP, RESTful, SOAP)
+  - "InfoFormat" - Supported GetFeatureInfo response formats
+  - "Style" - Available style identifiers for layers
+
+  ## Allowed Values
+
+  The allowed_values list provides:
+  - Enumerated valid parameter values
+  - Format specifications (MIME types, versions)
+  - Encoding method identifiers
+  - Authentication scheme names
+
+  ## Usage
+
+  Constraints enable:
+  - Client validation of request parameters
+  - Service capability advertising  
+  - Protocol negotiation between client and server
+  - Error prevention through upfront validation
+
+  This information helps clients construct valid requests and understand 
+  the specific capabilities and limitations of each operation endpoint.
+  """
 
   import ExWMTS.Model.Common
   import SweetXml

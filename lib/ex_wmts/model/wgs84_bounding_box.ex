@@ -1,5 +1,40 @@
 defmodule ExWMTS.WGS84BoundingBox do
-  @moduledoc false
+  @moduledoc """
+  WGS84BoundingBox defining a minimum bounding rectangle in WGS84 longitude-latitude coordinates.
+
+  From OGC WMTS Implementation Standard (OGC 07-057r7), Section 7.2.4.2:
+
+  "The WGS84BoundingBox element shall identify the minimum bounding rectangle in WGS84 
+  longitude-latitude that encloses the area applicable to the layer."
+
+  ## Required Elements
+
+  - `lower_corner` - Lower corner coordinates as {longitude, latitude} tuple
+  - `upper_corner` - Upper corner coordinates as {longitude, latitude} tuple
+
+  From OWS Common Specification (OGC 06-121r9), Section 10.2:
+
+  "A BoundingBox element encodes an MD bounding box (or bounding rectangle, or in 3D a 
+  bounding box) used to indicate what data is available. This BoundingBox element is 
+  primarily used in GetCapabilities operation responses."
+
+  ## Coordinate Order
+
+  For WGS84BoundingBox, coordinates are specified as:
+  - Lower corner: {minimum_longitude, minimum_latitude}  
+  - Upper corner: {maximum_longitude, maximum_latitude}
+
+  Values are in decimal degrees with longitude in range [-180, 180] and 
+  latitude in range [-90, 90].
+
+  ## Usage
+
+  This bounding box provides a quick spatial reference for:
+  - Layer discovery and filtering
+  - Determining data availability  
+  - Client-side spatial indexing
+  - Geographic extent validation
+  """
 
   import SweetXml
 

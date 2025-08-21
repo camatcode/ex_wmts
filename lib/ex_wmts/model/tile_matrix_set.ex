@@ -1,5 +1,35 @@
 defmodule ExWMTS.TileMatrixSet do
-  @moduledoc false
+  @moduledoc """
+  TileMatrixSet defining a tiling scheme for a coordinate reference system.
+
+  From OGC WMTS Implementation Standard (OGC 07-057r7), Section 7.2.3:
+
+  "A TileMatrixSet defines a particular tiling scheme for a coordinate reference system. It contains 
+  the TileMatrix definitions that define the tiling schemes for each scale and the spatial extent 
+  (BoundingBox) that contains all the tiles."
+
+  ## Required Elements
+
+  - `identifier` - Unique identifier for this TileMatrixSet
+  - `supported_crs` - Coordinate reference system identifier (e.g., "EPSG:4326")
+  - `matrices` - List of TileMatrix elements defining the tiling scheme at different scales
+
+  ## Optional Elements
+
+  - `title` - Human-readable title for the TileMatrixSet
+  - `abstract` - Brief narrative description of the TileMatrixSet  
+  - `keywords` - List of descriptive keywords
+  - `bounding_box` - Minimum bounding rectangle applicable to this TileMatrixSet
+  - `well_known_scale_set` - Well-known identifier for a scale set
+
+  From Section 7.2.3.1: "The SupportedCRS element shall indicate the coordinate reference system 
+  used by this TileMatrixSet. The coordinate reference system shall be described by reference to 
+  its identifier."
+
+  From Section 7.2.3.2: "A TileMatrix defines how space is partitioned into a set of square tiles. 
+  The TileMatrix defines a particular tile matrix by defining its limits (MatrixWidth, MatrixHeight), 
+  the tile size (TileWidth, TileHeight) and geospatial metadata."
+  """
 
   import ExWMTS.Model.Common
   import SweetXml

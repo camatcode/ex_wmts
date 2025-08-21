@@ -1,5 +1,39 @@
 defmodule ExWMTS.TileMatrix do
-  @moduledoc false
+  @moduledoc """
+  TileMatrix defining how space is partitioned into a set of square tiles at a particular scale.
+
+  From OGC WMTS Implementation Standard (OGC 07-057r7), Section 7.2.3.2:
+
+  "A TileMatrix defines how space is partitioned into a set of square tiles. The TileMatrix defines 
+  a particular tile matrix by defining its limits (MatrixWidth, MatrixHeight), the tile size 
+  (TileWidth, TileHeight) and geospatial metadata."
+
+  ## Required Elements
+
+  - `identifier` - Unique identifier for this matrix within the TileMatrixSet
+  - `scale_denominator` - Scale denominator level of this tile matrix  
+  - `top_left_corner` - Position in CRS coordinates of the top-left corner of this tile matrix
+  - `tile_width` - Width of each tile in pixels
+  - `tile_height` - Height of each tile in pixels
+  - `matrix_width` - Number of tiles in the horizontal direction (columns)
+  - `matrix_height` - Number of tiles in the vertical direction (rows)
+
+  ## Optional Elements
+
+  - `title` - Human-readable title for the matrix
+  - `abstract` - Brief narrative description of the matrix
+  - `keywords` - List of descriptive keywords
+
+  From Section 7.2.3.2.1: "The ScaleDenominator element shall contain the scale denominator of the 
+  tile matrix. The scale denominator is defined with respect to a 'standardized rendering pixel size' 
+  of 0.28 mm × 0.28 mm (millimeters)."
+
+  From Section 7.2.3.2.2: "The TopLeftCorner element shall contain the position in CRS coordinates 
+  of the top-left corner of this tile matrix. This corner is also a corner of the (0, 0) tile."
+
+  From Section 7.2.3.2.3: "The TileWidth and TileHeight elements shall contain the width and height 
+  of each tile in pixels. All tiles in the matrix shall have the same pixel size."
+  """
 
   import ExWMTS.Model.Common
   import SweetXml

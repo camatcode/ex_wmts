@@ -1,5 +1,36 @@
 defmodule ExWMTS.ResourceURL do
-  @moduledoc false
+  @moduledoc """
+  ResourceURL element providing template URLs for accessing tiles and resources.
+
+  From OGC WMTS Implementation Standard (OGC 07-057r7), Section 7.2.4.5:
+
+  "A ResourceURL element identifies a URL template to be used for accessing resources. 
+  A ResourceURL element may be used to provide alternative access methods for layers."
+
+  ## Required Elements
+
+  - `format` - MIME type of the resource (e.g., "image/png")
+  - `resource_type` - Type of resource ("tile", "FeatureInfo")
+  - `template` - URL template with placeholder variables
+
+  ## URL Templates
+
+  Template URLs contain placeholder variables:
+  - {TileMatrixSet} - Identifier of the tile matrix set
+  - {TileMatrix} - Identifier of the tile matrix
+  - {TileRow} - Row index of the tile
+  - {TileCol} - Column index of the tile
+  - {Style} - Style identifier
+  - {layer} - Layer identifier
+
+  ## Resource Types
+
+  From the standard:
+  - "tile" - Template for accessing tile images
+  - "FeatureInfo" - Template for accessing feature information
+
+  This enables RESTful tile access without KVP parameter encoding.
+  """
 
   import SweetXml
 
