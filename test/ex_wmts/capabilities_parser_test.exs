@@ -11,6 +11,7 @@ defmodule ExWMTS.CapabilitiesParserTest do
         "test/support/capabilities/ogc_standard_1.xml"
         |> File.read!()
         |> CapabilitiesParser.parse()
+        |> IO.inspect()
     end
 
     test "parses NASA GIBS capabilities" do
