@@ -1,5 +1,21 @@
 defmodule ExWMTS.ContactInfo do
-  @moduledoc false
+  @moduledoc ExWMTS.Doc.mod_doc("A struct describing contact details",
+               example: """
+               %ExWMTS.ContactInfo{
+                  phone_voice: "+34 93 581 1310",
+                  phone_facsimile: "+34 93 581 4150",
+                  address_delivery_point: "Fac Ciencies UAB",
+                  address_city: "Bellaterra",
+                  address_administrative_area: "Barcelona",
+                  address_postal_code: "08192",
+                  address_country: "Spain",
+                  address_email: "joan.mase@uab.dog",
+                  online_resource: "",
+                  hours_of_service: "",
+                  contact_instructions: ""
+               }
+               """
+             )
 
   import ExWMTS.XPathHelpers
   import SweetXml
@@ -20,6 +36,36 @@ defmodule ExWMTS.ContactInfo do
     :contact_instructions
   ]
 
+  @type phone_voice :: String.t()
+  @type phone_facsimile :: String.t()
+  @type address_delivery_point :: String.t()
+  @type address_city :: String.t()
+  @type address_administrative_area :: String.t()
+  @type address_postal_code :: String.t()
+  @type address_country :: String.t()
+  @type address_email :: String.t()
+  @type online_resource :: String.t()
+  @type hours_of_service :: String.t()
+  @type contact_instructions :: String.t()
+
+  @type t :: %ContactInfo{
+          phone_voice: phone_voice(),
+          phone_facsimile: phone_facsimile(),
+          address_delivery_point: address_delivery_point(),
+          address_city: address_city(),
+          address_administrative_area: address_administrative_area(),
+          address_postal_code: address_postal_code(),
+          address_country: address_country(),
+          address_email: address_email(),
+          online_resource: online_resource(),
+          hours_of_service: hours_of_service(),
+          contact_instructions: contact_instructions()
+        }
+
+  @doc ExWMTS.Doc.func_doc("Builds a `ContactInfo` from a map",
+         params: %{m: "An XML node to build into a `t:ExWMTS.ContactInfo.t/0`"}
+       )
+  @spec build(info_node :: map) :: ContactInfo.t()
   def build(nil), do: nil
 
   def build(info_node) do

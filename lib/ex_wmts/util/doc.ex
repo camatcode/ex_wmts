@@ -49,7 +49,6 @@ defmodule ExWMTS.Doc do
     warning = render_warning(opts[:warning])
     success = opts[:success]
     failure = opts[:failure]
-    api_details = render_api_details(opts[:api])
     signature = render_func_sig(opts[:params], success, failure)
 
     """
@@ -58,8 +57,6 @@ defmodule ExWMTS.Doc do
     #{warning}
 
     #{signature}
-
-    #{api_details}
 
     #{example}
 
@@ -105,76 +102,6 @@ defmodule ExWMTS.Doc do
 
 
     """
-  end
-
-  defp render_api_details(nil), do: ""
-
-  defp render_api_details(m) when is_map(m) do
-    method = m[:method] || :GET
-    method = String.upcase("#{method}")
-    controller = "#{m.controller}"
-
-    controller =
-      if String.ends_with?(controller, "Controller") do
-        controller
-      else
-        "#{controller}Controller"
-      end
-
-    action = m.action
-
-    route = m.route
-
-    route_infos =
-      if m[:repo_scope] do
-        [
-          %{method: method, action: action, controller: controller, route: route},
-          %{method: method, action: action, controller: controller, route: Path.join("/repos/`opts[:repo]`", route)}
-        ]
-      else
-        if m[:org_scope] do
-          [
-            %{method: method, action: action, controller: controller, route: route},
-            %{method: method, action: action, controller: controller, route: Path.join("/orgs/`opts[:org]`", route)}
-          ]
-        else
-          [%{method: method, action: action, controller: controller, route: route}]
-        end
-      end
-
-    header = "### API Details "
-
-    table_header =
-      String.trim("""
-      | Method | Path                  | Controller                                        | Action      |
-      |--------|-----------------------|---------------------------------------------------|-------------|
-      """)
-
-    table_contents =
-      Enum.map_join(route_infos, "\n", fn info ->
-        "| **#{info.method}**    | #{render_route(info.route)} | #{controller_doc_link("#{info.controller}")} | `:#{info.action}` |"
-      end)
-
-    """
-    #{header}
-
-    #{table_header}
-    #{table_contents}
-
-    """
-  end
-
-  defp render_route(route) do
-    route
-    |> Path.split()
-    |> Enum.map(fn part ->
-      if String.starts_with?(part, ":") do
-        "`#{part}`"
-      else
-        part
-      end
-    end)
-    |> Path.join()
   end
 
   defp render_warning(nil), do: ""
@@ -287,12 +214,6 @@ defmodule ExWMTS.Doc do
     do: "🐘 [Fediverse: @scrum_log@maston.social](https://mastodon.social/@scrum_log){:target=\"_blank\"}"
 
   defp contact_maintainer, do: "Contact the maintainer (he's happy to help!)"
-
-  defp controller_doc_link(controller_name) do
-    snaked_name = controller_name |> ProperCase.snake_case() |> String.downcase()
-    url = "https://github.com/hexpm/hexpm/blob/main/lib/hexpm_web/controllers/api/#{snaked_name}.ex"
-    "[#{controller_name}](#{url}){:target=\"_blank\"}"
-  end
 
   defp see_wmts_spec do
     see_link("OGC WMTS Specification", "https://portal.ogc.org/files/?artifact_id=35326")
