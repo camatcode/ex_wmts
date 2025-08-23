@@ -34,12 +34,27 @@ defmodule ExWMTS.HTTP do
                """,
                example: """
                %ExWMTS.HTTP{
-                 get: [
-                   %ExWMTS.HTTPMethod{
-                     href: "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi"
-                   }
-                 ],
-                 post: []
+                  get: [
+                    %ExWMTS.HTTPMethod{
+                      href: "https://basemap.nationalmap.gov/arcgis/rest/services/USGSShadedReliefOnly/MapServer/WMTS/1.0.0/WMTSCapabilities.xml",
+                      constraints: [
+                        %ExWMTS.Constraint{
+                          name: "GetEncoding",
+                          allowed_values: ["RESTful"]
+                        }
+                      ]
+                    },
+                    %ExWMTS.HTTPMethod{
+                      href: "https://basemap.nationalmap.gov/arcgis/rest/services/USGSShadedReliefOnly/MapServer/WMTS?",
+                      constraints: [
+                        %ExWMTS.Constraint{
+                          name: "GetEncoding",
+                          allowed_values: ["KVP"]
+                        }
+                      ]
+                    }
+                  ],
+                  post: nil
                }
                """,
                related: [ExWMTS.DCP, ExWMTS.HTTPMethod]
@@ -51,36 +66,10 @@ defmodule ExWMTS.HTTP do
   alias __MODULE__, as: HTTP
   alias ExWMTS.HTTPMethod
 
-  @typedoc ExWMTS.Doc.type_doc("List of HTTPMethod elements for GET request endpoints",
-             example: "[%ExWMTS.HTTPMethod{href: \"https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi\"}]"
-           )
-  @type get_methods :: [HTTPMethod.t()]
-
-  @typedoc ExWMTS.Doc.type_doc("List of HTTPMethod elements for POST request endpoints",
-             example: "[]"
-           )
-  @type post_methods :: [HTTPMethod.t()]
-
-  @typedoc ExWMTS.Doc.type_doc("GET method endpoints for HTTP operations",
-             example: "[%ExWMTS.HTTPMethod{href: \"https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi\"}]"
-           )
-  @type get :: get_methods()
-
-  @typedoc ExWMTS.Doc.type_doc("POST method endpoints for HTTP operations",
-             example: "[]"
-           )
-  @type post :: post_methods()
-
-  @typedoc ExWMTS.Doc.type_doc("HTTP binding with GET and POST access methods",
-             example:
-               "%ExWMTS.HTTP{get: [%ExWMTS.HTTPMethod{href: \"https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi\"}], post: []}"
-           )
-  @type http :: t()
-
   @typedoc ExWMTS.Doc.type_doc("Type describing HTTP binding access methods for WMTS operations",
              keys: %{
-               get: HTTP,
-               post: HTTP
+               get: {HTTPMethod, :t, :list},
+               post: {HTTPMethod, :t, :list}
              },
              example: """
              %ExWMTS.HTTP{
@@ -91,12 +80,16 @@ defmodule ExWMTS.HTTP do
              related: [ExWMTS.DCP, ExWMTS.HTTPMethod]
            )
   @type t :: %HTTP{
-          get: get_methods(),
-          post: post_methods()
+          get: [HTTPMethod.t()],
+          post: [HTTPMethod.t()]
         }
 
   defstruct [:get, :post]
 
+  @doc ExWMTS.Doc.func_doc("Builds HTTP structs from XML node",
+         params: %{http_data: "XML node to build into HTTP structs"}
+       )
+  @spec build(map()) :: HTTP.t() | nil
   def build(nil), do: nil
 
   def build(http_node) do
