@@ -1,6 +1,8 @@
 defmodule ExWMTS.MixProject do
   use Mix.Project
 
+  alias ExWMTS.Model.Common
+
   @source_url "https://github.com/camatcode/ex_wmts"
   @version "0.9.0"
 
@@ -36,7 +38,40 @@ defmodule ExWMTS.MixProject do
         extra_section: "GUIDES",
         formatters: ["html"],
         extras: extras(),
+        groups_for_modules: groups_for_modules(),
         skip_undefined_reference_warnings_on: ["CHANGELOG.md"]
+      ]
+    ]
+  end
+
+  defp groups_for_modules do
+    [
+      Model: [
+        ExWMTS.BoundingBox,
+        ExWMTS.Constraint,
+        ExWMTS.ContactInfo,
+        ExWMTS.DCP,
+        ExWMTS.Dimension,
+        ExWMTS.HTTP,
+        ExWMTS.HTTPMethod,
+        ExWMTS.Layer,
+        ExWMTS.Metadata,
+        Common,
+        ExWMTS.Operation,
+        ExWMTS.OperationsMetadata,
+        ExWMTS.ResourceURL,
+        ExWMTS.ServiceContact,
+        ExWMTS.ServiceIdentification,
+        ExWMTS.ServiceProvider,
+        ExWMTS.TileMatrix,
+        ExWMTS.TileMatrixLimits,
+        ExWMTS.TileMatrixSet,
+        ExWMTS.TileMatrixSetLink,
+        ExWMTS.TileMatrixSetLimits,
+        ExWMTS.WGS84BoundingBox
+      ],
+      Util: [
+        ExWMTS.XPathHelpers
       ]
     ]
   end

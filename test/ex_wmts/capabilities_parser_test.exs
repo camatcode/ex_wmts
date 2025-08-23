@@ -124,6 +124,7 @@ defmodule ExWMTS.CapabilitiesParserTest do
         "test/support/capabilities/usgs_nationalmap.xml"
         |> File.read!()
         |> CapabilitiesParser.parse()
+        |> IO.inspect()
 
       %{
         service_identification: %ExWMTS.ServiceIdentification{

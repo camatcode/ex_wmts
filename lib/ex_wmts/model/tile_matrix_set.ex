@@ -1,45 +1,126 @@
 defmodule ExWMTS.TileMatrixSet do
-  @moduledoc """
-  TileMatrixSet defining a tiling scheme for a coordinate reference system.
+  @moduledoc ExWMTS.Doc.mod_doc(
+               """
+               TileMatrixSet defining a tiling scheme for a coordinate reference system.
 
-  From OGC WMTS Implementation Standard (OGC 07-057r7), Section 7.2.3:
+               From OGC WMTS Implementation Standard (OGC 07-057r7), Section 7.2.3:
 
-  "A TileMatrixSet defines a particular tiling scheme for a coordinate reference system. It contains 
-  the TileMatrix definitions that define the tiling schemes for each scale and the spatial extent 
-  (BoundingBox) that contains all the tiles."
-
-  ## Required Elements
-
-  - `identifier` - Unique identifier for this TileMatrixSet
-  - `supported_crs` - Coordinate reference system identifier (e.g., "EPSG:4326")
-  - `matrices` - List of TileMatrix elements defining the tiling scheme at different scales
-
-  ## Optional Elements
-
-  - `title` - Human-readable title for the TileMatrixSet
-  - `abstract` - Brief narrative description of the TileMatrixSet  
-  - `keywords` - List of descriptive keywords
-  - `bounding_box` - Minimum bounding rectangle applicable to this TileMatrixSet
-  - `well_known_scale_set` - Well-known identifier for a scale set
-
-  From Section 7.2.3.1: "The SupportedCRS element shall indicate the coordinate reference system 
-  used by this TileMatrixSet. The coordinate reference system shall be described by reference to 
-  its identifier."
-
-  From Section 7.2.3.2: "A TileMatrix defines how space is partitioned into a set of square tiles. 
-  The TileMatrix defines a particular tile matrix by defining its limits (MatrixWidth, MatrixHeight), 
-  the tile size (TileWidth, TileHeight) and geospatial metadata."
-  """
+               "A TileMatrixSet defines a particular tiling scheme for a coordinate reference system. It contains 
+               the TileMatrix definitions that define the tiling schemes for each scale and the spatial extent 
+               (BoundingBox) that contains all the tiles."
+               """,
+               example: """
+               %ExWMTS.TileMatrixSet{
+                 identifier: "16km",
+                 title: nil,
+                 abstract: nil,
+                 keywords: [],
+                 supported_crs: "urn:ogc:def:crs:OGC:1.3:CRS84",
+                 bounding_box: nil,
+                 well_known_scale_set: nil,
+                 matrices: [
+                   %ExWMTS.TileMatrix{
+                     identifier: "0",
+                     scale_denominator: 223632905.6114871,
+                     tile_width: 512,
+                     tile_height: 512,
+                     matrix_width: 2,
+                     matrix_height: 1,
+                     top_left_corner: {-180.0, 90.0}
+                   },
+                   %ExWMTS.TileMatrix{
+                     identifier: "1", 
+                     scale_denominator: 111816452.8057436,
+                     tile_width: 512,
+                     tile_height: 512,
+                     matrix_width: 3,
+                     matrix_height: 2,
+                     top_left_corner: {-180.0, 90.0}
+                   }
+                 ]
+               }
+               """,
+               related: [ExWMTS.TileMatrix, ExWMTS.Layer]
+             )
 
   import ExWMTS.Model.Common
   import ExWMTS.XPathHelpers
   import SweetXml
 
   alias __MODULE__, as: TileMatrixSet
-  alias ExWMTS.BoundingBox
+  alias ExWMTS.{BoundingBox, TileMatrix}
+
+  @typedoc ExWMTS.Doc.type_doc("Unique identifier for this TileMatrixSet", example: "\"16km\"")
+  @type tms_identifier :: String.t()
+
+  @typedoc ExWMTS.Doc.type_doc("Human-readable title for the TileMatrixSet",
+             example: "\"16km Resolution TileMatrixSet\""
+           )
+  @type title :: String.t()
+
+  @typedoc ExWMTS.Doc.type_doc("Brief narrative description of the TileMatrixSet",
+             example: "\"Global tiling scheme at 16km resolution\""
+           )
+  @type abstract :: String.t()
+
+  @typedoc ExWMTS.Doc.type_doc("List of descriptive keywords", example: ~s(["global", "16km", "overview"]))
+  @type keywords :: [String.t()]
+
+  @typedoc ExWMTS.Doc.type_doc("Coordinate reference system identifier", example: "\"urn:ogc:def:crs:OGC:1.3:CRS84\"")
+  @type supported_crs :: String.t()
+
+  @typedoc ExWMTS.Doc.type_doc("Well-known identifier for a scale set",
+             example: "\"urn:ogc:def:wkss:OGC:1.0:GoogleMapsCompatible\""
+           )
+  @type well_known_scale_set :: String.t()
+
+  @typedoc ExWMTS.Doc.type_doc("List of TileMatrix elements defining the tiling scheme at different scales",
+             example: ~s([%ExWMTS.TileMatrix{identifier: "0"}, %ExWMTS.TileMatrix{identifier: "1"}])
+           )
+  @type matrices :: [TileMatrix.t()]
+
+  @typedoc ExWMTS.Doc.type_doc("Type describing a tiling scheme for a coordinate reference system",
+             keys: %{
+               identifier: {TileMatrixSet, :tms_identifier},
+               title: TileMatrixSet,
+               abstract: TileMatrixSet,
+               keywords: TileMatrixSet,
+               supported_crs: TileMatrixSet,
+               bounding_box: {ExWMTS.BoundingBox, :t},
+               well_known_scale_set: TileMatrixSet,
+               matrices: {ExWMTS.TileMatrix, :t, :list}
+             },
+             example: """
+             %ExWMTS.TileMatrixSet{
+               identifier: "16km",
+               supported_crs: "urn:ogc:def:crs:OGC:1.3:CRS84",
+               matrices: [
+                 %ExWMTS.TileMatrix{identifier: "0", scale_denominator: 223632905.6114871}
+               ]
+             }
+             """,
+             related: [ExWMTS.TileMatrix, ExWMTS.Layer]
+           )
+  @type t :: %TileMatrixSet{
+          identifier: tms_identifier(),
+          title: title(),
+          abstract: abstract(),
+          keywords: keywords(),
+          supported_crs: supported_crs(),
+          bounding_box: BoundingBox.t(),
+          well_known_scale_set: well_known_scale_set(),
+          matrices: matrices()
+        }
 
   defstruct [:identifier, :title, :abstract, :keywords, :supported_crs, :bounding_box, :well_known_scale_set, :matrices]
 
+  @doc ExWMTS.Doc.func_doc("Builds TileMatrixSet structs from XML nodes or maps",
+         params: %{tms_data: "XML node, map, list of nodes/maps, or nil to build into TileMatrixSet structs"}
+       )
+  @spec build(nil) :: nil
+  @spec build([]) :: []
+  @spec build([map() | term()]) :: [TileMatrixSet.t()]
+  @spec build(map() | term()) :: TileMatrixSet.t() | nil
   def build(nil), do: nil
 
   def build([]), do: nil

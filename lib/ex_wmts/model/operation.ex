@@ -1,30 +1,34 @@
 defmodule ExWMTS.Operation do
-  @moduledoc """
-  Operation element describing a specific operation implemented by the WMTS server.
+  @moduledoc ExWMTS.Doc.mod_doc(
+               """
+               Operation element describing a specific operation implemented by the WMTS server.
 
-  From OGC WMTS Implementation Standard (OGC 07-057r7), Section 7.1.2:
+               From OGC WMTS Implementation Standard (OGC 07-057r7), Section 7.1.2:
 
-  "An Operation element describes the interface of one type of operation. The Operation element 
-  includes the name of the operation, and the DCP (Distributed Computing Platform) where the 
-  operation is available."
-
-  ## Required Elements
-
-  - `name` - Name of the operation (GetCapabilities, GetTile, GetFeatureInfo)
-  - `dcp` - Distributed Computing Platform access information
-
-  ## Operation Names
-
-  From the standard, valid operation names include:
-  - "GetCapabilities" - Mandatory operation that returns service metadata
-  - "GetTile" - Mandatory operation that returns a tile  
-  - "GetFeatureInfo" - Optional operation that returns feature information
-
-  The DCP element contains HTTP binding information including:
-  - GET method endpoints and constraints
-  - POST method endpoints and constraints (if supported)
-  - Constraint elements defining valid parameter values
-  """
+               "An Operation element describes the interface of one type of operation. The Operation element 
+               includes the name of the operation, and the DCP (Distributed Computing Platform) where the 
+               operation is available."
+               """,
+               example: """
+               %ExWMTS.Operation{
+                 name: "GetCapabilities",
+                 dcp: %ExWMTS.DCP{
+                   http: %ExWMTS.HTTP{
+                     get: [
+                       %ExWMTS.HTTPMethod{
+                         href: "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi?",
+                         constraints: [
+                           %ExWMTS.Constraint{name: "GetEncoding", allowed_values: ["KVP"]}
+                         ]
+                       }
+                     ],
+                     post: nil
+                   }
+                 }
+               }
+               """,
+               related: [ExWMTS.OperationsMetadata, ExWMTS.DCP, ExWMTS.HTTP]
+             )
 
   import ExWMTS.Model.Common
   import ExWMTS.XPathHelpers
@@ -32,6 +36,31 @@ defmodule ExWMTS.Operation do
 
   alias __MODULE__, as: Operation
   alias ExWMTS.DCP
+
+  @typedoc ExWMTS.Doc.type_doc("Name of the operation", example: "\"GetCapabilities\"")
+  @type name :: String.t()
+
+  @typedoc ExWMTS.Doc.type_doc("Type describing a WMTS operation",
+             keys: %{
+               name: Operation,
+               dcp: ExWMTS.DCP
+             },
+             example: """
+             %ExWMTS.Operation{
+               name: "GetCapabilities",
+               dcp: %ExWMTS.DCP{
+                 http: %ExWMTS.HTTP{
+                   get: [%ExWMTS.HTTPMethod{href: "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi"}]
+                 }
+               }
+             }
+             """,
+             related: [ExWMTS.OperationsMetadata, ExWMTS.DCP]
+           )
+  @type t :: %Operation{
+          name: name(),
+          dcp: DCP.t()
+        }
 
   defstruct [:name, :dcp]
 

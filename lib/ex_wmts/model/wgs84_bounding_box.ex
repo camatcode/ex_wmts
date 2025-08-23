@@ -1,48 +1,68 @@
 defmodule ExWMTS.WGS84BoundingBox do
-  @moduledoc """
-  WGS84BoundingBox defining a minimum bounding rectangle in WGS84 longitude-latitude coordinates.
+  @moduledoc ExWMTS.Doc.mod_doc(
+               """
+               WGS84BoundingBox defining a minimum bounding rectangle in WGS84 longitude-latitude coordinates.
 
-  From OGC WMTS Implementation Standard (OGC 07-057r7), Section 7.2.4.2:
+               From OGC WMTS Implementation Standard (OGC 07-057r7), Section 7.2.4.2:
 
-  "The WGS84BoundingBox element shall identify the minimum bounding rectangle in WGS84 
-  longitude-latitude that encloses the area applicable to the layer."
-
-  ## Required Elements
-
-  - `lower_corner` - Lower corner coordinates as {longitude, latitude} tuple
-  - `upper_corner` - Upper corner coordinates as {longitude, latitude} tuple
-
-  From OWS Common Specification (OGC 06-121r9), Section 10.2:
-
-  "A BoundingBox element encodes an MD bounding box (or bounding rectangle, or in 3D a 
-  bounding box) used to indicate what data is available. This BoundingBox element is 
-  primarily used in GetCapabilities operation responses."
-
-  ## Coordinate Order
-
-  For WGS84BoundingBox, coordinates are specified as:
-  - Lower corner: {minimum_longitude, minimum_latitude}  
-  - Upper corner: {maximum_longitude, maximum_latitude}
-
-  Values are in decimal degrees with longitude in range [-180, 180] and 
-  latitude in range [-90, 90].
-
-  ## Usage
-
-  This bounding box provides a quick spatial reference for:
-  - Layer discovery and filtering
-  - Determining data availability  
-  - Client-side spatial indexing
-  - Geographic extent validation
-  """
+               "The WGS84BoundingBox element shall identify the minimum bounding rectangle in WGS84 
+               longitude-latitude that encloses the area applicable to the layer."
+               """,
+               example: """
+               %ExWMTS.WGS84BoundingBox{
+                 lower_corner: {-180.0, -90.0},
+                 upper_corner: {180.0, 90.0}
+               }
+               """,
+               related: [ExWMTS.Layer, ExWMTS.BoundingBox]
+             )
 
   import ExWMTS.XPathHelpers
   import SweetXml
 
   alias __MODULE__, as: WGS84BoundingBox
 
+  @typedoc ExWMTS.Doc.type_doc("Lower corner coordinates as {longitude, latitude} tuple in decimal degrees",
+             example: "{-180.0, -90.0}"
+           )
+  @type lower_corner :: {float(), float()}
+
+  @typedoc ExWMTS.Doc.type_doc("Upper corner coordinates as {longitude, latitude} tuple in decimal degrees",
+             example: "{180.0, 90.0}"
+           )
+  @type upper_corner :: {float(), float()}
+
+  @typedoc ExWMTS.Doc.type_doc("WGS84 geographic bounding box",
+             example: "%ExWMTS.WGS84BoundingBox{lower_corner: {-180.0, -90.0}, upper_corner: {180.0, 90.0}}"
+           )
+  @type wgs84_bounding_box :: t()
+
+  @typedoc ExWMTS.Doc.type_doc("Type describing a WGS84 geographic bounding box",
+             keys: %{
+               lower_corner: WGS84BoundingBox,
+               upper_corner: WGS84BoundingBox
+             },
+             example: """
+             %ExWMTS.WGS84BoundingBox{
+               lower_corner: {-180.0, -90.0},
+               upper_corner: {180.0, 90.0}
+             }
+             """,
+             related: [ExWMTS.Layer, ExWMTS.BoundingBox]
+           )
+  @type t :: %WGS84BoundingBox{
+          lower_corner: lower_corner(),
+          upper_corner: upper_corner()
+        }
+
   defstruct [:lower_corner, :upper_corner]
 
+  @doc ExWMTS.Doc.func_doc("Builds WGS84BoundingBox struct from XML node or map",
+         params: %{bbox_data: "XML node, map, list of nodes/maps, or nil to build into WGS84BoundingBox struct"}
+       )
+  @spec build(nil) :: nil
+  @spec build([]) :: nil
+  @spec build(map() | term()) :: WGS84BoundingBox.t() | nil
   def build(nil), do: nil
   def build([]), do: nil
 
