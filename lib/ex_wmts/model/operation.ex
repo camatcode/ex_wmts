@@ -43,7 +43,7 @@ defmodule ExWMTS.Operation do
   @typedoc ExWMTS.Doc.type_doc("Type describing a WMTS operation",
              keys: %{
                name: Operation,
-               dcp: ExWMTS.DCP
+               dcp: {ExWMTS.DCP, :t}
              },
              example: """
              %ExWMTS.Operation{

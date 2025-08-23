@@ -36,16 +36,37 @@ defmodule ExWMTS.ContactInfo do
     :contact_instructions
   ]
 
+  @typedoc ExWMTS.Doc.type_doc("Voice phone number", example: "\"+1 228 688-4972\"")
   @type phone_voice :: String.t()
+
+  @typedoc ExWMTS.Doc.type_doc("Facsimile phone number", example: "\"+1 228 688-4853\"")
   @type phone_facsimile :: String.t()
+
+  @typedoc ExWMTS.Doc.type_doc("Physical address delivery point", example: "\"1005 Balch Blvd Rm C-5\"")
   @type address_delivery_point :: String.t()
+
+  @typedoc ExWMTS.Doc.type_doc("City name", example: "\"Stennis Space Center\"")
   @type address_city :: String.t()
+
+  @typedoc ExWMTS.Doc.type_doc("State, province, or administrative area", example: "\"MS\"")
   @type address_administrative_area :: String.t()
+
+  @typedoc ExWMTS.Doc.type_doc("Postal or ZIP code", example: "\"39529\"")
   @type address_postal_code :: String.t()
+
+  @typedoc ExWMTS.Doc.type_doc("Country name", example: "\"USA\"")
   @type address_country :: String.t()
+
+  @typedoc ExWMTS.Doc.type_doc("Email address", example: "\"norman.schoenhardt@nrlssc.navy.mil\"")
   @type address_email :: String.t()
+
+  @typedoc ExWMTS.Doc.type_doc("Online resource URL", example: "\"TBA\"")
   @type online_resource :: String.t()
+
+  @typedoc ExWMTS.Doc.type_doc("Hours of service availability", example: "\"8am-4:30pm cst mon-fri\"")
   @type hours_of_service :: String.t()
+
+  @typedoc ExWMTS.Doc.type_doc("Special instructions for contacting", example: "\"none\"")
   @type contact_instructions :: String.t()
 
   @typedoc ExWMTS.Doc.type_doc("Type describing contact information details",
