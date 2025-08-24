@@ -1,44 +1,59 @@
 defmodule ExWMTS.TileMatrixSetLink do
-  @moduledoc """
-  TileMatrixSetLink connecting a layer to a specific TileMatrixSet with optional limits.
+  @moduledoc ExWMTS.Doc.mod_doc(
+               """
+               TileMatrixSetLink connecting a layer to a specific TileMatrixSet with optional limits.
 
-  From OGC WMTS Implementation Standard (OGC 07-057r7), Section 7.2.4.6:
+               From OGC WMTS Implementation Standard (OGC 07-057r7), Section 7.2.4.6:
 
-  "A TileMatrixSetLink element identifies a TileMatrixSet and optionally identifies a subset 
-  of the tile matrices using a TileMatrixSetLimits element."
-
-  ## Required Elements
-
-  - `tile_matrix_set` - Reference to an available TileMatrixSet identifier
-
-  ## Optional Elements  
-
-  - `tile_matrix_set_limits` - Limits restricting the available tile matrices
-
-  From Section 7.2.4.6.1: "The TileMatrixSet element shall contain the identifier of a 
-  TileMatrixSet offered by the server."
-
-  From Section 7.2.4.6.2: "The TileMatrixSetLimits element shall define the spatial and/or 
-  resolution limits of the tiles and allow a server to describe a layer as having a limited 
-  spatial and/or resolution extent. If this element is not present, there are no limits on 
-  the tile matrix indices except those imposed by the tile matrix definition."
-
-  ## Usage
-
-  This element allows layers to:
-  - Reference which TileMatrixSets can be used for tile requests
-  - Optionally constrain the available tiles within those sets
-  - Define geographic or zoom level boundaries for efficient tile access
-  """
+               "A TileMatrixSetLink element identifies a TileMatrixSet and optionally identifies a subset 
+               of the tile matrices using a TileMatrixSetLimits element."
+               """,
+               example: """
+               %ExWMTS.TileMatrixSetLink{
+                 tile_matrix_set: "2km",
+                 tile_matrix_set_limits: nil
+               }
+               """,
+               related: [ExWMTS.Layer, ExWMTS.TileMatrixSet, ExWMTS.TileMatrixSetLimits]
+             )
 
   import ExWMTS.Model.Common
+  import ExWMTS.XPathHelpers
   import SweetXml
 
   alias __MODULE__, as: TileMatrixSetLink
   alias ExWMTS.TileMatrixSetLimits
 
+  @typedoc ExWMTS.Doc.type_doc("Reference to an available TileMatrixSet identifier", example: "\"2km\"")
+  @type tile_matrix_set :: String.t()
+
+  @typedoc ExWMTS.Doc.type_doc("Type describing a link from a layer to a TileMatrixSet",
+             keys: %{
+               tile_matrix_set: TileMatrixSetLink,
+               tile_matrix_set_limits: ExWMTS.TileMatrixSetLimits
+             },
+             example: """
+             %ExWMTS.TileMatrixSetLink{
+               tile_matrix_set: "2km",
+               tile_matrix_set_limits: nil
+             }
+             """,
+             related: [ExWMTS.Layer, ExWMTS.TileMatrixSet, ExWMTS.TileMatrixSetLimits]
+           )
+  @type t :: %TileMatrixSetLink{
+          tile_matrix_set: tile_matrix_set(),
+          tile_matrix_set_limits: TileMatrixSetLimits.t()
+        }
+
   defstruct [:tile_matrix_set, :tile_matrix_set_limits]
 
+  @doc ExWMTS.Doc.func_doc("Builds TileMatrixSetLink structs from XML nodes or maps",
+         params: %{link_data: "XML node, map, list of nodes/maps, or nil to build into TileMatrixSetLink structs"}
+       )
+  @spec build(nil) :: nil
+  @spec build([]) :: []
+  @spec build([map() | term()]) :: [TileMatrixSetLink.t()]
+  @spec build(map() | term()) :: TileMatrixSetLink.t() | nil
   def build(nil), do: nil
   def build([]), do: nil
 
@@ -48,8 +63,8 @@ defmodule ExWMTS.TileMatrixSetLink do
     link_data =
       link_node
       |> xpath(~x".",
-        tile_matrix_set: ~x"./*[local-name()='TileMatrixSet']/text()"s,
-        tile_matrix_set_limits: ~x"./*[local-name()='TileMatrixSetLimits']"e
+        tile_matrix_set: text("TileMatrixSet"),
+        tile_matrix_set_limits: element("TileMatrixSetLimits")
       )
 
     tile_matrix_set = normalize_text(link_data.tile_matrix_set, nil)

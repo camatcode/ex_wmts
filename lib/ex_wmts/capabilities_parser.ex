@@ -3,6 +3,7 @@ defmodule ExWMTS.CapabilitiesParser do
   Parses WMTS GetCapabilities XML responses into structured Elixir data.
   """
 
+  import ExWMTS.XPathHelpers
   import SweetXml
 
   alias ExWMTS.Layer
@@ -31,25 +32,25 @@ defmodule ExWMTS.CapabilitiesParser do
       layers:
         parsed_xml
         |> xpath(~x"//*[local-name()='Layer']"l,
-          identifier: ~x"./*[local-name()='Identifier']/text()"s,
-          title: ~x"./*[local-name()='Title']/text()"s,
-          abstract: ~x"./*[local-name()='Abstract']/text()"s,
+          identifier: text("Identifier"),
+          title: text("Title"),
+          abstract: text("Abstract"),
           keywords: ~x"./*[local-name()='Keywords']/*[local-name()='Keyword']/text()"sl,
-          wgs84_bounding_box: ~x"./*[local-name()='WGS84BoundingBox']"o,
-          bounding_box: ~x"./*[local-name()='BoundingBox']"l,
-          metadata: ~x"./*[local-name()='Metadata']"l,
-          dimensions: ~x"./*[local-name()='Dimension']"l,
-          resource_urls: ~x"./*[local-name()='ResourceURL']"l,
-          tile_matrix_set_links: ~x"./*[local-name()='TileMatrixSetLink']"l,
-          formats: ~x"./*[local-name()='Format']/text()"ls,
+          wgs84_bounding_box: element("WGS84BoundingBox"),
+          bounding_box: element_list("BoundingBox"),
+          metadata: element_list("Metadata"),
+          dimensions: element_list("Dimension"),
+          resource_urls: element_list("ResourceURL"),
+          tile_matrix_set_links: element_list("TileMatrixSetLink"),
+          formats: text_list("Format"),
           tile_matrix_sets: ~x"./*[local-name()='TileMatrixSetLink']/*[local-name()='TileMatrixSet']/text()"ls,
           styles: ~x"./*[local-name()='Style']/*[local-name()='Identifier']/text()"ls
         )
-        |> make_layers(),
+        |> Layer.build(),
       tile_matrix_sets:
         parsed_xml
         |> xpath(~x"//*[local-name()='TileMatrixSet']"l)
-        |> make_tile_matrix_sets(),
+        |> TileMatrixSet.build(),
       formats:
         parsed_xml
         |> xpath(~x"//*[local-name()='Format']/text()"ls)
@@ -59,17 +60,5 @@ defmodule ExWMTS.CapabilitiesParser do
     }
 
     {:ok, capabilities}
-  end
-
-  defp make_layers(layers) do
-    layers
-    |> Enum.map(&Layer.build/1)
-    |> Enum.reject(&(&1 == nil))
-  end
-
-  defp make_tile_matrix_sets(tms) do
-    tms
-    |> Enum.map(&TileMatrixSet.build/1)
-    |> Enum.reject(&(&1 == nil))
   end
 end

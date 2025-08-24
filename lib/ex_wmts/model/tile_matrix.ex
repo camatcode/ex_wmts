@@ -1,44 +1,109 @@
 defmodule ExWMTS.TileMatrix do
-  @moduledoc """
-  TileMatrix defining how space is partitioned into a set of square tiles at a particular scale.
+  @moduledoc ExWMTS.Doc.mod_doc(
+               """
+               TileMatrix defining how space is partitioned into a set of square tiles at a particular scale.
 
-  From OGC WMTS Implementation Standard (OGC 07-057r7), Section 7.2.3.2:
+               From OGC WMTS Implementation Standard (OGC 07-057r7), Section 7.2.3.2:
 
-  "A TileMatrix defines how space is partitioned into a set of square tiles. The TileMatrix defines 
-  a particular tile matrix by defining its limits (MatrixWidth, MatrixHeight), the tile size 
-  (TileWidth, TileHeight) and geospatial metadata."
-
-  ## Required Elements
-
-  - `identifier` - Unique identifier for this matrix within the TileMatrixSet
-  - `scale_denominator` - Scale denominator level of this tile matrix  
-  - `top_left_corner` - Position in CRS coordinates of the top-left corner of this tile matrix
-  - `tile_width` - Width of each tile in pixels
-  - `tile_height` - Height of each tile in pixels
-  - `matrix_width` - Number of tiles in the horizontal direction (columns)
-  - `matrix_height` - Number of tiles in the vertical direction (rows)
-
-  ## Optional Elements
-
-  - `title` - Human-readable title for the matrix
-  - `abstract` - Brief narrative description of the matrix
-  - `keywords` - List of descriptive keywords
-
-  From Section 7.2.3.2.1: "The ScaleDenominator element shall contain the scale denominator of the 
-  tile matrix. The scale denominator is defined with respect to a 'standardized rendering pixel size' 
-  of 0.28 mm × 0.28 mm (millimeters)."
-
-  From Section 7.2.3.2.2: "The TopLeftCorner element shall contain the position in CRS coordinates 
-  of the top-left corner of this tile matrix. This corner is also a corner of the (0, 0) tile."
-
-  From Section 7.2.3.2.3: "The TileWidth and TileHeight elements shall contain the width and height 
-  of each tile in pixels. All tiles in the matrix shall have the same pixel size."
-  """
+               "A TileMatrix defines how space is partitioned into a set of square tiles. The TileMatrix defines 
+               a particular tile matrix by defining its limits (MatrixWidth, MatrixHeight), the tile size 
+               (TileWidth, TileHeight) and geospatial metadata."
+               """,
+               example: """
+               %ExWMTS.TileMatrix{
+                 identifier: "0",
+                 title: nil,
+                 abstract: nil,
+                 keywords: [],
+                 scale_denominator: 223632905.6114871,
+                 tile_width: 512,
+                 tile_height: 512,
+                 matrix_width: 2,
+                 matrix_height: 1,
+                 top_left_corner: {-180.0, 90.0}
+               }
+               """,
+               related: [ExWMTS.TileMatrixSet, ExWMTS.Layer]
+             )
 
   import ExWMTS.Model.Common
+  import ExWMTS.XPathHelpers
   import SweetXml
 
   alias __MODULE__, as: TileMatrix
+
+  @typedoc ExWMTS.Doc.type_doc("Unique identifier for this matrix within the TileMatrixSet", example: "\"0\"")
+  @type matrix_identifier :: String.t()
+
+  @typedoc ExWMTS.Doc.type_doc("Human-readable title for the matrix", example: "\"Level 0 - Global Overview\"")
+  @type title :: String.t()
+
+  @typedoc ExWMTS.Doc.type_doc("Brief narrative description of the matrix",
+             example: "\"Global overview level with 2x1 tiles\""
+           )
+  @type abstract :: String.t()
+
+  @typedoc ExWMTS.Doc.type_doc("List of descriptive keywords", example: ~s(["global", "overview"]))
+  @type keywords :: [String.t()]
+
+  @typedoc ExWMTS.Doc.type_doc("Scale denominator defined with respect to standardized rendering pixel size of 0.28mm",
+             example: "223632905.6114871"
+           )
+  @type scale_denominator :: float()
+
+  @typedoc ExWMTS.Doc.type_doc("Width of each tile in pixels", example: "512")
+  @type tile_width :: non_neg_integer()
+
+  @typedoc ExWMTS.Doc.type_doc("Height of each tile in pixels", example: "512")
+  @type tile_height :: non_neg_integer()
+
+  @typedoc ExWMTS.Doc.type_doc("Number of tiles in the horizontal direction (columns)", example: "2")
+  @type matrix_width :: pos_integer()
+
+  @typedoc ExWMTS.Doc.type_doc("Number of tiles in the vertical direction (rows)", example: "1")
+  @type matrix_height :: pos_integer()
+
+  @typedoc ExWMTS.Doc.type_doc("Position in CRS coordinates of the top-left corner", example: "{-180.0, 90.0}")
+  @type top_left_corner :: {float(), float()}
+
+  @typedoc ExWMTS.Doc.type_doc("Type describing a tile matrix within a TileMatrixSet",
+             keys: %{
+               identifier: {TileMatrix, :matrix_identifier},
+               title: TileMatrix,
+               abstract: TileMatrix,
+               keywords: TileMatrix,
+               scale_denominator: TileMatrix,
+               tile_width: TileMatrix,
+               tile_height: TileMatrix,
+               matrix_width: TileMatrix,
+               matrix_height: TileMatrix,
+               top_left_corner: TileMatrix
+             },
+             example: """
+             %ExWMTS.TileMatrix{
+               identifier: "0",
+               scale_denominator: 223632905.6114871,
+               tile_width: 512,
+               tile_height: 512,
+               matrix_width: 2,
+               matrix_height: 1,
+               top_left_corner: {-180.0, 90.0}
+             }
+             """,
+             related: [ExWMTS.TileMatrixSet, ExWMTS.Layer]
+           )
+  @type t :: %TileMatrix{
+          identifier: matrix_identifier(),
+          title: title(),
+          abstract: abstract(),
+          keywords: keywords(),
+          scale_denominator: scale_denominator(),
+          tile_width: tile_width(),
+          tile_height: tile_height(),
+          matrix_width: matrix_width(),
+          matrix_height: matrix_height(),
+          top_left_corner: top_left_corner()
+        }
 
   defstruct [
     :identifier,
@@ -53,6 +118,11 @@ defmodule ExWMTS.TileMatrix do
     :top_left_corner
   ]
 
+  @doc ExWMTS.Doc.func_doc("Builds TileMatrix struct from XML node or map",
+         params: %{matrix_data: "XML node, map, or nil to build into TileMatrix struct"}
+       )
+  @spec build(nil) :: nil
+  @spec build(map() | term()) :: TileMatrix.t() | nil
   def build(nil), do: nil
 
   def build(tm_node) do
@@ -75,16 +145,16 @@ defmodule ExWMTS.TileMatrix do
     } =
       tm_node
       |> xpath(~x".",
-        identifier: ~x"./*[local-name()='Identifier']/text()"s,
-        title: ~x"./*[local-name()='Title']/text()"s,
-        abstract: ~x"./*[local-name()='Abstract']/text()"s,
+        identifier: text("Identifier"),
+        title: text("Title"),
+        abstract: text("Abstract"),
         keywords: ~x"./*[local-name()='Keywords']/*[local-name()='Keyword']/text()"sl,
-        scale_denominator: ~x"./*[local-name()='ScaleDenominator']/text()"s,
-        tile_width: ~x"./*[local-name()='TileWidth']/text()"s,
-        tile_height: ~x"./*[local-name()='TileHeight']/text()"s,
-        matrix_width: ~x"./*[local-name()='MatrixWidth']/text()"s,
-        matrix_height: ~x"./*[local-name()='MatrixHeight']/text()"s,
-        top_left_corner: ~x"./*[local-name()='TopLeftCorner']/text()"s
+        scale_denominator: text("ScaleDenominator"),
+        tile_width: text("TileWidth"),
+        tile_height: text("TileHeight"),
+        matrix_width: text("MatrixWidth"),
+        matrix_height: text("MatrixHeight"),
+        top_left_corner: text("TopLeftCorner")
       )
 
     identifier = normalize_text(identifier, nil)
