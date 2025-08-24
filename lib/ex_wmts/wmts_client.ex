@@ -226,27 +226,14 @@ defmodule ExWMTS.WMTSClient do
   end
 
   defp extract_base_url_from_capabilities(capabilities) do
-    # Try to find GetTile operation with KVP binding
-    if capabilities.operations_metadata && capabilities.operations_metadata.operations do
-      get_tile_op =
-        Enum.find(capabilities.operations_metadata.operations, fn op ->
-          op.name == "GetTile"
-        end)
-
-      if get_tile_op && get_tile_op.dcp && get_tile_op.dcp.http do
-        # Look for GET method with KVP constraint
-        get_method = get_tile_op.dcp.http.get
-
-        if get_method && get_method.href do
-          {:ok, get_method.href}
-        else
-          :not_found
-        end
-      else
-        :not_found
-      end
+    with %{operations_metadata: %{operations: operations}} <- capabilities,
+         get_tile_op when not is_nil(get_tile_op) <-
+           Enum.find(operations, &(&1.name == "GetTile")),
+         %{dcp: %{http: %{get: get_method}}} <- get_tile_op,
+         %{href: href} when not is_nil(href) <- get_method do
+      {:ok, href}
     else
-      :not_found
+      _ -> :not_found
     end
   end
 

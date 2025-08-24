@@ -6,11 +6,14 @@ defmodule ExWMTS.Doc do
     example = render_example(opts[:example])
     related = render_related(opts[:related])
     warning = render_warning(opts[:warning])
+    ogc_common = render_ogc_common(opts[:ogc_common])
 
     """
     #{description}
 
     #{warning}
+
+    #{ogc_common}
 
     #{example}
 
@@ -101,6 +104,16 @@ defmodule ExWMTS.Doc do
     #{table_contents}
 
 
+    """
+  end
+
+  defp render_ogc_common(nil), do: ""
+
+  defp render_ogc_common(block) do
+    """
+    > #### From OWS Common Specification {: .info}
+    >
+    > #{block}
     """
   end
 

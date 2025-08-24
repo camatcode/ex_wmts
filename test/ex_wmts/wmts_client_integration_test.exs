@@ -187,7 +187,13 @@ defmodule ExWMTS.WMTSClientIntegrationTest do
   defp detect_image_format(data) when byte_size(data) < 8, do: :too_small
 
   defp detect_image_format(data) do
-    case binary_part(data, 0, min(12, byte_size(data))) do
+    header = binary_part(data, 0, min(12, byte_size(data)))
+
+    detect_image_type(header) || detect_error_response(header) || :unknown
+  end
+
+  defp detect_image_type(header) do
+    case header do
       # PNG: 89 50 4E 47 0D 0A 1A 0A
       <<137, 80, 78, 71, 13, 10, 26, 10, _rest::binary>> -> "image/png"
       # JPEG: FF D8
@@ -197,12 +203,18 @@ defmodule ExWMTS.WMTSClientIntegrationTest do
       # GIF87a or GIF89a
       <<"GIF87a", _rest::binary>> -> "image/gif"
       <<"GIF89a", _rest::binary>> -> "image/gif"
+      _ -> nil
+    end
+  end
+
+  defp detect_error_response(header) do
+    case header do
       # Check for HTML/XML error responses
       <<"<!DOCTYPE", _rest::binary>> -> :html_error
       <<"<html", _rest::binary>> -> :html_error
       <<"<?xml", _rest::binary>> -> :xml_error
       <<"<Capabilities", _rest::binary>> -> :capabilities_xml_error
-      _ -> :unknown
+      _ -> nil
     end
   end
 end
